@@ -1,0 +1,40 @@
+/** stylechooser **/
+
+#stylechooser { position: fixed; top: 13%; left: -1px; width: 243px; min-height: 0; z-index: 99999; padding: 0; }
+#stylechooser  #styleToggle { position: absolute; top: 2px; right: -47px; cursor: pointer; font-size: 0; color: transparent; width: 47px; height: 44px; margin: 0; border-bottom: 0; }
+#stylechooser  #styleToggle i:before { font-size: 24px; color: #737373; top: 22px; left: 13px; position: absolute; }
+#stylechooser .easyBox.flat { padding: 0 0 0 20px; width: 270px; }
+
+#stylechooser .easyBox { margin: 0; padding: 0; background: #fff; }
+
+#stylechooser hr { margin: 0; }
+#stylechooser label { margin-bottom: 20px; }
+
+#stylechooser .mkSpace {
+    padding: 10px 20px;
+}
+#stylechooser .demoList { margin: 0 0 0 -10px; list-style: none; }
+#stylechooser .demoList li { margin: 0 0 10px 10px; float: left; position: relative; }
+
+#stylechooser .demoColor { display: block; width: 25px; height: 25px; background: transparent; }
+#stylechooser .demoActive:before {
+    content: "\f00c";
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    font: 12px/1em 'FontAwesome';
+    font-style: normal;
+    color: #fff;
+    text-shadow: 0 0 1px rgba(0, 0, 0, .75);
+}
+
+#stylechooser .light { margin: 0; line-height: 46px; }
+#stylechooser .btn.btn-small { margin-bottom: 5px; }
+
+@media (max-width: 767px) {
+    #stylechooser {
+        display: none !important;
+    }
+}
+
+html { padding-top: 0 !important; }

@@ -1,0 +1,45 @@
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width initial-scale=1
+  maximum-scale=1">
+
+  <title>{% if page.title %}{{ page.title }}{% else %}{{ site.title }}{% endif %}</title>
+  <meta name="description" content="{% if page.excerpt %}{{ page.excerpt | strip_html | strip_newlines | truncate: 160 }}{% else %}{{ site.description }}{% endif %}">
+
+  <link rel="stylesheet" href="{{ "/static/css/style.css" | prepend: site.baseurl }}">
+  <link rel="stylesheet" href="{{ "/static/css/customstyle.css" | prepend: site.baseurl }}">
+  <link rel="stylesheet" href="{{ "/static/css/demo.css" | prepend: site.baseurl }}">
+  <link rel="stylesheet" href="{{ "/static/css/skins.css" | prepend: site.baseurl }}">
+  <link rel="stylesheet" href="{{ "/static/css/jquery.qtip.min.css" | prepend: site.baseurl }}" media="all">
+
+  <script src="{{ "/static/js/jquery.min.js" | prepend: site.baseurl }}"></script>
+  <script src="{{ "/static/js/jquery.qtip.min.css" | prepend: site.baseurl }}"></script>
+  <script src="{{ "/static/js/jquery.tweet.js" | prepend: site.baseurl }}"></script>
+  <script src="{{ "/static/js/jquery.flexslider-min.js" | prepend: site.baseurl }}"></script>
+  <script src="{{ "/static/js/jquery.parallax-1.1.3.js" | prepend: site.baseurl }}"></script>
+  <script src="{{ "/static/js/jquery.easing.1.3.js" | prepend: site.baseurl }}"></script>
+  <script src="{{ "/static/js/jquery.easy-pie-chart.js" | prepend: site.baseurl }}"></script>
+  <script src="{{ "/static/js/jquery.viewport.min.js" | prepend: site.baseurl }}"></script>
+  <script src="{{ "/static/js/jquery.isotope.min.js" | prepend: site.baseurl }}"></script>
+  <script src="{{ "/static/js/jquery.ba-bbq.min.js" | prepend: site.baseurl }}"></script>
+  <script src="{{ "/static/js/jquery.ddslick.js" | prepend: site.baseurl }}"></script>
+  <script src="{{ "/static/js/bootstrap.min.js" | prepend: site.baseurl }}"></script>
+  <script src="{{ "/static/js/bootbox.min.js" | prepend: site.baseurl }}"></script>
+  <script src="{{ "/static/js/main.js" | prepend: site.baseurl }}"></script>
+  <script src="{{ "/static/js/switcher.js" | prepend: site.baseurl }}"></script>
+  <script src="{{ "/static/js/switcher.js" | prepend: site.baseurl }}"></script>
+
+  <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+  <!--[if lt IE 9]>
+  <script src="https://raw.githubusercontent.com/aFarkas/html5shiv/master/dist/html5shiv.js"></script>
+  <![endif]-->
+
+  <!-- conditional IE styles -->
+  <!--[if IE]>
+  <link rel="stylesheet" href="{{ "/css/ie.css" | prepend: site.baseurl }}">
+  <![endif]-->
+
+  <link rel="canonical" href="{{ page.url | replace:'index.html','' | prepend: site.baseurl | prepend: site.url }}">
+  <link rel="alternate" type="application/atom+xml" title="{{ site.title }}" href="{{ "/feed.xml" | prepend: site.baseurl | prepend: site.url }}" />
+</head>
