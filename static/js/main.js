@@ -10,8 +10,6 @@ function enable_scroll() {
 
 function loadPDF(url) {
 	
-	url = 'https://docs.google.com/gview?url&embedded=true';
-	
 	if ($('.bootbox').length) {
 		bootbox.hideAll();
 	}
