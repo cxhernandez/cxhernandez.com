@@ -6,7 +6,7 @@
                 </h2>
                 <div class="row-fluid">
                     {% for post in site.posts %}
-                        {% unless forloop.item0 > 1 %}
+                        {% unless forloop.item0 > 1 or post.categories contains 'research'%}
                     <a  href="{{ post.url | prepend: site.baseurl }}">
                         <div class="span4 icon-box">
                             <br/><h4>{{ post.title  }}</h4><br/>
