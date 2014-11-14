@@ -2,7 +2,7 @@
 
 Shukla D., Hernández C.X., Weber J.K., and Pande V.S., 
 Markov State Models Provide Insights into Dynamic Modulation of Protein
-Function. <i> Accounts of Chemical Research.</i>.
+Function. <i>Accounts of Chemical Research</i>.
 doi: [10.1021/ar5002999](http://dx.doi.org/10.1021/ar5002999)
 
 McGibbon R.T., Beauchamp K.A. Schwantes C.R., Wang L.-P., Hernández C.X.,

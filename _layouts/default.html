@@ -3,13 +3,11 @@
 
   {% include head.html %}
 
-  <body data-spy="scroll" data-target="#MainNav" data-offset="74" class="hasCtBar">
-
-    {% include header.html %}
-
+  <body>
+    {% include post-nav.html %}
     <div class="page-content">
       <div class="wrapper">
-        {% include nav.html %}
+        <section></section>
         {{ content }}
       </div>
     </div>

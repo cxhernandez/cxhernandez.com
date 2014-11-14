@@ -1,0 +1,34 @@
+<section id="Publications" class="parallax" style="background-image: url({{ "/static/images/clark.jpg" | prepend: site.baseurl }}); background-position: 20% -70px;">
+    <div class="container">
+        <h2 style="color:white !important">
+            Publications
+        </h2>
+
+        <div class="row-fluid">
+            <div class="blog-big-list">
+                <ul class="latest-posts span12">
+		    <li class="row-fluid">
+                    {% markdown publications.md %}
+                    </li>
+            </ul>
+        </div>
+	</div>
+</div>
+	<section id="Press">
+		<div class="container">
+        <h2 style="color:white !important">
+            Press
+        </h2>
+        <div class="row-fluid">
+            <div class="blog-big-list">
+                <ul class="latest-posts span12">
+                    <li class="row-fluid">
+                    {% markdown press.md %}
+                   </li>
+                </ul>
+            </div>
+        </div>
+</div>
+	</section>
+</section>
+

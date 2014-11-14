@@ -1,0 +1,33 @@
+<section id="Tutorials" class="parallax" style="background-image: url(http://www.wallpaperup.com/uploads/wallpapers/2013/02/20/42404/4e0288924865ee2619c37819fc467210.jpg); background-position: 20% 49px;padding-top:0 !important">
+    <section class="section-emphasis" style="margin-top: 0% !important">
+            <div class="container">
+                <h2 style="color:white !important">
+                     Tutorials
+                </h2>
+                <div class="row-fluid">
+                    {% for post in site.posts %}
+                        {% unless forloop.item0 > 1 %}
+                    <a  href="{{ post.url | prepend: site.baseurl }}">
+                        <div class="span4 icon-box">
+                            <br/><h4>{{ post.title  }}</h4><br/>
+                            <h4>{{ post.date | date: "%b %-d, %Y" }}</h4>
+                            <img alt="{{ post.title }}" width="200" style="display: block; margin-left: auto; margin-right: auto;"  src="{{ post.thumbnail | prepend: site.baseurl }}">
+                        </div>
+                    </a>
+                        {% endunless %}
+                    {% endfor %}
+                    <a  href="{{ "tutorials.html" | prepend: site.baseurl }}">
+                        <div class="span4 icon-box"> 
+                            <br/><h4>Click here</h4><br/>
+                            <h4>for more</h4>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            <a  href="{{ "/feed.xml" | prepend: site.baseurl }}">
+                <div class="icon-box"  style="display: block; margin-bottom: -2em; margin-left:auto; margin-right: auto;">
+                    <p class="rss-subscribe" style="margin-left:-4em;white-space: nowrap;">Subscribe via RSS</p>
+                </div>
+            </a>
+    </section>
+</section>

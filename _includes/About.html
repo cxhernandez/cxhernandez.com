@@ -1,0 +1,14 @@
+<section id="About" class="parallax" style="background-image: url( {{ "/static/images/gwb.jpg"  | prepend: site.baseurl }}); background-position: 20% 49px;">
+    <div class="container">
+        <h2 style="color:white !important">
+            About
+        </h2>
+
+        <div class="row-fluid">
+            <div class="span12">
+                {% markdown about.md %}
+            </div>
+        </div>
+    </div>
+</section>
+

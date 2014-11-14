@@ -7568,6 +7568,9 @@ section.section-emphasis h3 {
   font-size: 0.875em;
   font-family: 'Lato', sans-serif;
 }
+.icon-box h3 {
+  color: #fff;
+}
 .icon-box h4:before {
   font-family: 'FontAwesome';
 }

@@ -1,14 +1,17 @@
 ---
 layout: default
+comments: true
 ---
 <div class="post">
 
-  <header class="post-header">
-    <h1 class="post-title">{{ page.title }}</h1>
-  </header>
+    {% include post-nav.html %}
 
   <article class="post-content">
     {{ content }}
   </article>
 
 </div>
+
+{% if page.comments %}
+
+{% endif %}

@@ -62,6 +62,7 @@ GEM
     rb-inotify (0.9.5)
       ffi (>= 0.5.0)
     redcarpet (3.2.0)
+    rouge (1.7.2)
     s3_website (2.6.1)
       colored (= 1.2)
       configure-s3-website (= 1.6.0)
@@ -81,4 +82,5 @@ PLATFORMS
 
 DEPENDENCIES
   jekyll (~> 2.5.1)
+  rouge
   s3_website
