@@ -7,7 +7,7 @@ title: Contents
 <div class="container">
   <ul class="post-list">
     {% for post in site.posts %}
-        {% if site.categories contains "tutorials" %}
+        {% if post.categories contains "tutorials" %}
       <li>
         <a class="post-link" href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a>
         <br/>
