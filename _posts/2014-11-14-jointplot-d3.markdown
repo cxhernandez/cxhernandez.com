@@ -219,6 +219,9 @@ Contour Plot
 Now that we have KDEs for both the marginals and the bivariate distributions, we can make our final plot with the following code:
 
 {% highlight python%}
+#Set style to white
+sns.set_style('white')
+
 #Define grid for subplots
 gs = gridspec.GridSpec(2, 2, width_ratios=[3, 1], height_ratios=[1, 4])
 
