@@ -74,7 +74,7 @@ Once these packages have been installed, you can get started!
 Data Generation
 ---
 
-If you don't already have some data lying around to plot, you can create easily create some using a bivariate normal distribution with `NumPy`. 
+If you don't already have some data lying around to plot, you can easily create some using a bivariate normal distribution with `NumPy`. 
 First, we'll need an easy way to generate pseudo-random [positive-semidefinite](http://en.wikipedia.org/wiki/Positive-definite_matrix#Positive-semidefinite) matrices for our distribution's covariances:
 
 {% highlight python %}
@@ -91,8 +91,9 @@ Then, we can define a pair of means and covariance matrices for our distribution
 
 {% highlight python %}
 n = 2
-mu = map(lambda x: np.random.normal(size = x)*np.random.randint(1,11) + np.random.normal(size = x), n*[n])
-sigma = map(gen_cov, n*[n])
+m = 2
+mu = map(lambda x: np.random.normal(size = x)*np.random.randint(1,11) + np.random.normal(size = x), n*[m])
+sigma = map(gen_cov, n*[m])
 {% endhighlight%}
 
 Here, we've generated a pair of 2-D means from $$\mu \sim I*X + Y$$, where $$I$$ is a random integer pulled from $$U(1,10)$$, and $$X$$ and $$Y$$ are both random float arrays pulled from $$N(0,1)$$. 
@@ -216,7 +217,7 @@ density = kde_XY(coords).reshape(xi.shape) # Bivariate density
 Contour Plot
 ---
 
-Now that we have KDEs for both the marginals and the bivariate distributions, we can make our final plot with the following code:
+Now that we have KDEs for both the marginals and the bivariate distribution, we can make our final plot with the following code:
 
 {% highlight python%}
 #Set style to white
