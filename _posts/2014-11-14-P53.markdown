@@ -2,15 +2,9 @@
 layout: post
 title:  "P53"
 date:   2014-11-14 14:17
-thumbnail: /static/images/thumbnails/jointplot.png 
+thumbnail: /static/images/thumbnails/p53.png 
 categories: research p53
 ---
-
-<style>
-h1,p {
-	color: black !important;
-}
-</style>
 
 Sirtuin
 ===

@@ -6,7 +6,7 @@
                 </h2>
                 <div class="row-fluid">
                     {% for post in site.posts %}
-                        {% unless forloop.item0 > 1 or post.categories contains 'research'%}
+                        {% if forloop.item0 < 2 or post.categories contains 'tutorials' %}
                     <a  href="{{ post.url | prepend: site.baseurl }}">
                         <div class="span4 icon-box">
                             <br/><h4>{{ post.title  }}</h4><br/>
@@ -14,7 +14,7 @@
                             <img alt="{{ post.title }}" width="200" style="display: block; margin-left: auto; margin-right: auto;"  src="{{ post.thumbnail | prepend: site.baseurl }}">
                         </div>
                     </a>
-                        {% endunless %}
+                        {% endif %}
                     {% endfor %}
                     <a  href="{{ "tutorials.html" | prepend: site.baseurl }}">
                         <div class="span4 icon-box"> 

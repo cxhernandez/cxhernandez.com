@@ -1,20 +1,17 @@
 ---
 layout: default
 title: Contents
+categories: [table]
 ---
 
 <section  class="section-emphasis" style="margin-top: 0% !important; background-color: lightgray !important"> 
-<div class="container">
-  <ul class="post-list">
+<ul>
     {% for post in site.posts %}
         {% if post.categories contains "tutorials" %}
-      <li>
-        <a class="post-link" href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a>
-        <br/>
-        <span class="post-meta">{{ post.date | date: "%b %-d, %Y" }}</span>
-      </li>
+    <li> 
+        <a href="{{ post.url | prepend: site.baseurl }}"> {{ post.title }}</a><br/>{{ post.date | date: "%b %-d, %Y" }}
+    </li>
         {% endif %}
     {% endfor %}
-  </ul>
-  <div>
+</ul>
 </section>
