@@ -75,7 +75,7 @@ Data Generation
 ---
 
 If you don't already have some data lying around to plot, you can create easily create some using a bivariate normal distribution with `NumPy`. 
-First, we'll need an easy way to generate pseudo-random [Positive-semidefinite](http://en.wikipedia.org/wiki/Positive-definite_matrix#Positive-semidefinite) matrices for our distribution's covariances:
+First, we'll need an easy way to generate pseudo-random [positive-semidefinite](http://en.wikipedia.org/wiki/Positive-definite_matrix#Positive-semidefinite) matrices for our distribution's covariances:
 
 {% highlight python %}
 import numpy as np
