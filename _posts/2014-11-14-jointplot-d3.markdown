@@ -23,7 +23,7 @@ Joint plots are great for plotting bivariate datasets, as they're readily legibl
 Here, I'll be creating a [KDE](http://en.wikipedia.org/wiki/Kernel_density_estimation) joint plot with a modern color palette but a.simple design that resembles an old-school topographical map.
 
 
-To follow along, you'll need a working knowledge statistics as well as [`NumPy`](http://www.numpy.org/) and [`SciPy`](http://www.scipy.org/) in order to
+To follow along, you'll need a working knowledge of statistics as well as [`NumPy`](http://www.numpy.org/) and [`SciPy`](http://www.scipy.org/) in order to
 generate a dataset; [`matplotlib`](http://matplotlib.org/) to create the figure itself;
 and `Seaborn` to enhance
 matplotlib's somewhat bland aesthetics. Note: I'm also using
