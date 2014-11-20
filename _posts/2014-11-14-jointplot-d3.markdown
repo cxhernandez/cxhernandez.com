@@ -18,13 +18,13 @@ Pretty Joint Plots
 
 In this tutorial, I'll be using [Python](https://www.python.org/) to create a neat, customizable joint plot–– inspired by
 the
-[`jointplot`](http://web.stanford.edu/~mwaskom/software/seaborn/tutorial/plotting_distributions.html#bivariate-and-univariate-plots-using-jointplot) function in [`Seaborn`](http://web.stanford.edu/~mwaskom/software/seaborn/).
+[`jointplot`](http://web.stanford.edu/~mwaskom/software/seaborn/tutorial/plotting_distributions.html#bivariate-and-univariate-plots-using-jointplot) graphics found in [`Seaborn`](http://web.stanford.edu/~mwaskom/software/seaborn/).
 Joint plots are great for plotting bivariate datasets, as they're readily legible and provide high information content.
-Here, I'll be creating a [KDE](http://en.wikipedia.org/wiki/Kernel_density_estimation) joint plot with a modern color palette but a simple design that resembles an old-school topographical map.
+Here, I'll be creating a [KDE](http://en.wikipedia.org/wiki/Kernel_density_estimation) joint plot with a modern color palette but a.simple design that resembles an old-school topographical map.
 
 
-To follow along, you'll need [`NumPy`](http://www.numpy.org/) and [`SciPy`](http://www.scipy.org/) in order to
-generate some data; [`matplotlib`](http://matplotlib.org/) to create the figure itself;
+To follow along, you'll need a working knowledge statistics as well as [`NumPy`](http://www.numpy.org/) and [`SciPy`](http://www.scipy.org/) in order to
+generate a dataset; [`matplotlib`](http://matplotlib.org/) to create the figure itself;
 and `Seaborn` to enhance
 matplotlib's somewhat bland aesthetics. Note: I'm also using
 [`mpld3`](http://mpld3.github.io/) to generate an interactive plot, but this is completely optional. 
@@ -138,7 +138,7 @@ xmax, xmin = tuple(np.array([xmax, xmin]) + 0.25*(xmax - xmin)*np.array([1, -1])
 ymax, ymin = tuple(np.array([ymax, ymin]) + 0.25*(ymax - ymin)*np.array([1, -1]))
 {% endhighlight %}
 
-These values will be useful for the KDE joint plot as well.
+These values will be useful for making the KDE joint plot as well.
 
 
 Now, we can use the following code to generate the figure:
@@ -226,7 +226,7 @@ sns.set_style('white')
 #Define grid for subplots
 gs = gridspec.GridSpec(2, 2, width_ratios=[3, 1], height_ratios=[1, 4])
 
-#Create contour Plot
+#Create contour plot
 fig = pp.figure()
 ax = pp.subplot(gs[1,0])
 cax = ax.contourf(density.T, origin = 'lower', 
@@ -246,7 +246,7 @@ axt = subplot(gs[0,0], sharex = ax, frameon = False, xticks=[], yticks=[], xlim 
 axt.plot(x, dx, color = 'black')
 axt.fill_between(x, 0, dx, alpha=.75, color = '#5673E0')
 
-#Bring the marginals closer to the scatter plot
+#Bring the marginals closer to the contour plot
 fig.tight_layout(pad = 1)
 
 {% endhighlight %}
