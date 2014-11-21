@@ -1,4 +1,5 @@
 _site
+_notebooks
 *.swp
 *.swo
 *.lock
