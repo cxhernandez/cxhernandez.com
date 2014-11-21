@@ -115,11 +115,11 @@ Scatter Plot
 ---
 
 Before we go on to making a KDE of our data, let's just make a joint plot with a scatter plot in the main grid and marginal histograms.
-First let's import `Seaborn` and set our plot style to `'darkgrid'`
+First let's import `Seaborn` and set our plot style to `'dark'`
 
 {% highlight python %}
 import seaborn as sns
-sns.set_style('darkgrid')
+sns.set_style('dark')
 {% endhighlight %}
 
 
