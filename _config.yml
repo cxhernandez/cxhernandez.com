@@ -14,7 +14,7 @@ msm: "Markov state models (MSMs) are a powerful means of modeling the structure 
 
 baseurl: "" # the subpath of your site, e.g. /blog/
 url: "http://www.cxhernandez.com" # the base hostname & protocol for your site
-twitter_username: foldologist
+twitter_username: LatinoScientist
 github_username:  cxhernandez
 googleplus_username: CarlosXavierHernández
 linkedin_username: carlos-xavier-hernández
