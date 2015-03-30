@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Shortest Path"
-date:   2014-11-23
+date:   2015-03-30
 description: #networks and how you might be closer to #Shaq than you think
 thumbnail: /static/images/thumbnails/shortestpath.png
 categories: tutorials networks
