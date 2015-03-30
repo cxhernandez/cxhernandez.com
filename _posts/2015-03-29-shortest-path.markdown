@@ -19,35 +19,33 @@ Shortest Path
 At [Folding@home](https://folding.stanford.edu), often we use 
 [Markov state models](https://folding.stanford.edu/home/an-introduction-to-markov-state-models/) 
 (MSMs) to represent how molecules (usually proteins) move around in a simulation. 
-These models help simplify the large amounts of simulation data, ultimately
-yielding a concise network representation. Because of this more generic representation, we can borrow tools
-normally used in fields, such as [graph theory](http://en.wikipedia.org/wiki/Graph_theory), to study 
+These models help simplify large amounts of simulation data and ultimate
+yield a more concise network representation. Because of this, we can borrow tools
+normally used in fields such as [graph theory](http://en.wikipedia.org/wiki/Graph_theory) to study 
 how biological molecules behave.
 
 
-One such tool is [Dijkastra's algorithm](http://en.wikipedia.org/wiki/Dijkstra%27s_algorithm), which calculates an 
-approximate to shortest path between any two nodes in a (weakly connected) graph. At each iteration, the algorithm finds the
-neighboring node that will minimize the total distance needed to traverse the
+One such tool is [Dijkastra's algorithm](http://en.wikipedia.org/wiki/Dijkstra%27s_algorithm), which finds an 
+approximate to the shortest path between any two nodes in a (weakly connected) graph. At each iteration, the 
+algorithm finds the neighboring node that will minimize the total distance needed to traverse the
 graph. This method can be extremely powerful, and has become as ubiquitous to our society as [getting driving directions from Google Maps](http://motherboard.vice.com/read/the-simple-elegant-algorithm-that-makes-google-maps-possible). 
 
-In social networks, Dijkastra's algorithm is what you what use to compute an [Erdös number](http://en.wikipedia.org/wiki/Erd%C5%91s_number) or 
+In social networks, Dijkastra's algorithm is what you would use to compute an [Erdös number](http://en.wikipedia.org/wiki/Erd%C5%91s_number) or 
 how many degrees of separation you share with [Kevin Bacon](http://en.wikipedia.org/wiki/Six_Degrees_of_Kevin_Bacon). 
 In protein folding (my line of work), Dijkastra's algorithm is useful for identifying the
-possible steps (e.g. confomational changes) that lead to a folded protein. This information help scientists better understand the 
-underlying physics of biology, which could lead to new therapeutic drugs.
+possible steps (e.g. confomational changes) that lead to a folded protein. This information can help scientists better understand the underlying physics of biology, which could lead to new therapeutic drugs.
 
 
 In this tutorial, I'll go over how to use `NumPy` and `NetworkX` to construct a
 random graph and calculate the shortest path between two nodes. I'll also be
-using `matplotlib` and `Seaborn` to visualize the results. Optional: If you'd like to make interactive graphs, as the ones below, the `mpld3` package is fairly
-handy to convert plots into interactive JavaScript.
+using `matplotlib` and `Seaborn` to visualize the results. Optional: If you'd like to make interactive graphs, as the ones below, the `mpld3` package is fairly handy to convert static plots into interactive JavaScript.
 
 ***
 
 Installing Packages
 ---
 
-Assuming you already have Python (and `pip`) installed on your computer, in your terminal, type: 
+Assuming you already have Python (and `pip`) installed on your computer, in your terminal type: 
 
 {% highlight bash %}
 $ pip install conda
@@ -100,7 +98,7 @@ Visualizing the Graph
 Before we go on to the shortest path calculation, let's
 plot the graph to get a sense about what it looks like. In the code below, I've
 used the `scatter` function in `matplotlib.pyplot` to plot nodes, with node sizes
-representing [PageRank](http://en.wikipedia.org/wiki/PageRank) scores and node
+representing [PageRank](http://en.wikipedia.org/wiki/PageRank) scores, and node
 color representing in-degree, or the number of incoming edges. 
 We can get a decent layout to position the nodes using `nx.spring_layouts`,
 which creates a list of xy-coordinates for each node by quickly simulating the
@@ -168,7 +166,7 @@ Computing the Shortest Path
 Now that we have an idea of how to plot a network graph, let's finally get to calculating the 
 shortest path between a pair of nodes. For this exercise, let's find the path between the nodes
 with the lowest and highest PageRank scores. In terms of social networks, this might represent 
-the distance in social hierachy between a lowly second year grad student (low PageRank) 
+the distance in social hierachy between a second year grad student (low PageRank) 
 and someone like Neil deGrasse Tyson (high PageRank). In protein folding, it could model the steps 
 taken from an unfolded state (low PageRank) to a folded one (high PageRank).
 
@@ -222,8 +220,8 @@ _=pp.yticks([])
 
 On a parting note, what should be taken away from this toy model is the not-so-intuitive fact that even in a 
 somewhat sparse network (i.e. low probability of sharing a connection)– although this example is a bit exaggerated in sparsity – 
-things are fairly closely connected. We took the two furthest objects in a directed graph of 25 nodes, and were still able to 
-cross it in only 3 steps! Such an effect is made even more apparently when analyzing other graph 
+things are fairly closely connected. We took the two furthest objects in a directed graph of 25 nodes and were still able to 
+cross it in only 3 steps! Such an effect is made even more apparent when analyzing other graph 
 metrics, such as average path length, on real-life social networks as done in Milgram's [Small-world experiment](http://en.wikipedia.org/wiki/Small-world_experiment). Milgram found that on average, any two people in the United 
 States are only 6 degrees of separation away. So just think about that next time you're alone, watching TV– 
 you could totally become BFFs with someone like Shaq!
