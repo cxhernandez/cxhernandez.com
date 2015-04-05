@@ -130,7 +130,7 @@ $ pip install https://github.com/kartograph/kartograph.py/zipball/master
 Processing the Data
 ---
 
-I'll assume that you happen to have a bunch of IP addresses just lying around to be processed. For this post, my data comes from the [Folding@home points](https://folding.stanford.edu/home/faq/faq-points/) database. Each day hundreds of thousands of people around the world graciously donate their idle computer time to us, in order to perform simulations of biological molecules. At the moment, I'm running a [simulation](http://fah-web.stanford.edu/cgi-bin/fahproject.overusingIPswillbebanned?p=9411) of [p53](http://en.wikipedia.org/wiki/P53), a protein associated with more than 50% of all cancers; and since over 100,000 donors have worked on it (as of last week), I thought it'd be cool to see where my protein has traveled.
+I'll assume that you happen to have a bunch of IP addresses just lying around to be processed. For this post, my data comes from the [Folding@home points](https://folding.stanford.edu/home/faq/faq-points/) database. Each day hundreds of thousands of people around the world graciously donate their idle computer time to us, in order to perform [simulations](http://en.wikipedia.org/wiki/Molecular_dynamics) of biological molecules. This distributed computing generates tons and tons of research data with which we can use to study disease and perhaps even develop novel therapeutics. At the moment, I'm running a [simulation](http://fah-web.stanford.edu/cgi-bin/fahproject.overusingIPswillbebanned?p=9411) of [p53](http://en.wikipedia.org/wiki/P53), a protein associated with more than 50% of all cancers; and since over 100,000 donors have worked on it (as of last week), I thought it'd be cool to see where my protein has traveled.
 
 <br/>
 

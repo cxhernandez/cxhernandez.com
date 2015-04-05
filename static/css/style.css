@@ -8928,7 +8928,7 @@ section section {
   left: 0;
   right: 0;
   margin: 0 auto;
-  background: #89c9fa;
+  background: none;
   -webkit-transition: background .3s ease;
   -moz-transition: background .3s ease;
   -o-transition: background .3s ease;
@@ -8945,7 +8945,7 @@ section section {
   background: url("./images/arrow.png") no-repeat center;
 }
 #MainNav .arrow:hover {
-  background: #262626;
+  background: #36454F;
 }
 #MainNav.sticky.stick {
   position: fixed;
