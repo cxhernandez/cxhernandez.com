@@ -87,7 +87,7 @@ $(function() {
 Kartography <br/> (Mapping Folding@home)
 ---
 
-Back in 2008, the [Folding@home](https://folding.stanford.edu/) project released a [world map](https://folding.stanford.edu/home/maps/) with showing where donors are found around the globe (as seen below). These sorts of visualization, where populations are represented as variable-sized bubbles, are appropriately named [bubble maps](http://bost.ocks.org/mike/bubble-map/), and they can yield a ton of geographic information in a relatively simple layout.
+Back in 2008, the [Folding@home](https://folding.stanford.edu/) project released a [world map](https://folding.stanford.edu/home/maps/) showing where donors are found around the globe (as seen below). These sorts of visualization, where populations are represented as variable-sized bubbles, are appropriately named [bubble maps](http://bost.ocks.org/mike/bubble-map/), and they can yield a ton of geographic information in a relatively simple layout.
 
 <br/>
 
