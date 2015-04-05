@@ -357,7 +357,7 @@ Feel free to modify the `<style>` section to suit your aesthetics, as well as tr
 <br/>
 
 <div class="fah-map">
-    <div id="map"></div>
+    <div id="map" style="height: 550px; width: 950px;"></div>
 </div>
 
 This map shows the all the places where my protein has been simulated using Folding@home over the past 3 months. Some highlights include the Northwest Arctic, Mecca, and Tasmania. The map is by no means perfect (there's a town west of Melbourne named '5000'?!), but it gets the job done and is super easy to deploy for future data sets by just switching out the `data.json` file. Compared to 2008, though, I'd say the results are not too shabby.
