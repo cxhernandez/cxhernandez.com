@@ -15,7 +15,7 @@
   <link rel="stylesheet" href="{{ "/static/css/syntax.css" | prepend: site.baseurl }}" media="all">
   {% if page.custom_css %}
     {% for stylesheet in page.custom_css %}
-  <link rel="stylesheet" href="{{ stylesheet }}" media="screen" type="text/css">
+  <link rel="stylesheet" href="{{ stylesheet }}" media="all">
     {% endfor %}
   {% endif %}
 
@@ -38,7 +38,7 @@
   <script src="{{ "/static/js/require.js" | prepend: site.baseurl }}"></script>
   {% if page.custom_js %}
     {% for js_file in page.custom_js %}
-  <script src='{{ js_file }}' type="text/javascript"></script>
+  <script src='{{ js_file }}'></script>
     {% endfor %}
   {% endif %}
 

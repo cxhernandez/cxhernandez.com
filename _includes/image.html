@@ -1,0 +1,8 @@
+<table class="image" align="{{ include.align }}">
+<caption align="bottom">{{ include.description }}</caption>
+{% if include.url contains 'http' %}
+<tr><td><img src="{{ include.url }}" alt="{{ include.description }}"/></td></tr>
+{% else %}
+<tr><td><img src="{{ include.url | prepend: site.baseurl }}" alt="{{ include.description }}"/></td></tr>
+{% endif %}
+</table>
