@@ -5,7 +5,11 @@
 
   <body>
     {% include post-nav.html %}
+    {% if page.is_post %}
+    <div class="page-content" style="background-color: #f6f6f6;">
+    {% else %}
     <div class="page-content">
+    {% endif %}
       <div class="wrapper">
         <section></section>
         <div class="container">

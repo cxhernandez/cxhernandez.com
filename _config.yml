@@ -20,6 +20,6 @@ googleplus_username: CarlosXavierHernández
 linkedin_username: carlos-xavier-hernández
 
 # Build settings
-markdown: kramdown 
-highlighter: pygments 
+markdown: kramdown
+highlighter: pygments
 excerpt_separator: "jsdjfaksfkas"

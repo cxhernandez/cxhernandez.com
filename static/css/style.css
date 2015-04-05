@@ -146,7 +146,7 @@ body {
   font-size: 14px;
   line-height: 20px;
   color: #333;
-  background-color: #fff;
+  background-color: #fafafa;
 }
 a {
   color: #08c;
@@ -4973,7 +4973,7 @@ input[type="submit"].btn.btn-mini {
   padding: 14px 15px 15px;
   margin-bottom: 0;
   text-align: right;
-  background-color: #f5f5f5;
+  background-color: #fff;
   border-top: 1px solid #ddd;
   -webkit-border-radius: 0 0 6px 6px;
   -moz-border-radius: 0 0 6px 6px;
@@ -7651,7 +7651,7 @@ p {
   font-size: 0.750em;
 }
 footer > h4 {
-  color: #808080;
+  color: #fff;
 }
 footer form input[type="date"],
 footer form input[type="datetime"],
@@ -8752,7 +8752,7 @@ section section {
 #MainNav {
   width: 100%;
   z-index: 10000;
-  background: #fff;
+  background: #fafafa;
   position: relative;
   margin: 0;
   max-height: 73px;
@@ -8763,7 +8763,7 @@ section section {
   -webkit-box-shadow: none;
   -moz-box-shadow: none;
   box-shadow: none;
-  background: #fff;
+  background: #fafafa;
   position: relative;
   -webkit-border-radius: 0;
   -moz-border-radius: 0;
@@ -9361,12 +9361,12 @@ form.contactForm label.info {
 /* =========================
  * ======= FOOTER ========== */
 footer {
-  background: #0d0d0d;
+  background: #fafafa;
 }
 footer > h4 {
   padding: 25px 0 25px;
   text-align: center;
-  background: #fff;
+  background: #fafafa;
 }
 footer form input[type="date"],
 footer form input[type="datetime"],
