@@ -5,8 +5,8 @@
                      Tutorials
                 </h2>
                 <div class="row-fluid">
-                    {% for post in site.posts %}
-                        {% if forloop.item0 < 2 or post.categories contains 'tutorials' %}
+                    {% for post in site.posts limit: 2 %}
+                        {% if post.categories contains 'tutorials' %}
                     <a  href="{{ post.url | prepend: site.baseurl }}">
                         <div class="span4 icon-box">
                             <br/><h4>{{ post.title  }}</h4><br/>
@@ -18,6 +18,7 @@
                     {% endfor %}
                     <a  href="{{ "tutorials.html" | prepend: site.baseurl }}">
                         <div class="span4 icon-box">
+                            <br/><br/><br/><br/><br/><br/><br/>
                             <br/><h4>Click here</h4><br/>
                             <h4>for more</h4>
                         </div>
