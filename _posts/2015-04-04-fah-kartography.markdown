@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Kartography"
-date:   2015-04-05
+date:   2015-04-04
 description: "visualizing @foldingathome using @kartographjs! #dataviz #FoldingAtHome"
 thumbnail: /static/images/thumbnails/kartography.png
 categories: tutorials dataviz
