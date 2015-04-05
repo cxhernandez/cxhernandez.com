@@ -206,7 +206,7 @@ for coord, count in zip(ucounts.keys(), ucounts.get_values()):
 json.dump(info, open('data.json', 'wb'))
 {% endhighlight %}
 
-This might take some time to run (my dataset took about an hour), but once it finishes done you'll have created `data.json`, which contains all of the information we care about for our bubble map.
+This might take some time to run (my dataset took about an hour), but once it finishes you'll have created `data.json`, which contains all of the information we care about for our bubble map.
 
 <br/>
 
@@ -260,7 +260,7 @@ The last line in the code above will generate the SVG file that contains your ma
 Putting it all together
 ---
 
-All that needs to be done now is a little copying and pasting from the `kartograph.js` [showcase page](http://kartograph.org/showcase/). We'll be basing our bubble map on their `noverlap` symbol map. The basic idea is that the location data will be clustered into larger regions of overlapping density, yielding a much cleaner looking map. You can get a really good sense of this in their [example](http://kartograph.org/showcase/clustering/).
+All that needs to be done now is a little copying and pasting from the `kartograph.js` [showcase page](http://kartograph.org/showcase/). We'll be basing our bubble map on their `noverlap` symbol map. The basic idea is that the location data will be clustered into larger regions of overlapping density, yielding a much cleaner looking map. You can get a really good sense of this from their [example](http://kartograph.org/showcase/clustering/).
 
 This code will be a mix of `HTML`, `CSS`, and `JavaScript`, so go ahead and open up a text editor and copy this into it:
 
@@ -352,7 +352,7 @@ $(function() {
 
 {% endhighlight %}
 
-Feel free to modify the `<style>` section to suit your aesthetics, as well as trying out the different clustering methods (none, `kmeans`, and `noverlap`) for the bubble map. Once you're done, the code can then be saved into an `.html` file and viewed in a web browser to produce something like this:
+You can modify the `<style>` section to suit your aesthetics, as well as trying out the different clustering methods (none, `kmeans`, and `noverlap`) for the bubble map. Once you're happy, the code can then be saved into an `.html` file and viewed in a web browser to produce something like this:
 
 <br/>
 
