@@ -190,7 +190,7 @@ def getCity(coord):
     return city
 {% endhighlight %}
 
-With this function, we all have all the pieces needed to create a JSON-formatted database of unique coordinates with city/state names and numbers of hits from that location. We loop over the unique coordinates and build the JSON list as we go along:
+With this function, we have all the pieces needed to create a JSON-formatted database of unique coordinates with city/state names and numbers of hits from that location. We loop over the unique coordinates and build the JSON list as we go along:
 
 {% highlight python %}
 info = []
