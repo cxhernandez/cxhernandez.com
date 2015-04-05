@@ -3,7 +3,7 @@ layout: post
 title:  "Kartography"
 date:   2015-04-05
 description: "visualizing @foldingathome using @kartographjs! #dataviz #FoldingAtHome"
-thumbnail:
+thumbnail: /static/images/thumbnails/kartography.png
 categories: tutorials dataviz
 custom_js:
 - https://cdn.rawgit.com/kartograph/kartograph.org/master/js/kartograph.js
