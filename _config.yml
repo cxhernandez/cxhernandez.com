@@ -23,3 +23,7 @@ linkedin_username: carlos-xavier-hernández
 markdown: kramdown
 highlighter: pygments
 excerpt_separator: "jsdjfaksfkas"
+
+kramdown:
+    input: GFM
+    syntax_highlighter: pygments
