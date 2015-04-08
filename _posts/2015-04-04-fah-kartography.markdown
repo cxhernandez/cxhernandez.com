@@ -83,7 +83,6 @@ $(function() {
 });
 </script>
 
-
 Kartography <br/> (Mapping Folding@home)
 ---
 
@@ -137,7 +136,7 @@ I'll assume that you happen to have a bunch of IP addresses just lying around to
 {% include image.html url="/static/files/kartography/images/p53.png" description="My little peptide in all its glory." align="center" %}
 
 First, we can start a `Python` session and import the following packages:
-{% highlight python linenos=table %}
+{% highlight python %}
 import json
 import pandas as pd
 from geoip import geolite2
@@ -146,14 +145,14 @@ from geopy.geocoders import Nominatim
 
 Let's define a simple function that retrieves latitude and longitude coordinates from an IP address:
 
-{% highlight python linenos=table %}
+{% highlight python %}
 def getCoord(ip):
     return geolite2.lookup(ip).location
 {% endhighlight %}
 
 Now we can loop over our file containing our list of IPs and convert them into coordinates:
 
-{% highlight python linenos=table %}
+{% highlight python %}
 coords = []
 with open('myips.list','rb') as file:
     for ip in file.readlines():
@@ -162,7 +161,7 @@ with open('myips.list','rb') as file:
 
 To find the unique coordinates and their counts, we can use `pandas`:
 
-{% highlight python linenos=table %}
+{% highlight python  %}
 s = pd.Series(coords)
 ucounts = s.value_counts()
 {% endhighlight %}
@@ -170,7 +169,7 @@ ucounts = s.value_counts()
 
 Next, let's write a function that takes those unique coordinates and finds a corresponding physical address. The tricky bit here is that these addresses do not have a standard format, making it somewhat difficult to parse. In the code below, I've tried to look for any reference to 'city', 'town', 'county', or 'state' (in that order). As a last resort, I'll take the last field before the country name is referenced. I also included a catch-except statement in case the lookup fails:
 
-{% highlight python linenos=table %}
+{% highlight python %}
 
 def getCity(coord):
     try:
@@ -194,7 +193,7 @@ def getCity(coord):
 
 With this function, we have all the pieces needed to create a JSON-formatted database of unique coordinates with city/state names and numbers of hits from that location. We loop over the unique coordinates and build the JSON list as we go along:
 
-{% highlight python linenos=table %}
+{% highlight python %}
 info = []
 for coord, count in zip(ucounts.keys(), ucounts.get_values()):
     city = ''
@@ -230,7 +229,7 @@ $ brew install wget
 
 In the same directory, fire up `Python` again and type the following:
 
-{% highlight python linenos=table %}
+{% highlight python %}
 from kartograph import Kartograph
 K = Kartograph()
 
@@ -266,7 +265,7 @@ All that needs to be done now is a little copying and pasting from the `kartogra
 
 This code will be a mix of `HTML`, `CSS`, and `JavaScript`, so go ahead and open up a text editor and copy this into it:
 
-{% highlight html linenos=table %}
+{% highlight html %}
 <head>
   <link rel="stylesheet" href="https://cdn.rawgit.com/kartograph/kartograph.org/master/css/jquery.qtip.css">
   <link rel="stylesheet" href="https://cdn.rawgit.com/kartograph/kartograph.org/master/css/k.css">

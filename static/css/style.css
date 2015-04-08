@@ -1044,6 +1044,7 @@ address {
   font-style: normal;
   line-height: 20px;
 }
+
 code,
 pre {
   font-family: Monaco, Menlo, Consolas, "Courier New", monospace;
@@ -1071,42 +1072,31 @@ pre {
   border-radius: 0 4px 4px 0;
 }
 
-.highlighttable {
-  width: 100%;
-  overflow-x: auto;
+
+pre code {
+    counter-reset: line-numbering;
 }
 
-td.code {
-  padding: 0;
+pre code .line::before {
+    content: counter(line-numbering) ;
+    counter-increment: line-numbering;
+    position: absolute;
+    padding-left: 0;
+    padding-right: .5em; /* space after numbers */
+    margin-left: -.5em;
+    width: 1.5em;
+    text-align: right;
+    border-right:1px solid #ccc;
+    color: #ccc;
 }
 
-td.linenos {
-  width: 25px;
-  padding: 0;
+pre code span.line span:first-child {
+  padding-left: 2.5em;
 }
 
-.linenodiv {
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  -khtml-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-}
-
-.linenodiv pre {
-  word-break: normal;
-  white-space: pre-line;
-  margin: -.2em;
-  -webkit-border-radius: 4px 0 0 4px;
-  -moz-border-radius: 4px 0 0 4px;
-  border-radius: 4px 0 0 4px;
-}
-
-.linenodiv pre code {
-  color: #ccc;
-  font-size: 13px;
-  line-height: 20px;
+.highlight pre {
+  min-width: 25px;
+  white-space: pre-wrap;
 }
 
 pre.prettyprint {

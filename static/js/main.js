@@ -9,20 +9,20 @@ function enable_scroll() {
 }
 
 function loadPDF(url) {
-	
+
 	if ($('.bootbox').length) {
 		bootbox.hideAll();
 	}
-	
+
 	disable_scroll();
-	
+
 	bootbox.dialog(
 	{	"message" : "<iframe style='width:inherit;height:inherit;position:absolute' src='"+url+"'/>",
 	    "label" : "",
 	    "class" : "",
 	    "callback": function() {}
 	});
-	
+
 	$('button.bootbox-close-button.close').click(function () {enable_scroll();});
 	$('div.modal-backdrop').click( function(){
 	        bootbox.hideAll();
@@ -31,15 +31,15 @@ function loadPDF(url) {
 }
 
 function showBlurb(thing) {
-	
+
 	if ($('.bootbox').length) {
 		bootbox.hideAll();
 	}
-	
+
         var blurbid = "#" + $(thing).attr("id") + "-blurb";
-	
+
 	disable_scroll();
-	
+
 	bootbox.dialog(
 	{	"message" : $(blurbid).html(),
 	    "label" : "",
@@ -48,13 +48,13 @@ function showBlurb(thing) {
 	});
 	$('.bootbox').css({"background-color" : "rgba(0,0,0,0.7)","border-width":"10px","border-color" : "white","border-style":"solid"});
 	$('.bootbox-close-button').css({"color" : "white"})
-	
+
 	$('button.bootbox-close-button.close').click(function () {enable_scroll();});
 	$('div.modal-backdrop').click( function(){
 	        bootbox.hideAll();
 			enable_scroll();
 	});
-	
+
 }
 
 function lightboxOnResize(){

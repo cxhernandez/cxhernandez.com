@@ -62,7 +62,7 @@ Data Generation
 
 If you don't already have some data lying around to plot, you can easily create some using a bivariate normal distribution with `NumPy`. First, we'll need an easy way to generate pseudo-random [positive-semidefinite](http://en.wikipedia.org/wiki/Positive-definite_matrix#Positive-semidefinite) matrices for our distribution's covariances:
 
-{% highlight python linenos=table %}
+{% highlight python %}
 import numpy as np
 
 def gen_cov(n):
@@ -73,7 +73,7 @@ def gen_cov(n):
 
 Then, we can define a pair of means and covariance matrices for our distribution:
 
-{% highlight python linenos=table %}
+{% highlight python %}
 n = 2
 m = 2
 mu = map(lambda x: np.random.normal(size = x)*np.random.randint(1,11) + np.random.normal(size = x), n*[m])
@@ -85,7 +85,7 @@ Here, we've generated a pair of 2-D means from $$\mu \sim I*X + Y$$, where $$I$$
 
 To sample 500 points from our bivariate distribution, we can use `numpy.random.multivariate_normal`:
 
-{% highlight python linenos=table %}
+{% highlight python %}
 N = 500
 data = np.vstack(tuple(map(lambda i: np.random.multivariate_normal(mu[i], sigma[i], N), range(n)))).T
 {% endhighlight%}
@@ -99,7 +99,7 @@ Scatter Plot
 
 Before we go on to making a KDE of our data, let's just make a joint plot with a scatter plot in the main grid and marginal histograms. First let's import `Seaborn` and set our plot style to `'dark'`
 
-{% highlight python linenos=table %}
+{% highlight python %}
 import seaborn as sns
 sns.set_style('dark')
 {% endhighlight %}
@@ -107,14 +107,14 @@ sns.set_style('dark')
 
 We can then set the x- and y-axes limits:
 
-{% highlight python linenos=table %}
+{% highlight python %}
 xmin, ymin = data.min(axis=1)
 xmax, ymax = data.max(axis=1)
 {% endhighlight %}
 
 Although, for aesthetic purposes, we should probably adjust these values so that the all the points are clearly visible. I find that scaling up each axis by a factor of $$1.5$$ works fairly well:
 
-{% highlight python linenos=table %}
+{% highlight python %}
 xmax, xmin = tuple(np.array([xmax, xmin]) + 0.25*(xmax - xmin)*np.array([1, -1]))
 ymax, ymin = tuple(np.array([ymax, ymin]) + 0.25*(ymax - ymin)*np.array([1, -1]))
 {% endhighlight %}
@@ -123,7 +123,7 @@ These values will be useful for making the KDE joint plot as well.
 
 Now, we can use the following code to generate the figure:
 
-{% highlight python linenos=table %}
+{% highlight python %}
 from matplotlib import pyplot as pp
 from matplotlib import gridspec
 
@@ -159,7 +159,7 @@ Kernel Density Estimation
 
 There are many ways to create a kernel density estimator in Python, but in this tutorial we'll be using `scipy.stats.gaussian_kde`:
 
-{% highlight python linenos=table %}
+{% highlight python %}
 from scipy.stats import gaussian_kde
 
 #KDE for top marginal
@@ -174,7 +174,7 @@ kde_XY = gaussian_kde(data)
 
 To extract densities from the `gaussian_kde` objects, we need to create some meshgrids using our max- and min-values from before:
 
-{% highlight python linenos=table %}
+{% highlight python %}
 # Create two 1D grid with 100 points in each dimension
 x = linspace(xmin, xmax, 100)
 y = linspace(ymin, ymax, 100)
@@ -199,7 +199,7 @@ Contour Plot
 
 Now that we have KDEs for both the marginals and the bivariate distribution, we can make our final plot with the following code:
 
-{% highlight python linenos=table %}
+{% highlight python %}
 #Set style to white
 sns.set_style('white')
 

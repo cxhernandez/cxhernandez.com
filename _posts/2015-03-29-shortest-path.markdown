@@ -59,7 +59,7 @@ Generating Data
 
 To start, we will need a dataset which can be respresented as a directed graph. There are a ton of ways to create this sort of dataset, but in this tutorial I'll be using `NetworkX` to generate an [Erdös–Rényi](http://en.wikipedia.org/wiki/Erd%C5%91s%E2%80%93R%C3%A9nyi_model) graph with directed edges. This type of graph is constructed using a binomial distribution to determine whether an edge is formed between any two nodes. We can do this pretty easily using the `erdos_renyi_graph` function in `NetworkX`, which samples the number of edges for each node from a binomial distribution, $$B(n = N, p)$$. Let's try $$n = 25$$ and $$p = 0.12$$ for our binomial:
 
-{% highlight python linenos=table %}
+{% highlight python %}
 import networx as nx
 
 # Number of nodes
@@ -75,7 +75,7 @@ Visualizing the Graph
 
 Before we go on to the shortest path calculation, let's plot the graph to get a sense about what it looks like. In the code below, I've used the `scatter` function in `matplotlib.pyplot` to plot nodes, with node sizes representing [PageRank](http://en.wikipedia.org/wiki/PageRank) scores, and node color representing in-degree, or the number of incoming edges. We can get a decent layout to position the nodes using `nx.spring_layouts`, which creates a list of xy-coordinates for each node by quickly simulating the graph as a set of masses connected by springs. Edges are simply lines connecting the nodes using the `plot` function, with the thicker gray ticks denoting an incoming edge to a node.
 
-{% highlight python linenos=table %}
+{% highlight python %}
 import matplotlib.pyplot as pp
 import seaborn as sns
 import numpy as np
@@ -136,14 +136,14 @@ Now that we have an idea of how to plot a network graph, let's finally get to ca
 
 In our example graph from above, it turns out that nodes 0 and 7 are the lowest and highest PageRank scorers, respectively. We can find this by applying `np.argmin` and `np.argmax` to `sizes`, the array PageRank scores we calculated earlier. With this, we can finally calculate the shortest path using `nx.shortest_path` like so:
 
-{% highlight python linenos=table %}
+{% highlight python %}
 path = nx.shortest_path(G, source = 0, target = 7)
 {% endhighlight %}
 
 Since we are interested in going from node 0 to node 7, we set the must set the arguments `source` and `target` accordingly. The only other input to this function is our graph, `G`. In this example, our shortest path only requires 3 steps, passing through nodes 22 and 2 along the way. Below you can find modified versions of the previous code and plot, which have been changed to  highlight the nodes that form the shortest path between 0 and 7. You can even hover over the nodes to check the labels for yourself!
 
 
-{% highlight python linenos=table %}
+{% highlight python %}
 sns.set_style('dark')
 fig = pp.figure(figsize = (8, 8))
 ax  = fig.add_subplot(1, 1, 1, frameon = False)
