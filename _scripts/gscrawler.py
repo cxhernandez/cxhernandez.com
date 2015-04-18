@@ -38,6 +38,7 @@ def get_table(soup):
                      'Journal',
                      'Citations',
                      'Year']
+    table.index += 1
     return table
 
 
