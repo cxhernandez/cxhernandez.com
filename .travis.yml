@@ -1,8 +1,10 @@
 language: ruby
 python:
     - "2.7"
-script: sudo apt-get update
-script:
+rvm:
+    - 1.9.3
+before_install:
+  - sudo apt-get update
   - wget http://repo.continuum.io/miniconda/Miniconda-3.4.2-Linux-x86_64.sh -O miniconda.sh;
   - bash miniconda.sh -b -p $HOME/miniconda
   - export PATH="$HOME/miniconda/bin:$PATH"
@@ -11,8 +13,6 @@ script:
   - conda update -q conda
   - conda install pandas
   - pip install -r ./requirements.txt
-rvm:
-    - 1.9.3
 script: bundle exec jekyll build
 install: bundle install
 after_success: bundle exec s3_website push
