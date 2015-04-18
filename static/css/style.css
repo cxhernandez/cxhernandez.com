@@ -10081,3 +10081,18 @@ p:first-child {
     display: block;
   }
 }
+thead {
+  color: wheat;
+}
+tbody tr {
+  color: white;
+  text-align: center;
+  background-color: rgba(0,0,0,0) !important;
+}
+.dataTables_wrapper .dataTables_length,
+.dataTables_wrapper .dataTables_filter,
+.dataTables_wrapper .dataTables_info,
+.dataTables_wrapper .dataTables_processing,
+.dataTables_wrapper .dataTables_paginate {
+  color: white !important;
+}
