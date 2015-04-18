@@ -4,6 +4,7 @@ python:
 rvm:
     - 1.9.3
 script: bundle exec jekyll build
+script: pip install pandas
 install: bundle install
 after_success: bundle exec s3_website push
 branches:
