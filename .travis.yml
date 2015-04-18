@@ -12,7 +12,8 @@ before_install:
   - conda config --set always_yes yes --set changeps1 no
   - conda update -q conda
   - conda install pandas
-  - pip install -r ./requirements.txt
+  - pip install -r ./_scripts/requirements.txt
+before_script: python ./_scripts/gscrawler.py -u 6j85aJMAAAAJ -o publications.md
 script: bundle exec jekyll build
 install: bundle install
 after_success: bundle exec s3_website push
