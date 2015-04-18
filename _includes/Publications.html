@@ -9,6 +9,11 @@
                 <ul class="latest-posts span12">
 		    <li class="row-fluid">
                     {% markdown publications.md %}
+                    <script>
+                        $(document).ready(function(){
+                                $('.dataframe').DataTable();
+                            });
+                    </script>
                     </li>
             </ul>
         </div>
