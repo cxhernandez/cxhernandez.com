@@ -5,7 +5,7 @@ import codecs
 import argparse
 import pandas as pd
 from pandas import io
-from urllib import urlopen
+from urllib.request import urlopen
 from contextlib import closing
 from BeautifulSoup import BeautifulSoup
 
