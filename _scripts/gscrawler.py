@@ -7,7 +7,7 @@ import pandas as pd
 from pandas import io
 from urllib.request import urlopen
 from contextlib import closing
-from BeautifulSoup import BeautifulSoup
+from bs4 import BeautifulSoup
 
 pd.options.display.max_colwidth = 500
 
