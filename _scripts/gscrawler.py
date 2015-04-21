@@ -2,22 +2,21 @@
 # -*- coding: utf-8 -*-
 
 import codecs
+import urllib.request
 import argparse
 import pandas as pd
 from pandas import io
-from urllib.request import urlopen
-from contextlib import closing
 from bs4 import BeautifulSoup
+from contextlib import closing
 
 pd.options.display.max_colwidth = 500
 
 
 def get_soup(user):
-    url = u'https://scholar.google.com/citations?' \
-        'hl=en&user=%s&pagesize=100' % user
-    with closing(urlopen(url)) as pageFile:
-        soup = BeautifulSoup("".join(pageFile.read())
-                               .decode('utf-8', 'ignore'))
+    url = 'https://scholar.google.com/citations?'\
+          'hl=en&user=%s&pagesize=100' % user
+    with closing(urllib.request.urlopen(url)) as req:
+        soup = BeautifulSoup(req.read())
     return soup
 
 
