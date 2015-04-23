@@ -1,158 +1,4 @@
-#themeSwitcher {
-    background: #333333;
-    height: 60px;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    width: 100%;
-    z-index: 9999;
-    display: none;
-}
-
-#themeSwitcher .dd-select, #themeSwitcher .dd-option-text {
-    cursor: pointer;
-}
-
-#themeSwitcher img {
-    vertical-align: inherit;
-    height: inherit;
-    max-width: inherit;
-}
-
-#themeSwitcher a img {
-    border: none;
-}
-
-#themeSwitcher a {
-    text-decoration: none;
-}
-
-#themeSwitcher a:hover {
-    color: #fff;
-    text-decoration: none;
-}
-
-#themeSwitcher .switcherContainer {
-
-    margin: 0 auto;
-    position: relative;
-}
-
-#themeSwitcher .switcherRt {
-    float: right;
-    min-width: 240px;
-    text-align: right;
-}
-
-#themeSwitcher .themeSelectContainer {
-    min-width: 270px;
-    min-height: 56px;
-    position: absolute;
-    left: 286px;
-    top: 11px;
-}
-#themeSwitcher .tw-logo, #themeSwitcher .ct-logo {
-    float: left;
-}
-#themeSwitcher .tw-purchase {
-    display: inline-block;
-    height: 56px;
-    background: transparent url(http://frame.themeforest.createit.pl/assets/themewoodmen/images/bar-btns-bg.png) no-repeat 0 10px;
-    width: 160px;
-}
-#themeSwitcher .tw-purchase:hover {
-    background-position: 0 -70px;
-}
-
-#themeSwitcher .tw-close {
-    display: inline-block;
-    height: 56px;
-    background: transparent url(http://frame.themeforest.createit.pl/assets/themewoodmen/images/bar-btns-bg.png) no-repeat -160px 10px;
-    width: 58px;
-}
-
-#themeSwitcher .tw-close:hover {
-    background-position: -160px -70px;
-}
-
-#themeSwitcher .themeSelectContainer select:hover, #themeSwitcher .themeSelectContainer select:active, #themeSwitcher .themeSelectContainer select:focus {
-    outline: 0;
-}
-
-#themeSwitcher select {
-    text-transform: uppercase;
-    font-size: 13px;
-    font-weight: bold;
-    color: #fff;
-    background: #4d4d4d;
-    height: 42px;
-    padding: 9px;
-    font-family: Arial, sans-serif;
-    width: 152px;
-}
-
-
-#themeSwitcher .themeSelectContainer select option {
-    background: #4d4d4d;
-}
-
-#themeSwitcher img.barFrame {
-    background: #4d4d4d;
-    padding: 10px;
-    border-bottom: 2px solid #cccccc;
-    -moz-border-radius: 4px;
-    -webkit-border-radius: 4px;
-    border-radius: 4px;
-}
-
-@media (max-width: 1000px) {
-    #themeSwitcher .switcherContainer {
-        width: auto;
-    }
-
-}
-
-@media (max-width: 800px) {
-    #themeSwitcher .tw-logo, #themeSwitcher .ct-logo {
-        display: none;
-    }
-
-    #themeSwitcher .themeSelectContainer, #themeSwitcher .switcherRt {
-        width: auto;
-        min-width: 0;
-    }
-
-    #themeSwitcher .themeSelectContainer {
-        left: 20px;
-    }
-    #themeSwitcher .tw-close {
-        padding-right: 20px;
-    }
-}
-
-@media (max-width: 520px) {
-
-    #themeSwitcher .tw-purchase {
-        display: inline-block;
-        height: 56px;
-        background: transparent url(http://frame.themeforest.createit.pl/assets/themewoodmen/images/bar-btns-bg.png) no-repeat 0 -136px;
-        width: 82px;
-        float: left;
-        margin-left: 50px;
-    }
-
-    #themeSwitcher .tw-purchase:hover {
-        background-position: 0 -136px;
-    }
-    #themeSwitcher .switcherRt {
-        width: 100%;
-    }
-
-    #themeSwitcher .themeSelectContainer {
-        display: none;
-    }
-}
+html { padding-top: 0 !important; }
 
 .theme-qtip-custom {
     max-width: 400px;
@@ -192,7 +38,7 @@
 }
 .bootbox { width: 80% !important; left: 0 !important; margin-left: 10% !important;height : 80% !important; display: inline-block !important; float: left !important; }
 .bootbox-body{ height : 95% !important; width : 95% !important; margin-bottom:0; }
-a.contact { 
+a.contact {
 	color: gray;
     -webkit-transition: color .2s ease-in-out;
     -moz-transition: color .2s ease-in-out;
@@ -200,7 +46,7 @@ a.contact {
     -o-transition: color .2s ease-in-out;
     transition: color .2s ease-in-out;
 }
-a.contact:hover{ 
+a.contact:hover{
 	color: black;
     transition: none;
     -o-transition: none;
@@ -218,9 +64,62 @@ div.modal-dialog,div.modal-content,div.modal-body{
 }
 
 h3 {
- font-size: 1.1em; 
+ font-size: 1.1em;
  color: white;
  text-align: center !important;
  padding: 0em !important;
  margin: 0em !important;
+}
+
+header#MainHeader.main-header.parallax {
+  background-image: url(../images/background.png);
+  background-position: 20% 0px;
+  /*background-size: auto 100%;*/
+}
+
+section#Tutorials.parallax {
+  background-image: url(../images/tutorial.jpg);
+  background-position: 20% 49px;
+  padding-top:0 !important
+}
+
+section#Publications.parallax {
+  background-image: url(../images/clark.jpg);
+  background-position: 20% -70px;
+}
+
+section.section-emphasis {
+  min-height: 450px;
+  margin-top: 0% !important;
+}
+
+section#Press p {
+  text-align: center;
+}
+
+div.span4.icon-box img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 200px;
+}
+
+div.span4.icon-box {
+  margin-bottom:4em;
+}
+
+div.profile-container {
+  min-width:150px;
+  max-width:300px;
+  margin: 0 auto;
+  margin-bottom: 20px;
+  border: 2px solid white;
+}
+
+div.profile-image {
+  background: url(../images/profile.jpg);
+  background-position: 50% 0;
+  background-size: 300px 300px;
+  padding-bottom:300px;
+  background-repeat: no-repeat;
 }

@@ -1,5 +1,5 @@
-<section id="Tutorials" class="parallax" style="background-image: url(http://www.wallpaperup.com/uploads/wallpapers/2013/02/20/42404/4e0288924865ee2619c37819fc467210.jpg); background-position: 20% 49px;padding-top:0 !important">
-    <section class="section-emphasis" style="margin-top: 0% !important">
+<section id="Tutorials" class="parallax">
+    <section class="section-emphasis">
             <div class="container">
                 <h2 style="color:white !important">
                      Tutorials
@@ -11,7 +11,7 @@
                         <div class="span4 icon-box">
                             <br/><h4>{{ post.title  }}</h4><br/>
                             <h4>{{ post.date | date: "%b %-d, %Y" }}</h4>
-                            <img alt="{{ post.title }}" width="200" style="display: block; margin-left: auto; margin-right: auto;"  src="{{ post.thumbnail | prepend: site.baseurl }}">
+                            <img alt="{{ post.title }}"  src="{{ post.thumbnail | prepend: site.baseurl }}">
                         </div>
                     </a>
                         {% endif %}

@@ -10096,3 +10096,6 @@ tbody tr {
 .dataTables_wrapper .dataTables_paginate {
   color: white !important;
 }
+div#DataTables_Table_0_wrapper.dataTables_wrapper.no-footer {
+  overflow-x: auto;
+}
