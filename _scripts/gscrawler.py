@@ -21,7 +21,7 @@ def get_soup(user):
 
 def get_table(soup):
     table_data = soup.findAll("table", {"id": "gsc_a_t"})[0]
-    
+
     links = ['https://scholar.google.com/' + item.attrs['href']
              for item in table_data.findAll('a', {'class': 'gsc_a_at'})]
     titles = [item.text
@@ -36,7 +36,7 @@ def get_table(soup):
                 if i % 2]
     citations = [item.text.replace(u'\xa0', u'-')
                  for item in table_data.findAll('td', {'class': 'gsc_a_c'})]
-    years = [item.text.split(',')[1]
+    years = [item.text.split(',')[-1]
              for i, item in enumerate(table_data.findAll('div',
                                                          {'class': 'gs_gray'}))
              if (i % 2)]
