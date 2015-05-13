@@ -2,10 +2,9 @@
 # -*- coding: utf-8 -*-
 
 import codecs
-import urllib.request
+from urllib import request
 import argparse
 import pandas as pd
-from pandas import io
 from bs4 import BeautifulSoup
 from contextlib import closing
 
@@ -15,29 +14,43 @@ pd.options.display.max_colwidth = 500
 def get_soup(user):
     url = 'https://scholar.google.com/citations?'\
           'hl=en&user=%s&pagesize=100' % user
-    with closing(urllib.request.urlopen(url)) as req:
+    with closing(request.urlopen(url)) as req:
         soup = BeautifulSoup(req.read())
     return soup
 
 
 def get_table(soup):
-    table_data = soup.findAll("table", {"id": "gsc_a_t"})
-    table = io.html.read_html(str(table_data[0])
-                              .replace('<div', '<td')
-                              .replace('class="gsc_a_t"><a href="',
-                                       'class="gsc_a_t">'
-                                       'https://scholar.google.com')
-                              .replace('" class="gsc_a_at">', '</td><td>')
-                              .replace('</a>', '</td>'),
-                              header=0,
-                              flavor='html5lib')[0]
-    table.columns = ['Link',
-                     'Title',
-                     'Author(s)',
-                     'Journal',
-                     'Citations',
-                     'Year']
+    table_data = soup.findAll("table", {"id": "gsc_a_t"})[0]
+    links = ['https://scholar.google.com/' + item.attrs['href']
+             for item in table_data.findAll('a', {'class': 'gsc_a_at'})]
+    titles = [item.text
+              for item in table_data.findAll('a', {'class': 'gsc_a_at'})]
+    authors = [item.text
+               for i, item in enumerate(table_data.findAll('div',
+                                                           {'class': 'gs_gray'}))
+               if not (i % 2)]
+    journals = [item.text.split(',')[0]
+                for i, item in enumerate(table_data.findAll('div',
+                                                            {'class': 'gs_gray'}))
+                if i % 2]
+    citations = [item.text.replace(u'\xa0', u'-')
+                 for item in table_data.findAll('td', {'class': 'gsc_a_c'})]
+    years = [item.text.split(',')[1]
+             for i, item in enumerate(table_data.findAll('div',
+                                                         {'class': 'gs_gray'}))
+             if (i % 2)]
+
+    data = {'Link': links,
+            'Title': titles,
+            'Author(s)': authors,
+            'Journal': journals,
+            'Citations': citations,
+            'Year': years}
+
+    table = pd.DataFrame(data)
+
     table.index += 1
+
     return table
 
 
