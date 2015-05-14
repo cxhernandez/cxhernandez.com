@@ -41,8 +41,8 @@ def get_table(soup):
                                                          {'class': 'gs_gray'}))
              if (i % 2)]
 
-    data = {'Link': links,
-            'Title': titles,
+    data = {'Title': titles,
+            'Link': links,
             'Author(s)': authors,
             'Journal': journals,
             'Citations': citations,
@@ -52,7 +52,8 @@ def get_table(soup):
 
     table.index += 1
 
-    return table
+    return table[['Title', 'Link', 'Author(s)',
+                  'Journal', 'Citations', 'Year']]
 
 
 def get_html(table):
