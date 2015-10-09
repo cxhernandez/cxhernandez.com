@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from IPython import embed
 import codecs
 from urllib.request import Request, urlopen
 import argparse
