@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from IPython import embed
 import codecs
-from urllib import request
+from urllib.request import Request, urlopen
 import argparse
 import pandas as pd
 from bs4 import BeautifulSoup
@@ -14,8 +15,9 @@ pd.options.display.max_colwidth = 500
 def get_soup(user):
     url = 'https://scholar.google.com/citations?'\
           'hl=en&user=%s&pagesize=100' % user
-    with closing(request.urlopen(url)) as req:
-        soup = BeautifulSoup(req.read())
+    req = Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+    with closing(urlopen(req)) as r:
+        soup = BeautifulSoup(r.read(), "html5lib")
     return soup
 
 
@@ -24,22 +26,27 @@ def get_table(soup):
 
     links = ['https://scholar.google.com/' + item.attrs['href']
              for item in table_data.findAll('a', {'class': 'gsc_a_at'})]
+    
     titles = [item.text
               for item in table_data.findAll('a', {'class': 'gsc_a_at'})]
+        
     authors = [item.text
                for i, item in enumerate(
                    table_data.findAll('div', {'class': 'gs_gray'}))
                if not (i % 2)]
+
     journals = [item.text.split(',')[0]
                 for i, item in enumerate(
                     table_data.findAll('div', {'class': 'gs_gray'}))
                 if i % 2]
-    citations = [item.text.replace(u'\xa0', u'-')
-                 for item in table_data.findAll('td', {'class': 'gsc_a_c'})]
+    
     years = [item.text.split(',')[-1]
              for i, item in enumerate(table_data.findAll('div',
                                                          {'class': 'gs_gray'}))
              if (i % 2)]
+    
+    citations = [item.text.replace(u'\xa0', u'-')
+                 for item in table_data.findAll('td', {'class': 'gsc_a_c'})]
 
     data = {'Title': titles,
             'Link': links,
