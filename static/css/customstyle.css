@@ -77,8 +77,15 @@ header#MainHeader.main-header.parallax {
   /*background-size: auto 100%;*/
 }
 
+section#Photography.parallax {
+  background-image: url(https://upload.wikimedia.org/wikipedia/commons/thumb/7/7d/Color_icon_green.svg/2000px-Color_icon_green.svg.png);
+  background-position: 20% 49px;
+  padding-top:0 !important
+}
+
 section#Tutorials.parallax {
-  background-image: url(../images/tutorial.jpg);
+  /*background-image: url(../images/tutorial.jpg);*/
+  background-image: url(https://upload.wikimedia.org/wikipedia/commons/thumb/b/bd/Color_icon_blue.svg/2000px-Color_icon_blue.svg.png);
   background-position: 20% 49px;
   padding-top:0 !important
 }
@@ -88,7 +95,7 @@ section#Publications.parallax {
   background-position: 20% -70px;
 }
 
-section.section-emphasis {
+section.section-emphasis, section.section-emphasis-2 {
   min-height: 450px;
   margin-top: 0% !important;
 }
@@ -122,4 +129,27 @@ div.profile-image {
   background-size: 300px 300px;
   padding-bottom:300px;
   background-repeat: no-repeat;
+}
+
+section#Photography.parallax h2 {
+  padding-bottom: 1.5em;
+}
+
+#instafeed a img {
+  padding: 1px;
+  border: 1px solid #f6f6f6;
+  background-color:#fcfcfc;
+}
+
+#instafeed a img {
+  padding: 1px;
+  border: 1px solid #f6f6f6;
+  background-color:#fcfcfc;
+  opacity: 1.0;
+  filter: alpha(opacity=100);
+}
+
+#instafeed a img:hover {
+  opacity: 0.8;
+  filter: alpha(opacity=80);
 }
