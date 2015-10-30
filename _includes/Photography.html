@@ -1,0 +1,21 @@
+<section id="Photography" class="parallax">
+  <section class="section-emphasis-2">
+    <div class="container">
+        <h2 style="color:white !important">
+            Photography
+        </h2>
+        <div id="instafeed"></div>
+        <script type="text/javascript">
+            var userFeed = new Instafeed({
+                get: 'user',
+                userId: 204838313,
+                accessToken: '204838313.467ede5.af0516d7da1f44deac3b62febf64f717',
+                filter: function(image) {
+                  return image.users_in_photo.length == 0;
+                }
+            });
+            userFeed.run();
+        </script>
+    </div>
+  </section>
+</section>

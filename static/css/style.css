@@ -8725,12 +8725,12 @@ section section {
   margin: 55px 0 -55px;
 }
 .section-emphasis {
-  background: #2d91ff;
+  /*background: #2d91ff;*/
   background: rgba(45,145,255,0.9);
 }
 .section-emphasis-2 {
-  background: #000;
-  background: rgba(0,0,0,0.7);
+  /*background: #000;*/
+  background: rgba(45,225,125,0.8);
 }
 .parallax {
   background-color: #999999;
