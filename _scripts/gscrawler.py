@@ -25,10 +25,10 @@ def get_table(soup):
 
     links = ['https://scholar.google.com/' + item.attrs['href']
              for item in table_data.findAll('a', {'class': 'gsc_a_at'})]
-
+    
     titles = [item.text
               for item in table_data.findAll('a', {'class': 'gsc_a_at'})]
-
+        
     authors = [item.text
                for i, item in enumerate(
                    table_data.findAll('div', {'class': 'gs_gray'}))
@@ -38,12 +38,12 @@ def get_table(soup):
                 for i, item in enumerate(
                     table_data.findAll('div', {'class': 'gs_gray'}))
                 if i % 2]
-
+    
     years = [item.text.split(',')[-1]
              for i, item in enumerate(table_data.findAll('div',
                                                          {'class': 'gs_gray'}))
              if (i % 2)]
-
+    
     citations = [item.text.replace(u'\xa0', u'-')
                  for item in table_data.findAll('td', {'class': 'gsc_a_c'})]
 
