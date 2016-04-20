@@ -14,7 +14,9 @@ pd.options.display.max_colwidth = 500
 def get_soup(user):
     url = 'https://scholar.google.com/citations?'\
           'hl=en&user=%s&pagesize=100' % user
-    req = Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+    user_agent = ('Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.9.0.7)'
+                  ' Gecko/2009021910 Firefox/3.0.7')
+    req = Request(url, None, headers={'User-Agent': user_agent})
     with closing(urlopen(req)) as r:
         soup = BeautifulSoup(r.read(), "html5lib")
     return soup
