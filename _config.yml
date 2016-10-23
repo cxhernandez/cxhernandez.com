@@ -4,7 +4,7 @@ firstname: Carlos
 middlename: Xavier
 lastname: Hernández
 email: cxh@stanford.edu
-nav: About|Photography|Tutorials|Publications
+nav: About|Research|Tutorials|Publications
 
 # Blurbs
 protein_evolution: "When it comes to proteins, sequence gives rise to function. However, it has become increasingly clear that proteins with wildly different sequences can yield quite homologous three-dimensional structures...."

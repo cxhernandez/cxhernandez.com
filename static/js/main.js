@@ -36,7 +36,7 @@ function showBlurb(thing) {
 		bootbox.hideAll();
 	}
 
-        var blurbid = "#" + $(thing).attr("id") + "-blurb";
+  var blurbid = "#" + $(thing).attr("id") + "-blurb";
 
 	disable_scroll();
 
@@ -46,8 +46,9 @@ function showBlurb(thing) {
 	    "class" : "",
 	    "callback": function() {}
 	});
-	$('.bootbox').css({"background-color" : "rgba(0,0,0,0.7)","border-width":"10px","border-color" : "white","border-style":"solid"});
-	$('.bootbox-close-button').css({"color" : "white"})
+	$('.bootbox').css({"background-color" : "#f6f6f6","border-width":"10px","border-color" : "white","border-style":"solid"});
+	$('.bootbox p, .bootbox h3').css({"color" : "black"});
+	$('.bootbox-close-button').css({"color" : "black"})
 
 	$('button.bootbox-close-button.close').click(function () {enable_scroll();});
 	$('div.modal-backdrop').click( function(){
