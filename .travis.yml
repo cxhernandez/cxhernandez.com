@@ -12,6 +12,7 @@ before_install:
  - conda config --set always_yes yes --set changeps1 no
  - conda update -q conda
  - conda install --file ./_scripts/requirements.txt
+ - gem install public_suffix -v '2.0.5'
 before_script: python ./_scripts/gscrawler.py -u 6j85aJMAAAAJ -o ./_includes/publications.md || true
 script: bundle exec jekyll build
 install: bundle install
