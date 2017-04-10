@@ -135,6 +135,10 @@ section#Photography.parallax h2 {
   padding-bottom: 1.5em;
 }
 
+section#Research {
+  padding-top: 0em;
+}
+
 #instafeed a img {
   padding: 1px;
   border: 1px solid #f6f6f6;
