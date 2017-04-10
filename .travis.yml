@@ -1,9 +1,7 @@
 language: ruby
 sudo: false
-python:
-    - "2.7"
 rvm:
-    - 1.9.3
+    - 2.1.1
 before_install:
  - wget http://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
  - bash miniconda.sh -b -p $HOME/miniconda
@@ -12,7 +10,6 @@ before_install:
  - conda config --set always_yes yes --set changeps1 no
  - conda update -q conda
  - conda install --file ./_scripts/requirements.txt
- - gem install public_suffix -v '2.0.5'
 before_script: python ./_scripts/gscrawler.py -u 6j85aJMAAAAJ -o ./_includes/publications.md || true
 script: bundle exec jekyll build
 install: bundle install
