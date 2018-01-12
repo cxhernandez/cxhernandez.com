@@ -25,7 +25,7 @@ def get_soup(user):
 def get_table(soup):
     table_data = soup.findAll("table", {"id": "gsc_a_t"})[0]
 
-    links = ['https://scholar.google.com/' + item.attrs['href']
+    links = ['https://scholar.google.com/' + item.attrs['data-href']
              for item in table_data.findAll('a', {'class': 'gsc_a_at'})]
 
     titles = [item.text
