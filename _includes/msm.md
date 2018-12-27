@@ -1,4 +1,4 @@
-###Markov State Models###
+### Markov State Models
 
 Markov state models (MSMs) are a powerful means of modeling the structure and
 dynamics of molecular systems, like proteins. An MSM is essentially a map of

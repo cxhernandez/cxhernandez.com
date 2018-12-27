@@ -1,4 +1,4 @@
-###Protein Evolution###
+### Protein Evolution
 
 Sequence gives rise to function. However, it has become increasingly clear that
 proteins with wildly different primary structures can yield quite homologous

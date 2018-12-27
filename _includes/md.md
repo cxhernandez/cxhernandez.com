@@ -1,4 +1,4 @@
-###Molecular Dynamics###
+### Molecular Dynamics
 
 Molecules are small. Too small to be observed directly, in fact. In order to
 overcome this, Molecular Dynamics (MD) can be used to computationally model
