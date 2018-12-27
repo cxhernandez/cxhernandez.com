@@ -1,7 +1,5 @@
-Carlos Xavier Hernández is a PhD student in the Biophysics Program at Stanford University.
-He works with [Vijay Pande](http://pande.stanford.edu), studying the molecular evolution of proteins and how it affects their structure, dynamics, and function.
-
-Carlos graduated from Columbia University, where he majored in Applied Mathematics.
-There, he worked with [Raul Rabadan](http://rabadan.c2b2.columbia.edu) and
-[Stephen Goff](http://www.microbiology.columbia.edu/goff) studying RNA viruses.
-He has also spent time investigating chemokine receptors with [J. Andrew McCammon](http://mccammon.ucsd.edu) at UCSD.
+I am currently a Research Scientist at [CTRL-labs](http://ctrl-labs.com)
+using [machine learning to enable neural interfaces](https://www.youtube.com/watch?v=5Z5aZK2C3ew).
+Previously, I worked with [Vijay Pande](http://pande.stanford.edu) at Stanford
+on the statistical modeling and generation of embeddings for
+complex biomolecular dynamics.
