@@ -16,7 +16,6 @@ baseurl: "" # the subpath of your site, e.g. /blog/
 url: "http://www.cxhernandez.com" # the base hostname & protocol for your site
 twitter_username: cxhrndz
 github_username:  cxhernandez
-googleplus_username: CarlosXavierHernández
 linkedin_username: carlos-xavier-hernández
 
 # Build settings
