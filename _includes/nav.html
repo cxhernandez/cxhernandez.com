@@ -6,7 +6,9 @@
             <button type="button" class="btn btn-navbar collapsed" data-toggle="collapse" data-target=".nav-collapse">
                 <!-- This button toggles visibility of menu on mobile devices -->
             </button>
-            <a class="brand" href="#MainHeader"><img src="{{ "/static/images/logo-small.png" | prepend: site.baseurl }}" alt="CXH"></a>
+            <a class="brand" href="#MainHeader">
+              {% include brain.svg %}
+            </a>
 
             <div class="nav-collapse collapse">
                 <ul class="nav nav-pills">

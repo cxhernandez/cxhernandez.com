@@ -10099,3 +10099,31 @@ tbody tr {
 div#DataTables_Table_0_wrapper.dataTables_wrapper.no-footer {
   overflow-x: auto;
 }
+
+img.header-logo {
+  height: 100px;
+}
+
+svg.logo {
+  height: 70px;
+  text-align: center;
+  display: block;
+  margin: auto;
+}
+
+svg.logo path{
+  fill: #fff;
+}
+
+#MainNav.navbar .navbar-inner .container a svg.logo {
+  height: 50px;
+  text-align: left;
+  display: inline;
+  margin-left: -50%;
+  margin-top: -25px;
+}
+
+#MainNav.navbar .navbar-inner .container a svg.logo path{
+  height: 70px;
+  fill: #808080;
+}
