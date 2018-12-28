@@ -4,13 +4,7 @@ firstname: Carlos
 middlename: Xavier
 lastname: Hernández
 email: cxh@stanford.edu
-nav: About|Research|Tutorials|Publications
-
-# Blurbs
-protein_evolution: "When it comes to proteins, sequence gives rise to function. However, it has become increasingly clear that proteins with wildly different sequences can yield quite homologous three-dimensional structures...."
-molecular_dynamics: "Molecules are small. Too small to be observed directly, in fact. In order to overcome this, Molecular Dynamics (MD) can be used to computationally model whole systems of molecules, like proteins, in atomistic detail...."
-msm: "Markov state models (MSMs) are a powerful means of modeling the structure and dynamics of molecular systems, like proteins. An MSM is essentially a map of the conformational space a molecule explores...."
-
+nav: About|Blog|Publications|Software
 
 baseurl: "" # the subpath of your site, e.g. /blog/
 url: "http://www.cxhernandez.com" # the base hostname & protocol for your site

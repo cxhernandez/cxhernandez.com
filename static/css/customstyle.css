@@ -83,8 +83,13 @@ section#Photography.parallax {
   padding-top:0 !important
 }
 
-section#Tutorials.parallax {
-  /*background-image: url(../images/tutorial.jpg);*/
+section#Blog.parallax {
+  background-image: url(https://upload.wikimedia.org/wikipedia/commons/thumb/b/bd/Color_icon_blue.svg/2000px-Color_icon_blue.svg.png);
+  background-position: 20% 49px;
+  padding-top:0 !important
+}
+
+section#Software.parallax {
   background-image: url(https://upload.wikimedia.org/wikipedia/commons/thumb/b/bd/Color_icon_blue.svg/2000px-Color_icon_blue.svg.png);
   background-position: 20% 49px;
   padding-top:0 !important
@@ -135,7 +140,7 @@ section#Photography.parallax h2 {
   padding-bottom: 1.5em;
 }
 
-section#Research {
+section#Software {
   padding-top: 0em;
 }
 

@@ -8726,11 +8726,13 @@ section section {
 }
 .section-emphasis {
   /*background: #2d91ff;*/
-  background: rgba(45,145,255,0.9);
+  /* background: rgba(45,145,255,0.9); */
+  background: rgba(137, 201, 250, .9);
+  /* background: #89c9fa; */
 }
 .section-emphasis-2 {
   /*background: #000;*/
-  background: rgba(45,225,125,0.8);
+  background: rgba(148,212,135,.9);
 }
 .parallax {
   background-color: #999999;
@@ -10117,8 +10119,6 @@ svg.logo path{
 
 #MainNav.navbar .navbar-inner .container a svg.logo {
   height: 50px;
-  text-align: left;
-  display: inline;
   margin-left: -50%;
   margin-top: -25px;
 }
@@ -10126,4 +10126,22 @@ svg.logo path{
 #MainNav.navbar .navbar-inner .container a svg.logo path{
   height: 70px;
   fill: #808080;
+}
+
+#MainNav.navbar .navbar-inner .container a.brand-post svg.logo {
+  height: 50px;
+  margin-left: 0px;
+  margin-top: 0px;
+}
+
+#MainNav.navbar .navbar-inner .container a.brand-post svg.logo path{
+  fill: black;
+}
+
+
+#Software div a div img{
+  margin: auto;
+  display: block;
+  max-height: 150px;
+  max-width: 150px;
 }
