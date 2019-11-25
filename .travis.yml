@@ -2,6 +2,8 @@ language: ruby
 sudo: false
 rvm:
     - 2.1.1
+jdk:
+    - oraclejdk8
 before_install:
  - wget http://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
  - bash miniconda.sh -b -p $HOME/miniconda
