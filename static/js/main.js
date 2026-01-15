@@ -50,7 +50,19 @@ function loadCV() {
 		    "class" : "",
 		    "callback": function() {}
 		});
-		$('.bootbox').addClass('cv-modal');
+$('.bootbox').addClass('cv-modal');
+
+		// Style the download button positioning within modal
+		$('.bootbox .modal-body').css({
+			'position': 'relative'
+		});
+
+$('.bootbox #cv-download-btn').css({
+			'position': 'absolute',
+			'top': '45px',
+			'right': '50px',
+			'z-index': '100'
+		});
 
 		// Calculate even spacing: 20px from navbar bottom and 20px from viewport bottom
 		var spacing = 20;
