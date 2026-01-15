@@ -89,6 +89,44 @@ header#MainHeader.main-header.parallax h1 {
   color: #000 !important;
 }
 
+.navbar-brand-logo {
+  float: left;
+  font-size: 16px;
+  text-transform: uppercase;
+  color: #fff;
+  font-weight: 400;
+  letter-spacing: 3px;
+  padding: 5px 7px;
+  border: 1px solid #000;
+  display: block;
+  text-align: center;
+  background: #000;
+  margin-top: 8px;
+  margin-right: 15px;
+  text-decoration: none !important;
+}
+
+.navbar-brand-logo span {
+  display: block;
+  margin-bottom: 0;
+  line-height: 1.2;
+  color: #fff;
+}
+
+.navbar-brand-logo:hover {
+  text-decoration: none !important;
+  background: #555;
+  border-color: #555;
+}
+
+.navbar-brand-logo:active,
+.navbar-brand-logo:focus {
+  outline: none;
+  text-decoration: none;
+  background: #333;
+  border-color: #333;
+}
+
 section#Photography.parallax {
   background-color: #fafafa;
   background-image: none;
@@ -103,6 +141,24 @@ section#Software.parallax,
 section#Software .section-emphasis-2 {
   background-color: #fafafa;
   background-image: none;
+}
+
+section#Software.parallax,
+section#Software.parallax h2,
+section#Software.parallax h4,
+section#Software.parallax p,
+section#Software.parallax a,
+section#Software .section-emphasis-2,
+section#Software .section-emphasis-2 h2,
+section#Software .section-emphasis-2 h4,
+section#Software .section-emphasis-2 p,
+section#Software .section-emphasis-2 a {
+  color: #000 !important;
+}
+
+section#Software.parallax a:hover,
+section#Software .section-emphasis-2 a:hover {
+  color: red !important;
 }
 
 section#Publications.parallax {
