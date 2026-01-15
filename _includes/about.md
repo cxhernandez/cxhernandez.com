@@ -1,12 +1,9 @@
-I am currently a research scientist at
-[Facebook Research](http://research.facebook.com/). My research interests
+Research Scientist at
+[Reality Labs](https://tech.facebook.com/reality-labs/), working on machine learning to enable [neuromotor interfaces](https://www.meta.com/emerging-tech/emg-wearable-technology/). Previously, I worked at
+[CTRL-labs](https://dsvw8jmuo45j8.cloudfront.net/), acquired by Meta.
+
+Prior to that, I worked with [Vijay Pande](https://www.pandelab.org/) at
+Stanford on statistical modeling and temporal encodings of
+biomolecular dynamics. My research interests
 include representation learning for time-series, causal inference, and
 information theory.
-
-
-Previously, I worked at
-[CTRL-labs](http://www.ctrl-labs.com/) using machine learning to enable
-[neural interfaces](https://www.wired.com/story/brain-machine-interface-isnt-sci-fi-anymore/).
-Prior to that, I worked with [Vijay Pande](http://pande.stanford.edu) at
-Stanford on the statistical modeling and generation of temporal embeddings for
-biomolecular dynamics.

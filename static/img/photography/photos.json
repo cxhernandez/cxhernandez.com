@@ -1,0 +1,11 @@
+{
+  "_instructions": "Add Instagram post URLs to the photos array",
+  "photos": [
+    "https://www.instagram.com/p/DS5eg04Eb6H/",
+    "https://www.instagram.com/p/DGvPP-5uWXJ/",
+    "https://www.instagram.com/p/DC9tEfCRrTd/",
+    "https://www.instagram.com/p/DR3pHL5gFNU/",
+    "https://www.instagram.com/p/DRFTI1UEd8Q/",
+    "https://www.instagram.com/p/DEyZqSXNBfd/"
+  ]
+}
