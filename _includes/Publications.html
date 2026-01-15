@@ -10,7 +10,15 @@
                     {% markdown publications.md %}
                     <script>
                         $(document).ready(function(){
-                                $('.dataframe').DataTable();
+                                $('.dataframe').DataTable({
+                                    pageLength: 5,
+                                    lengthChange: false,
+                                    dom: 'rtfip',
+                                    language: {
+                                        search: "",
+                                        searchPlaceholder: "Search"
+                                    }
+                                });
                             });
                     </script>
                     </li>
