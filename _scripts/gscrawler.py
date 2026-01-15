@@ -13,12 +13,30 @@ from bs4 import BeautifulSoup
 pd.options.display.max_colwidth = 500
 
 
+def title_case(text):
+    """Convert text to title case, keeping small words lowercase.
+    
+    Small words (of, the, and, in, for, a, an, etc.) remain lowercase
+    unless they're the first word.
+    """
+    small_words = {'a', 'an', 'and', 'as', 'at', 'but', 'by', 'for', 'in', 
+                   'nor', 'of', 'on', 'or', 'so', 'the', 'to', 'up', 'yet'}
+    words = text.split()
+    result = []
+    for i, word in enumerate(words):
+        if i == 0 or word.lower() not in small_words:
+            result.append(word.capitalize())
+        else:
+            result.append(word.lower())
+    return ' '.join(result)
+
+
 def clean_journal_name(journal):
-    """Remove trailing volume/issue numbers from journal names.
+    """Remove trailing volume/issue numbers from journal names and apply title case.
     
     Examples:
         'Biophysical Journal 109' -> 'Biophysical Journal'
-        'Accounts of chemical research 48 (2)' -> 'Accounts of chemical research'
+        'Accounts of chemical research 48 (2)' -> 'Accounts of Chemical Research'
         'Physical Review E 97 (6)' -> 'Physical Review E'
         'The Journal of Open Source Software 2 (12)' -> 'The Journal of Open Source Software'
         'arXiv preprint arXiv:1802.10548' -> 'arXiv'
@@ -29,8 +47,10 @@ def clean_journal_name(journal):
     journal = re.sub(r'\s+\d+\s*$', '', journal)
     # Clean up arXiv format - just use 'arXiv'
     if journal.lower().startswith('arxiv'):
-        journal = 'arXiv'
-    return journal.strip()
+        return 'arXiv'
+    # Apply title case
+    journal = title_case(journal.strip())
+    return journal
 
 
 def get_soup(user):
