@@ -31,6 +31,39 @@ def title_case(text):
     return ' '.join(result)
 
 
+def extract_domain_name(url):
+    """Extract a clean domain name from a URL.
+    
+    Examples:
+        'https://github.com/ParmEd/ParmEd' -> 'GitHub'
+        'Url: Https://github. Com/parmed/parmed' -> 'GitHub'
+    """
+    # Known domain mappings (lowercase domain -> display name)
+    domain_names = {
+        'github.com': 'GitHub',
+        'gitlab.com': 'GitLab',
+        'bitbucket.org': 'Bitbucket',
+        'zenodo.org': 'Zenodo',
+        'figshare.com': 'Figshare',
+        'osf.io': 'OSF',
+        'sourceforge.net': 'SourceForge',
+    }
+    
+    # Normalize: remove spaces, lowercase
+    url_clean = url.lower().replace(' ', '')
+    
+    for domain, name in domain_names.items():
+        if domain.replace('.', '') in url_clean.replace('.', ''):
+            return name
+    
+    # Fallback: try to extract domain from URL pattern
+    match = re.search(r'(?:https?://)?(?:www\.)?([a-z0-9-]+)\.[a-z]+', url_clean)
+    if match:
+        return match.group(1).capitalize()
+    
+    return None
+
+
 def clean_journal_name(journal):
     """Remove trailing volume/issue numbers from journal names and apply title case.
     
@@ -40,7 +73,14 @@ def clean_journal_name(journal):
         'Physical Review E 97 (6)' -> 'Physical Review E'
         'The Journal of Open Source Software 2 (12)' -> 'The Journal of Open Source Software'
         'arXiv preprint arXiv:1802.10548' -> 'arXiv'
+        'Url: Https://github. Com/parmed/parmed' -> 'GitHub'
     """
+    # Check if it's a URL - extract domain name
+    if re.search(r'https?:|www\.|\.com|\.org|\.io|\.net', journal, re.IGNORECASE):
+        domain = extract_domain_name(journal)
+        if domain:
+            return domain
+    
     # Remove trailing parenthetical content like (1), (2), (12)
     journal = re.sub(r'\s*\([^)]*\)\s*$', '', journal)
     # Remove trailing numbers (volume numbers)
