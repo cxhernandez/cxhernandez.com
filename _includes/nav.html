@@ -6,8 +6,8 @@
             <button type="button" class="btn btn-navbar collapsed" data-toggle="collapse" data-target=".nav-collapse">
                 <!-- This button toggles visibility of menu on mobile devices -->
             </button>
-            <a class="brand" href="#MainHeader">
-              {% include brain.svg %}
+            <a class="navbar-brand-logo" href="#MainHeader">
+                <span>C</span><span>X</span><span>H</span>
             </a>
 
             <div class="nav-collapse collapse">
@@ -20,7 +20,7 @@
                     <li class=""><a href="#{{ item }}">{{ item }}</a></li>
                         {% endif %}
                     {% endfor %}
-                    <li class=""><a href="#" onclick="loadPDF('https://docs.google.com/gview?url={{ "/static/files/CV.pdf" | prepend:site.url }}&embedded=true');">CV</a></li>
+                    <li class=""><a href="#" onclick="loadCV(); return false;">CV</a></li>
                 </ul>
             </div>
         </div>

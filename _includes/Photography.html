@@ -1,21 +1,123 @@
 <section id="Photography" class="parallax">
-  <section class="section-emphasis-2">
-    <div class="container">
-        <h2 style="color:white !important">
-            Photography
-        </h2>
-        <div id="instafeed"></div>
-        <script type="text/javascript">
-            var userFeed = new Instafeed({
-                get: 'user',
-                userId: 204838313,
-                accessToken: '204838313.467ede5.af0516d7da1f44deac3b62febf64f717',
-                filter: function(image) {
-                  return image.users_in_photo.length == 0;
-                }
-            });
-            userFeed.run();
-        </script>
+    <div class="section-header-rotate">
+        <h2>Photography</h2>
     </div>
-  </section>
+
+    <div class="container">
+        <div class="row-fluid">
+            <div class="photography-blurb">
+                {% markdown photography.md %}
+            </div>
+            <div class="photo-carousel">
+                <button class="carousel-btn carousel-prev" onclick="moveCarousel(-1)">&#10094;</button>
+
+                <div class="carousel-container">
+                    <div class="carousel-track" id="carouselTrack">
+                        <!-- Instagram embeds loaded from photos.json -->
+                    </div>
+                </div>
+
+                <button class="carousel-btn carousel-next" onclick="moveCarousel(1)">&#10095;</button>
+            </div>
+
+            <div class="carousel-dots" id="carouselDots"></div>
+        </div>
+    </div>
 </section>
+
+<!-- Instagram embed script -->
+<script async src="//www.instagram.com/embed.js"></script>
+
+<script>
+  const PHOTOS_JSON = '/static/img/photography/photos.json';
+
+  let currentSlide = 0;
+  let totalSlides = 0;
+
+  async function initCarousel() {
+    const track = document.getElementById('carouselTrack');
+    const dotsContainer = document.getElementById('carouselDots');
+
+    try {
+      const response = await fetch(PHOTOS_JSON);
+      if (!response.ok) throw new Error('Failed to load photos.json');
+
+      const data = await response.json();
+      const photos = data.photos || [];
+
+      totalSlides = photos.length;
+
+      if (totalSlides === 0) {
+        track.innerHTML = '<div class="carousel-slide"><p style="text-align:center;">No photos yet. <a href="https://www.instagram.com/cxhrndz/" style="color:#E1306C;">Visit Instagram →</a></p></div>';
+        return;
+      }
+
+      // Create slides with Instagram embeds
+      photos.forEach((url, index) => {
+        const slide = document.createElement('div');
+        slide.className = 'carousel-slide';
+
+        const wrapper = document.createElement('div');
+        wrapper.className = 'instagram-embed-wrapper';
+
+        // Create minimal blockquote - NO captioned attribute for cleaner embed
+        const blockquote = document.createElement('blockquote');
+        blockquote.className = 'instagram-media';
+        blockquote.setAttribute('data-instgrm-permalink', url);
+        blockquote.setAttribute('data-instgrm-version', '14');
+        // NOT setting data-instgrm-captioned for cleaner look
+
+        wrapper.appendChild(blockquote);
+        slide.appendChild(wrapper);
+        track.appendChild(slide);
+
+        // Create dot
+        const dot = document.createElement('span');
+        dot.className = 'carousel-dot' + (index === 0 ? ' active' : '');
+        dot.onclick = () => goToSlide(index);
+        dotsContainer.appendChild(dot);
+      });
+
+      // Process Instagram embeds
+      setTimeout(() => {
+        if (window.instgrm) {
+          window.instgrm.Embeds.process();
+        }
+      }, 100);
+
+      // Start auto-advance after embeds load
+      setTimeout(() => {
+        setInterval(() => moveCarousel(1), 8000);
+      }, 2000);
+
+    } catch (error) {
+      console.error('Error loading photos:', error);
+      track.innerHTML = '<div class="carousel-slide"><p style="text-align:center;">Unable to load photos. <a href="https://www.instagram.com/cxhrndz/" style="color:#E1306C;">Visit Instagram →</a></p></div>';
+    }
+  }
+
+  function updateCarousel() {
+    const track = document.getElementById('carouselTrack');
+    track.style.transform = `translateX(-${currentSlide * 100}%)`;
+    document.querySelectorAll('.carousel-dot').forEach((dot, i) => {
+      dot.className = 'carousel-dot' + (i === currentSlide ? ' active' : '');
+    });
+  }
+
+  function moveCarousel(direction) {
+    if (totalSlides === 0) return;
+    currentSlide = (currentSlide + direction + totalSlides) % totalSlides;
+    updateCarousel();
+  }
+
+  function goToSlide(index) {
+    currentSlide = index;
+    updateCarousel();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initCarousel);
+  } else {
+    initCarousel();
+  }
+</script>
