@@ -119,8 +119,25 @@ header#MainHeader .initial-box {
   background-image: none !important;
 }
 
-#MainNav .arrow:after {
-  color: #000 !important;
+#MainNav .navbar-inner .container {
+  padding-left: 0 !important;
+  margin-left: 0 !important;
+}
+#MainNav .nav-collapse {
+  float: right !important;
+  margin-left: auto;
+}
+
+#MainNav .nav.nav-pills {
+  float: right !important;
+  margin-right: 40px;
+}
+
+#MainNav .navbar-inner .container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
 }
 
 .navbar-brand-logo {
@@ -136,6 +153,7 @@ header#MainHeader .initial-box {
   text-align: center;
   background: #000;
   margin-top: 8px;
+  margin-left: 25px;
   margin-right: 15px;
   text-decoration: none !important;
 }
