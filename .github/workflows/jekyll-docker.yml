@@ -32,11 +32,6 @@ jobs:
           activate-environment: cv_pdf
           auto-activate-base: false
 
-      - name: Fetch publications from Google Scholar
-        shell: bash -el {0}
-        run: python ./_scripts/gscrawler.py -u 6j85aJMAAAAJ -o ./_includes/publications.md
-        continue-on-error: true
-
       - name: Generate CV PDF
         shell: bash -el {0}
         run: python ./_scripts/generate_cv_pdf.py
