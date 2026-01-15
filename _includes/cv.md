@@ -40,7 +40,7 @@ I am a Senior Research Scientist at [Meta Reality Labs](https://about.meta.com/r
 ## Education
 
 ### Stanford University
-**Ph.D. in Biophysics** · Stanford, CA, USA · 013 – 2018
+**Ph.D. in Biophysics** · Stanford, CA, USA · 2013 – 2018
 <br>
 *Advisor: [Vijay Pande](https://www.pandelab.org/)*
 
