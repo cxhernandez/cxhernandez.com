@@ -17,17 +17,21 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - name: Set up Conda
+        uses: conda-incubator/setup-miniconda@v3
         with:
-          python-version: '3.12'
-
-      - name: Install Python dependencies
-        run: pip install pandas beautifulsoup4 html5lib
+          environment-file: _scripts/environment.yml
+          activate-environment: cv_pdf
+          auto-activate-base: false
 
       - name: Fetch publications from Google Scholar
+        shell: bash -el {0}
         run: python ./_scripts/gscrawler.py -u 6j85aJMAAAAJ -o ./_includes/publications.md
         continue-on-error: true
+
+      - name: Generate CV PDF
+        shell: bash -el {0}
+        run: python ./_scripts/generate_cv_pdf.py
 
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
