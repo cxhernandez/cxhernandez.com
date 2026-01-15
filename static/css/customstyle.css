@@ -748,8 +748,8 @@ section#Publications table th:first-child {
    MOBILE RESPONSIVE STYLES
    =========================================== */
 
-/* Large tablet breakpoint (max-width: 900px) */
-@media screen and (max-width: 900px) {
+/* Large tablet breakpoint (max-width: 1000px) */
+@media screen and (max-width: 1000px) {
   /* Main header - center on larger tablets */
   header#MainHeader {
     display: flex;
@@ -782,6 +782,132 @@ section#Publications table th:first-child {
   header#MainHeader .name-container {
     justify-content: center;
     text-align: center;
+  }
+
+  /* Nav collapse for large tablet - show hamburger menu */
+  #MainNav .nav-collapse.collapse:not(.in) {
+    display: none !important;
+  }
+
+  #MainNav .nav-collapse.in,
+  #MainNav .nav-collapse.collapse.in {
+    display: block !important;
+    position: absolute !important;
+    top: 100% !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    height: auto !important;
+    overflow: visible !important;
+    background: #fafafa !important;
+    z-index: 1000 !important;
+    border-top: 1px solid #eee !important;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1) !important;
+  }
+
+  /* Position navbar container as flex - logo left, button right */
+  #MainNav {
+    width: 100% !important;
+    position: relative !important;
+  }
+
+  #MainNav .navbar-inner {
+    width: 80% !important;
+    margin: 0 auto !important;
+    padding: 0 !important;
+    height: auto !important;
+    min-height: 0 !important;
+    display: flex !important;
+    align-items: stretch !important;
+    position: relative !important;
+  }
+
+  #MainNav .navbar-inner .container,
+  #MainNav.navbar .navbar-inner .container {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  /* Keep brand logo on the left */
+  #MainNav .navbar-brand-logo {
+    order: 1;
+    flex-shrink: 0;
+    margin-left: 0;
+    align-self: stretch !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+  }
+
+  /* Move hamburger button to the right */
+  #MainNav .btn-navbar,
+  #MainNav .navbar-inner .container .btn-navbar,
+  #MainNav.navbar .navbar-inner .container .btn-navbar {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    align-self: stretch !important;
+    order: 2;
+    margin-left: auto !important;
+    margin-right: 0 !important;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+    padding: 0 12px !important;
+    background: #000 !important;
+    background-image: none !important;
+    border: none !important;
+    border-radius: 0 !important;
+    width: auto !important;
+    height: auto !important;
+    box-sizing: border-box !important;
+  }
+
+  #MainNav .btn-navbar::before {
+    content: '☰';
+    color: #fff;
+    font-size: 18px;
+  }
+
+  /* Hide nav-collapse from flex flow when collapsed */
+  #MainNav .nav-collapse.collapse:not(.in) {
+    display: none !important;
+    order: 3;
+  }
+
+  /* Nav pills stack vertically on large tablet when menu is open */
+  #MainNav .nav-collapse.in .nav.nav-pills,
+  #MainNav .nav-collapse.collapse.in .nav.nav-pills {
+    float: none !important;
+    display: block !important;
+    margin: 0 !important;
+    padding: 15px 0 !important;
+    text-align: center;
+  }
+
+  #MainNav .nav-collapse.in .nav.nav-pills li,
+  #MainNav .nav-collapse.collapse.in .nav.nav-pills li {
+    display: block !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  #MainNav .nav-collapse.in .nav.nav-pills li a,
+  #MainNav .nav-collapse.collapse.in .nav.nav-pills li a {
+    display: block !important;
+    padding: 10px 20px !important;
+    text-align: center !important;
+    color: #333 !important;
+  }
+
+  #MainNav .nav-collapse.in .nav.nav-pills li a:hover {
+    background: #eee !important;
   }
 }
 
@@ -826,9 +952,135 @@ section#Publications table th:first-child {
     text-align: center;
   }
 
-  /* Navigation - reduce right margin */
+  /* Navigation - tablet responsive navbar */
   #MainNav .nav.nav-pills {
     margin-right: 20px;
+  }
+
+  /* Nav collapse for tablet - show hamburger menu */
+  #MainNav .nav-collapse.collapse:not(.in) {
+    display: none !important;
+  }
+
+  #MainNav .nav-collapse.in,
+  #MainNav .nav-collapse.collapse.in {
+    display: block !important;
+    position: absolute !important;
+    top: 100% !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    height: auto !important;
+    overflow: visible !important;
+    background: #fafafa !important;
+    z-index: 1000 !important;
+    border-top: 1px solid #eee !important;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1) !important;
+  }
+
+  /* Position navbar container as flex - logo left, button right */
+  #MainNav {
+    width: 100% !important;
+    position: relative !important;
+  }
+
+  #MainNav .navbar-inner {
+    width: 80% !important;
+    margin: 0 auto !important;
+    padding: 0 !important;
+    height: auto !important;
+    min-height: 0 !important;
+    display: flex !important;
+    align-items: stretch !important;
+    position: relative !important;
+  }
+
+  #MainNav .navbar-inner .container,
+  #MainNav.navbar .navbar-inner .container {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  /* Keep brand logo on the left */
+  #MainNav .navbar-brand-logo {
+    order: 1;
+    flex-shrink: 0;
+    margin-left: 0;
+    align-self: stretch !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+  }
+
+  /* Move hamburger button to the right */
+  #MainNav .btn-navbar,
+  #MainNav .navbar-inner .container .btn-navbar,
+  #MainNav.navbar .navbar-inner .container .btn-navbar {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    align-self: stretch !important;
+    order: 2;
+    margin-left: auto !important;
+    margin-right: 0 !important;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+    padding: 0 12px !important;
+    background: #000 !important;
+    background-image: none !important;
+    border: none !important;
+    border-radius: 0 !important;
+    width: auto !important;
+    height: auto !important;
+    box-sizing: border-box !important;
+  }
+
+  #MainNav .btn-navbar::before {
+    content: '☰';
+    color: #fff;
+    font-size: 18px;
+  }
+
+  /* Hide nav-collapse from flex flow when collapsed */
+  #MainNav .nav-collapse.collapse:not(.in) {
+    display: none !important;
+    order: 3;
+  }
+
+  /* Nav pills stack vertically on tablet when menu is open */
+  #MainNav .nav-collapse.in .nav.nav-pills,
+  #MainNav .nav-collapse.collapse.in .nav.nav-pills {
+    float: none !important;
+    display: block !important;
+    margin: 0 !important;
+    padding: 15px 0 !important;
+    text-align: center;
+  }
+
+  #MainNav .nav-collapse.in .nav.nav-pills li,
+  #MainNav .nav-collapse.collapse.in .nav.nav-pills li {
+    display: block !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  #MainNav .nav-collapse.in .nav.nav-pills li a,
+  #MainNav .nav-collapse.collapse.in .nav.nav-pills li a {
+    display: block !important;
+    padding: 10px 20px !important;
+    text-align: center !important;
+    color: #333 !important;
+  }
+
+  #MainNav .nav-collapse.in .nav.nav-pills li a:hover {
+    background: #eee !important;
   }
 
   /* Navbar logo - reduce margins */
@@ -960,19 +1212,84 @@ section#Publications table th:first-child {
     display: none !important;
   }
 
-  #MainNav .nav-collapse.in {
+  #MainNav .nav-collapse.in,
+  #MainNav .nav-collapse.collapse.in {
     display: block !important;
+    position: absolute !important;
+    top: 100% !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    height: auto !important;
+    overflow: visible !important;
+    background: #fafafa !important;
+    z-index: 1000 !important;
+    border-top: 1px solid #eee !important;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1) !important;
   }
 
-  #MainNav .btn-navbar {
-    display: block !important;
-    float: right;
-    margin-right: 10px;
-    margin-top: 12px;
-    padding: 8px 10px;
-    background: #333;
-    border: none;
-    border-radius: 4px;
+  /* Position navbar container as flex - logo left, button right */
+  #MainNav {
+    width: 100% !important;
+    position: relative !important;
+  }
+
+  #MainNav .navbar-inner {
+    width: 80% !important;
+    margin: 0 auto !important;
+    padding: 0 !important;
+    height: auto !important;
+    min-height: 0 !important;
+    display: flex !important;
+    align-items: stretch !important;
+    position: relative !important;
+  }
+
+  #MainNav .navbar-inner .container,
+  #MainNav.navbar .navbar-inner .container {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  /* Keep brand logo on the left */
+  #MainNav .navbar-brand-logo {
+    order: 1;
+    flex-shrink: 0;
+    margin-left: 0;
+    align-self: stretch !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+  }
+
+  /* Move hamburger button to the right */
+  #MainNav .btn-navbar,
+  #MainNav .navbar-inner .container .btn-navbar,
+  #MainNav.navbar .navbar-inner .container .btn-navbar {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    align-self: stretch !important;
+    order: 2;
+    margin-left: auto !important;
+    margin-right: 0 !important;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+    padding: 0 12px !important;
+    background: #000 !important;
+    background-image: none !important;
+    border: none !important;
+    border-radius: 0 !important;
+    width: auto !important;
+    height: auto !important;
+    box-sizing: border-box !important;
   }
 
   #MainNav .btn-navbar::before {
@@ -981,17 +1298,39 @@ section#Publications table th:first-child {
     font-size: 18px;
   }
 
-  /* Nav pills stack vertically on mobile when menu is open */
-  #MainNav .nav-collapse.in .nav.nav-pills {
-    float: none !important;
-    margin-right: 0;
-    text-align: center;
-    padding: 10px 0;
+  /* Hide nav-collapse from flex flow when collapsed */
+  #MainNav .nav-collapse.collapse:not(.in) {
+    display: none !important;
+    order: 3;
   }
 
-  #MainNav .nav-collapse.in .nav.nav-pills li {
-    display: block;
-    margin: 5px 0;
+  /* Nav pills stack vertically on mobile when menu is open */
+  #MainNav .nav-collapse.in .nav.nav-pills,
+  #MainNav .nav-collapse.collapse.in .nav.nav-pills {
+    float: none !important;
+    display: block !important;
+    margin: 0 !important;
+    padding: 15px 0 !important;
+    text-align: center;
+  }
+
+  #MainNav .nav-collapse.in .nav.nav-pills li,
+  #MainNav .nav-collapse.collapse.in .nav.nav-pills li {
+    display: block !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  #MainNav .nav-collapse.in .nav.nav-pills li a,
+  #MainNav .nav-collapse.collapse.in .nav.nav-pills li a {
+    display: block !important;
+    padding: 10px 20px !important;
+    text-align: center !important;
+    color: #333 !important;
+  }
+
+  #MainNav .nav-collapse.in .nav.nav-pills li a:hover {
+    background: #eee !important;
   }
 
   /* Photo carousel - smaller and centered */

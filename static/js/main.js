@@ -157,6 +157,15 @@ $(document).ready(function(){
     mainNavHeight = $('#MainNav').height();
     accordionActive();
 
+    /* Custom mobile nav toggle */
+    $('#MainNav .btn-navbar').on('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var $navCollapse = $('#MainNav .nav-collapse');
+        $navCollapse.toggleClass('in');
+        $(this).toggleClass('collapsed');
+    });
+
     /* twitter */
     $('.tweets').tweet({
         count: 3, //how many tweets?
