@@ -7,6 +7,56 @@
   <title>{% if page.title %}{{ page.title }}{% else %}{{ site.title }}{% endif %}</title>
   <meta name="description" content="{% if page.excerpt %}{{ page.excerpt | strip_html | strip_newlines | truncate: 160 }}{% else %}{{ site.description }}{% endif %}">
 
+  <!-- Open Graph -->
+  <meta property="og:title" content="{{ page.title | default: site.title }}">
+  <meta property="og:description" content="{{ site.description }}">
+  <meta property="og:url" content="{{ page.url | absolute_url }}">
+  <meta property="og:type" content="website">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="{{ page.title | default: site.title }}">
+  <meta name="twitter:description" content="{{ site.description }}">
+
+  <!-- JSON-LD Person Schema -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "Carlos Xavier Hernández",
+    "jobTitle": "Senior Research Scientist",
+    "worksFor": {
+      "@type": "Organization",
+      "name": "Meta Reality Labs"
+    },
+    "url": "https://www.cxhernandez.com",
+    "email": "cxh@meta.com",
+    "sameAs": [
+      "https://github.com/cxhernandez",
+      "https://linkedin.com/in/cxhernandez",
+      "https://www.threads.net/@cxhrndz"
+    ],
+    "alumniOf": [
+      {
+        "@type": "CollegeOrUniversity",
+        "name": "Stanford University"
+      },
+      {
+        "@type": "CollegeOrUniversity",
+        "name": "Columbia University"
+      }
+    ],
+    "knowsAbout": [
+      "Machine Learning",
+      "Neural Interfaces",
+      "EMG Signal Processing",
+      "Deep Learning",
+      "PyTorch",
+      "Human-Computer Interaction"
+    ]
+  }
+  </script>
+
   <link rel="stylesheet" href="{{ "/static/css/pygments.css" | prepend: site.baseurl }}" media="all">
   <link rel="stylesheet" href="{{ "/static/css/style.css" | prepend: site.baseurl }}">
   <link rel="stylesheet" href="{{ "/static/css/customstyle.css" | prepend: site.baseurl }}">
@@ -31,7 +81,7 @@
   <script src="{{ "/static/js/jquery.isotope.min.js" | prepend: site.baseurl }}"></script>
   <script src="{{ "/static/js/jquery.ba-bbq.min.js" | prepend: site.baseurl }}"></script>
   <script src="{{ "/static/js/jquery.ddslick.js" | prepend: site.baseurl }}"></script>
-  <script src="{{ "/static/js/bootstrap.min.js" | prepend: site.baseurl }}"></script>
+<script src="{{ "/static/js/bootstrap.min.js" | prepend: site.baseurl }}"></script>
   <script src="{{ "/static/js/bootbox.min.js" | prepend: site.baseurl }}"></script>
   <script src="{{ "/static/js/main.js" | prepend: site.baseurl }}"></script>
   <script src="{{ "/static/js/switcher.js" | prepend: site.baseurl }}"></script>

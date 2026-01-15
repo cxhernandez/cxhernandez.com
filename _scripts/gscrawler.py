@@ -3,6 +3,7 @@
 
 import argparse
 import codecs
+import re
 from contextlib import closing
 from urllib.request import Request, urlopen
 
@@ -10,6 +11,86 @@ import pandas as pd
 from bs4 import BeautifulSoup
 
 pd.options.display.max_colwidth = 500
+
+
+def title_case(text):
+    """Convert text to title case, keeping small words lowercase.
+    
+    Small words (of, the, and, in, for, a, an, etc.) remain lowercase
+    unless they're the first word.
+    """
+    small_words = {'a', 'an', 'and', 'as', 'at', 'but', 'by', 'for', 'in', 
+                   'nor', 'of', 'on', 'or', 'so', 'the', 'to', 'up', 'yet'}
+    words = text.split()
+    result = []
+    for i, word in enumerate(words):
+        if i == 0 or word.lower() not in small_words:
+            result.append(word.capitalize())
+        else:
+            result.append(word.lower())
+    return ' '.join(result)
+
+
+def extract_domain_name(url):
+    """Extract a clean domain name from a URL.
+    
+    Examples:
+        'https://github.com/ParmEd/ParmEd' -> 'GitHub'
+        'Url: Https://github. Com/parmed/parmed' -> 'GitHub'
+    """
+    # Known domain mappings (lowercase domain -> display name)
+    domain_names = {
+        'github.com': 'GitHub',
+        'gitlab.com': 'GitLab',
+        'bitbucket.org': 'Bitbucket',
+        'zenodo.org': 'Zenodo',
+        'figshare.com': 'Figshare',
+        'osf.io': 'OSF',
+        'sourceforge.net': 'SourceForge',
+    }
+    
+    # Normalize: remove spaces, lowercase
+    url_clean = url.lower().replace(' ', '')
+    
+    for domain, name in domain_names.items():
+        if domain.replace('.', '') in url_clean.replace('.', ''):
+            return name
+    
+    # Fallback: try to extract domain from URL pattern
+    match = re.search(r'(?:https?://)?(?:www\.)?([a-z0-9-]+)\.[a-z]+', url_clean)
+    if match:
+        return match.group(1).capitalize()
+    
+    return None
+
+
+def clean_journal_name(journal):
+    """Remove trailing volume/issue numbers from journal names and apply title case.
+    
+    Examples:
+        'Biophysical Journal 109' -> 'Biophysical Journal'
+        'Accounts of chemical research 48 (2)' -> 'Accounts of Chemical Research'
+        'Physical Review E 97 (6)' -> 'Physical Review E'
+        'The Journal of Open Source Software 2 (12)' -> 'The Journal of Open Source Software'
+        'arXiv preprint arXiv:1802.10548' -> 'arXiv'
+        'Url: Https://github. Com/parmed/parmed' -> 'GitHub'
+    """
+    # Check if it's a URL - extract domain name
+    if re.search(r'https?:|www\.|\.com|\.org|\.io|\.net', journal, re.IGNORECASE):
+        domain = extract_domain_name(journal)
+        if domain:
+            return domain
+    
+    # Remove trailing parenthetical content like (1), (2), (12)
+    journal = re.sub(r'\s*\([^)]*\)\s*$', '', journal)
+    # Remove trailing numbers (volume numbers)
+    journal = re.sub(r'\s+\d+\s*$', '', journal)
+    # Clean up arXiv format - just use 'arXiv'
+    if journal.lower().startswith('arxiv'):
+        return 'arXiv'
+    # Apply title case
+    journal = title_case(journal.strip())
+    return journal
 
 
 def get_soup(user):
@@ -41,7 +122,7 @@ def get_table(soup):
     ]
 
     journals = [
-        item.text.split(",")[0]
+        clean_journal_name(item.text.split(",")[0])
         for i, item in enumerate(table_data.find_all("div", {"class": "gs_gray"}))
         if i % 2
     ]

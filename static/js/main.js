@@ -30,6 +30,107 @@ function loadPDF(url) {
 	});
 }
 
+function loadCV() {
+
+	if ($('.bootbox').length) {
+		bootbox.hideAll();
+	}
+
+	// Check if we need to scroll to About section first
+	var $about = $('#About');
+	var aboutTop = $about.offset().top - mainNavHeight;
+	var currentScroll = $(window).scrollTop();
+
+	function openCVModal() {
+		disable_scroll();
+
+		bootbox.dialog(
+		{	"message" : $('#cv-content').html(),
+		    "label" : "",
+		    "class" : "",
+		    "callback": function() {}
+		});
+$('.bootbox').addClass('cv-modal');
+
+		// Style the download button positioning within modal
+		$('.bootbox .modal-body').css({
+			'position': 'relative'
+		});
+
+$('.bootbox #cv-download-btn').css({
+			'position': 'absolute',
+			'top': '45px',
+			'right': '50px',
+			'z-index': '100'
+		});
+
+		// Calculate even spacing: 20px from navbar bottom and 20px from viewport bottom
+		var spacing = 20;
+		var topOffset = mainNavHeight + spacing;
+		var bottomOffset = spacing;
+		var availableHeight = $(window).height() - topOffset - bottomOffset;
+
+		// Style the outer modal container for proper positioning
+		$('.bootbox').css({
+			"overflow": "hidden"
+		});
+
+		// Style the modal dialog with fixed positioning for precise control
+		$('.bootbox .modal-dialog').css({
+			"position": "fixed",
+			"top": topOffset + "px",
+			"left": "50%",
+			"transform": "translateX(-50%)",
+			"background-color": "#fff",
+			"border": "none",
+			"border-radius": "8px",
+			"box-shadow": "0 10px 40px rgba(0,0,0,0.3)",
+			"width": "80%",
+			"max-width": "900px",
+			"height": availableHeight + "px",
+			"max-height": availableHeight + "px",
+			"overflow-y": "auto",
+			"margin": "0"
+		});
+
+		// Ensure modal content fills the dialog
+		$('.bootbox .modal-content').css({
+			"border": "none",
+			"box-shadow": "none",
+			"width": "100%"
+		});
+
+		// Style the close button
+		$('.bootbox .bootbox-close-button').css({
+			"color": "#333",
+			"opacity": "0.6",
+			"font-size": "24px",
+			"padding": "10px",
+			"position": "absolute",
+			"right": "15px",
+			"top": "10px",
+			"z-index": "10"
+		});
+
+		$('button.bootbox-close-button.close').click(function () {enable_scroll();});
+		$('div.modal-backdrop').click( function(){
+		        bootbox.hideAll();
+				enable_scroll();
+		});
+	}
+
+	// If not scrolled past the About section, scroll there first
+	if (currentScroll < aboutTop) {
+		$('html, body').stop().animate({
+			'scrollTop': aboutTop
+		}, 400, 'swing', function () {
+			openCVModal();
+		});
+	} else {
+		openCVModal();
+	}
+}
+
 function showBlurb(thing) {
 
 	if ($('.bootbox').length) {
@@ -131,6 +232,15 @@ $(window).on('scroll', function(){
 $(document).ready(function(){
     mainNavHeight = $('#MainNav').height();
     accordionActive();
+
+    /* Custom mobile nav toggle */
+    $('#MainNav .btn-navbar').on('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var $navCollapse = $('#MainNav .nav-collapse');
+        $navCollapse.toggleClass('in');
+        $(this).toggleClass('collapsed');
+    });
 
     /* twitter */
     $('.tweets').tweet({

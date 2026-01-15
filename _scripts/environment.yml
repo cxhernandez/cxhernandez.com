@@ -1,0 +1,13 @@
+name: cv_pdf
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.10
+  # PDF generation (generate_cv_pdf.py)
+  - weasyprint
+  - markdown
+  # Google Scholar crawler (gscrawler.py)
+  - pandas
+  - beautifulsoup4
+  - html5lib
