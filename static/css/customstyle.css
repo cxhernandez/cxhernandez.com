@@ -184,6 +184,12 @@ section#Photography.parallax {
   background-image: none;
 }
 
+section#Photography.parallax,
+section#Photography.parallax p,
+section#Photography.parallax a {
+  color: #000 !important;
+}
+
 section#Blog.parallax {
   background-color: #fafafa;
   background-image: none;
@@ -468,6 +474,13 @@ div.profile-image {
 
 section#Photography.parallax h2 {
   padding-bottom: 1.5em;
+}
+
+section#Photography .photography-blurb,
+section#Photography .photography-blurb p {
+  text-align: center;
+  color: #000 !important;
+  margin: 0 auto 30px auto;
 }
 
 section#Software {
