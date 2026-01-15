@@ -83,6 +83,29 @@ section#Photography.parallax {
   background-size: cover;
 }
 
+section#Photography.parallax::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: inherit;
+  background-size: inherit;
+  background-position: inherit;
+  filter: grayscale(100%);
+  z-index: 0;
+}
+
+section#Photography.parallax {
+  position: relative;
+}
+
+section#Photography.parallax > * {
+  position: relative;
+  z-index: 1;
+}
+
 section#Blog.parallax {
   background-image: url(https://upload.wikimedia.org/wikipedia/commons/thumb/b/bd/Color_icon_blue.svg/2000px-Color_icon_blue.svg.png);
   background-position: 20% 49px;
