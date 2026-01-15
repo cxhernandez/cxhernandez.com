@@ -56,12 +56,43 @@ header#MainHeader.main-header.parallax h1 {
 header#MainHeader h1.name-header {
   display: inline-block;
   text-align: left;
+  /* Responsive font size: scales from ~1.5em at 320px to ~2.5em at 1200px */
+  font-size: clamp(1.5em, 4vw + 0.5em, 2.5em);
 }
 
 header#MainHeader .name-container {
   display: flex;
   justify-content: center;
   width: 100%;
+}
+
+/* Center header content at all screen sizes */
+header#MainHeader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+header#MainHeader .container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+header#MainHeader .row-fluid {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+header#MainHeader .span10 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin: 0;
 }
 
 header#MainHeader .name-line {
@@ -711,4 +742,371 @@ section#Publications table th:first-child {
   border-radius: 3px;
   font-size: 0.9em;
   color: #333;
+}
+
+/* ===========================================
+   MOBILE RESPONSIVE STYLES
+   =========================================== */
+
+/* Large tablet breakpoint (max-width: 900px) */
+@media screen and (max-width: 900px) {
+  /* Main header - center on larger tablets */
+  header#MainHeader {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  header#MainHeader .container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+  }
+
+  header#MainHeader .row-fluid {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+  }
+
+  header#MainHeader .span10 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    margin: 0;
+  }
+
+  header#MainHeader .name-container {
+    justify-content: center;
+    text-align: center;
+  }
+}
+
+/* Tablet breakpoint (max-width: 800px) */
+@media screen and (max-width: 800px) {
+  /* Rotated headers - reduce left offset */
+  .section-header-rotate {
+    left: 20px;
+  }
+
+  /* Main header - center on tablets */
+  header#MainHeader {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  header#MainHeader .container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+  }
+
+  header#MainHeader .row-fluid {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+  }
+
+  header#MainHeader .span10 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    margin: 0;
+  }
+
+  header#MainHeader .name-container {
+    justify-content: center;
+    text-align: center;
+  }
+
+  /* Navigation - reduce right margin */
+  #MainNav .nav.nav-pills {
+    margin-right: 20px;
+  }
+
+  /* Navbar logo - reduce margins */
+  .navbar-brand-logo {
+    margin-left: 15px;
+  }
+
+  /* About section - reduce gap */
+  section#About .about-layout {
+    gap: 25px;
+  }
+
+  /* Profile image - reduce size */
+  div.profile-image {
+    width: 250px;
+    padding-bottom: 312px;
+  }
+
+  div.profile-container {
+    max-width: 250px;
+  }
+
+  /* Instagram embed - reduce width */
+  .instagram-embed-wrapper {
+    max-width: 400px;
+    height: 350px;
+  }
+
+  /* Photo carousel */
+  .photo-carousel {
+    padding: 0 40px;
+  }
+
+  /* Publications - reduce column width */
+  section#Publications table td,
+  section#Publications table th {
+    max-width: 200px;
+  }
+}
+
+/* Mobile breakpoint (max-width: 600px) */
+@media screen and (max-width: 600px) {
+  /* Hide rotated section headers on mobile */
+  .section-header-rotate {
+    display: none;
+  }
+
+  /* Section divider - full width on mobile */
+  section.parallax::after {
+    width: 90%;
+  }
+
+  /* About section - stack vertically */
+  section#About .about-layout {
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+  }
+
+  section#About .about-layout .about-text {
+    text-align: center;
+  }
+
+  /* Profile image - centered and smaller */
+  div.profile-image {
+    width: 200px;
+    padding-bottom: 250px;
+  }
+
+  div.profile-container {
+    max-width: 200px;
+  }
+
+  /* Main header - centered both horizontally and vertically */
+  header#MainHeader {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  header#MainHeader .container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    margin: 0 auto;
+    padding: 0;
+  }
+
+  header#MainHeader .row-fluid {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+  }
+
+  header#MainHeader .span10 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
+  header#MainHeader .name-container {
+    justify-content: center;
+    text-align: center;
+  }
+
+  header#MainHeader .initial-box {
+    padding: 0.08em 0.12em;
+    width: 0.7em;
+  }
+
+  /* Navigation */
+  #MainNav .nav.nav-pills {
+    margin-right: 10px;
+  }
+
+  .navbar-brand-logo {
+    margin-left: 10px;
+    font-size: 11px;
+    padding: 3px 5px;
+  }
+
+  /* Nav collapse for mobile - show hamburger menu */
+  #MainNav .nav-collapse.collapse:not(.in) {
+    display: none !important;
+  }
+
+  #MainNav .nav-collapse.in {
+    display: block !important;
+  }
+
+  #MainNav .btn-navbar {
+    display: block !important;
+    float: right;
+    margin-right: 10px;
+    margin-top: 12px;
+    padding: 8px 10px;
+    background: #333;
+    border: none;
+    border-radius: 4px;
+  }
+
+  #MainNav .btn-navbar::before {
+    content: '☰';
+    color: #fff;
+    font-size: 18px;
+  }
+
+  /* Nav pills stack vertically on mobile when menu is open */
+  #MainNav .nav-collapse.in .nav.nav-pills {
+    float: none !important;
+    margin-right: 0;
+    text-align: center;
+    padding: 10px 0;
+  }
+
+  #MainNav .nav-collapse.in .nav.nav-pills li {
+    display: block;
+    margin: 5px 0;
+  }
+
+  /* Photo carousel - smaller and centered */
+  .photo-carousel {
+    max-width: 100%;
+    padding: 0 35px;
+  }
+
+  .carousel-btn {
+    width: 32px;
+    height: 32px;
+    font-size: 14px;
+  }
+
+  /* Instagram embed - smaller for mobile */
+  .instagram-embed-wrapper {
+    max-width: 100%;
+    height: 300px;
+  }
+
+  .instagram-embed-wrapper iframe {
+    top: -48px !important;
+    height: 700px !important;
+    min-height: 700px !important;
+  }
+
+  .instagram-embed-wrapper blockquote.instagram-media {
+    height: 300px;
+  }
+
+  /* Publications table - scroll horizontally */
+  section#Publications .dataTables_wrapper {
+    overflow-x: scroll;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  section#Publications table td,
+  section#Publications table th {
+    max-width: 150px;
+    font-size: 14px;
+  }
+
+  section#Publications .dataTables_filter input {
+    width: 140px;
+  }
+
+  /* Software section - stack cards */
+  div.span4.icon-box {
+    margin-bottom: 2em;
+  }
+
+  div.span4.icon-box img {
+    width: 150px;
+  }
+
+  /* CV Modal - reduce padding */
+  .cv-modal .modal-body {
+    padding: 20px 25px;
+  }
+
+  .cv-modal h1 {
+    font-size: 1.8em;
+  }
+
+  .cv-modal h2 {
+    font-size: 1.1em;
+  }
+}
+
+/* Extra small devices (max-width: 400px) */
+@media screen and (max-width: 400px) {
+  /* Profile image - even smaller */
+  div.profile-image {
+    width: 160px;
+    padding-bottom: 200px;
+  }
+
+  div.profile-container {
+    max-width: 160px;
+  }
+
+  /* Instagram embed - minimum mobile size */
+  .instagram-embed-wrapper {
+    height: 260px;
+  }
+
+  .instagram-embed-wrapper iframe {
+    top: -40px !important;
+    height: 600px !important;
+    min-height: 600px !important;
+  }
+
+  .instagram-embed-wrapper blockquote.instagram-media {
+    height: 260px;
+  }
+
+  /* Carousel buttons closer */
+  .photo-carousel {
+    padding: 0 30px;
+  }
+
+  .carousel-btn {
+    width: 28px;
+    height: 28px;
+    font-size: 12px;
+  }
+
+  /* Publications - smaller font */
+  section#Publications table td,
+  section#Publications table th {
+    font-size: 12px;
+    padding: 6px 4px !important;
+  }
+
+  section#Publications .dataTables_filter input {
+    width: 100px;
+  }
 }
