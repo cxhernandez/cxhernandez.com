@@ -1,6 +1,6 @@
 @use "sass:math";
 @use "sass:color";
-@import "variables";
+@use "variables" as *;
 
 /**
  * Reset some basic elements
