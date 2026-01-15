@@ -72,55 +72,60 @@ h3 {
 }
 
 header#MainHeader.main-header.parallax {
-  background-image: url(../images/background.png);
-  background-position: 20% 0px;
-  /*background-size: auto 100%;*/
+  background-color: #fafafa;
+  background-image: none;
+}
+
+header#MainHeader.main-header.parallax h1 {
+  color: #000 !important;
+}
+
+#MainNav .arrow {
+  color: #000 !important;
+  filter: invert(1);
+}
+
+#MainNav .arrow:after {
+  color: #000 !important;
 }
 
 section#Photography.parallax {
-  background-image: url(https://images.unsplash.com/photo-1500051638674-ff996a0ec29e?w=1920&q=80);
-  background-position: center center;
-  background-size: cover;
-}
-
-section#Photography.parallax::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: inherit;
-  background-size: inherit;
-  background-position: inherit;
-  filter: grayscale(100%);
-  z-index: 0;
-}
-
-section#Photography.parallax {
-  position: relative;
-}
-
-section#Photography.parallax > * {
-  position: relative;
-  z-index: 1;
+  background-color: #fafafa;
+  background-image: none;
 }
 
 section#Blog.parallax {
-  background-image: url(https://upload.wikimedia.org/wikipedia/commons/thumb/b/bd/Color_icon_blue.svg/2000px-Color_icon_blue.svg.png);
-  background-position: 20% 49px;
-  padding-top:0 !important
+  background-color: #fafafa;
+  background-image: none;
 }
 
-section#Software.parallax {
-  background-image: url(https://upload.wikimedia.org/wikipedia/commons/thumb/b/bd/Color_icon_blue.svg/2000px-Color_icon_blue.svg.png);
-  background-position: 20% 49px;
-  padding-top:0 !important
+section#Software.parallax,
+section#Software .section-emphasis-2 {
+  background-color: #fafafa;
+  background-image: none;
 }
 
 section#Publications.parallax {
-  background-image: url(../images/publications-bg.jpg);
-  background-position: 20% -70px;
+  background-color: #fafafa;
+  background-image: none;
+  overflow-x: hidden;
+  width: 100%;
+  max-width: 100vw;
+  box-sizing: border-box;
+}
+
+section#Publications.parallax * {
+  box-sizing: border-box;
+}
+
+section#About.parallax,
+section#About.parallax p,
+section#About.parallax a {
+  color: #000 !important;
+}
+
+section#About.parallax a:hover {
+  color: red !important;
 }
 
 section.section-emphasis, section.section-emphasis-2 {
@@ -135,11 +140,90 @@ section#Press p {
 section#Publications .dataframe tbody td:first-of-type,
 section#Publications .dataframe tbody td:first-of-type a {
   font-weight: bold !important;
-  color: white !important;
+  color: #000 !important;
 }
 
 section#Publications .dataframe tbody td:first-of-type a:hover {
   color: red !important;
+}
+
+section#Publications.parallax,
+section#Publications.parallax p,
+section#Publications.parallax a {
+  color: #000 !important;
+}
+
+section#Publications.parallax a:hover {
+  color: red !important;
+}
+
+section#Publications .dataframe,
+section#Publications .dataframe th,
+section#Publications .dataframe td,
+section#Publications .dataframe a,
+section#Publications table,
+section#Publications table th,
+section#Publications table td,
+section#Publications table a {
+  color: #000 !important;
+}
+
+section#Publications .dataframe a:hover,
+section#Publications table a:hover {
+  color: red !important;
+}
+
+section#Publications .dataframe,
+section#Publications table {
+  width: 100% !important;
+  max-width: 100% !important;
+  table-layout: fixed;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  border-collapse: collapse;
+  margin: 0;
+}
+
+section#Publications .container {
+  max-width: 100%;
+  padding-left: 15px;
+  padding-right: 15px;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+section#Publications .row-fluid {
+  overflow-x: auto;
+  margin-left: 0;
+  margin-right: 0;
+}
+
+section#Publications .dataTables_wrapper {
+  width: 100% !important;
+  max-width: 100% !important;
+  overflow-x: auto;
+  box-sizing: border-box;
+}
+
+section#Publications .dataTables_filter,
+section#Publications .dataTables_length,
+section#Publications .dataTables_info,
+section#Publications .dataTables_paginate {
+  max-width: 100%;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+section#Publications table td,
+section#Publications table th {
+  white-space: normal !important;
+  word-break: break-word;
+  max-width: 300px;
+}
+
+section#Publications table td:first-child,
+section#Publications table th:first-child {
+  display: none;
 }
 
 div.span4.icon-box img {
@@ -298,16 +382,16 @@ section#Software {
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.5);
+  background: rgba(0, 0, 0, 0.3);
   cursor: pointer;
   transition: all 0.3s ease;
 }
 
 .carousel-dot.active {
-  background: white;
+  background: #000;
   transform: scale(1.2);
 }
 
 .carousel-dot:hover {
-  background: rgba(255, 255, 255, 0.8);
+  background: rgba(0, 0, 0, 0.5);
 }
