@@ -31,7 +31,6 @@ jobs:
         run: python ./_scripts/generate_cv_pdf.py
 
       - name: Build the site in the jekyll/builder container
-      - uses: actions/checkout@v4
         run: |
           docker run \
           -v ${{ github.workspace }}:/srv/jekyll -v ${{ github.workspace }}/_site:/srv/jekyll/_site \
