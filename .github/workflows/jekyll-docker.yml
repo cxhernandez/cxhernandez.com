@@ -30,11 +30,14 @@ jobs:
         shell: bash -el {0}
         run: python ./_scripts/generate_cv_pdf.py
 
-      - name: Build the site in the jekyll/builder container
-        run: |
-          docker run \
-          -v ${{ github.workspace }}:/srv/jekyll -v ${{ github.workspace }}/_site:/srv/jekyll/_site \
-          jekyll/builder:latest /bin/bash -c "chmod -R 777 /srv/jekyll && jekyll build --future"
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3'
+          bundler-cache: true
+
+      - name: Build Jekyll site
+        run: bundle exec jekyll build --future
 
       # - name: Configure AWS credentials
       #   uses: aws-actions/configure-aws-credentials@v4
