@@ -268,6 +268,17 @@ section.parallax {
   position: relative;
 }
 
+section.parallax::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 66.67%;
+  height: 1px;
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
 section.section-emphasis, section.section-emphasis-2 {
   min-height: 450px;
   margin-top: 0% !important;
