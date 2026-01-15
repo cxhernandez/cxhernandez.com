@@ -4,7 +4,7 @@ firstname: Carlos
 middlename: Xavier
 lastname: Hernández
 email: cxh@stanford.edu
-nav: About|Blog|Publications|Software
+nav: About|Blog|Publications|Software|Photography
 
 baseurl: "" # the subpath of your site, e.g. /blog/
 url: "http://www.cxhernandez.com" # the base hostname & protocol for your site
