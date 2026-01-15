@@ -5,6 +5,3 @@ _notebooks
 *.lock
 .sass-cache
 .DS_Store
-
-# Instagram API token (do not commit)
-_scripts/.instagram_token
