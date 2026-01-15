@@ -8,7 +8,7 @@ nav: About|Blog|Publications|Software|Photography
 
 baseurl: "" # the subpath of your site, e.g. /blog/
 url: "http://www.cxhernandez.com" # the base hostname & protocol for your site
-twitter_username: cxhrndz
+threads_username: cxhrndz
 github_username:  cxhernandez
 linkedin_username: carlos-xavier-hernández
 
