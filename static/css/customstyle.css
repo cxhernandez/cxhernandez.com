@@ -96,7 +96,7 @@ section#Software.parallax {
 }
 
 section#Publications.parallax {
-  background-image: url(../images/clark.jpg);
+  background-image: url(../images/publications-bg.jpg);
   background-position: 20% -70px;
 }
 
@@ -107,6 +107,16 @@ section.section-emphasis, section.section-emphasis-2 {
 
 section#Press p {
   text-align: center;
+}
+
+section#Publications .dataframe tbody td:first-of-type,
+section#Publications .dataframe tbody td:first-of-type a {
+  font-weight: bold !important;
+  color: white !important;
+}
+
+section#Publications .dataframe tbody td:first-of-type a:hover {
+  color: red !important;
 }
 
 div.span4.icon-box img {
