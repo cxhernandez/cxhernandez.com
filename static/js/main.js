@@ -30,6 +30,31 @@ function loadPDF(url) {
 	});
 }
 
+function loadCV() {
+
+	if ($('.bootbox').length) {
+		bootbox.hideAll();
+	}
+
+	disable_scroll();
+
+	bootbox.dialog(
+	{	"message" : $('#cv-content').html(),
+	    "label" : "",
+	    "class" : "",
+	    "callback": function() {}
+	});
+	$('.bootbox').addClass('cv-modal');
+	$('.bootbox').css({"background-color" : "#fff","border-width":"0","max-height": "90vh", "overflow-y": "auto", "width": "80%", "max-width": "900px", "margin-left": "auto", "margin-right": "auto", "left": "10%", "right": "10%", "border-radius": "8px", "box-shadow": "0 10px 40px rgba(0,0,0,0.3)"});
+	$('.bootbox-close-button').css({"color" : "#333", "opacity": "0.6", "font-size": "24px", "padding": "10px"});
+
+	$('button.bootbox-close-button.close').click(function () {enable_scroll();});
+	$('div.modal-backdrop').click( function(){
+	        bootbox.hideAll();
+			enable_scroll();
+	});
+}
+
 function showBlurb(thing) {
 
 	if ($('.bootbox').length) {

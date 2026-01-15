@@ -20,7 +20,7 @@
                     <li class=""><a href="#{{ item }}">{{ item }}</a></li>
                         {% endif %}
                     {% endfor %}
-                    <li class=""><a href="#" onclick="loadPDF('https://docs.google.com/gview?url={{ "/static/files/CV.pdf" | prepend:site.url }}&embedded=true');">CV</a></li>
+                    <li class=""><a href="#" onclick="loadCV(); return false;">CV</a></li>
                 </ul>
             </div>
         </div>
