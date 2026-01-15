@@ -121,27 +121,3 @@
     initCarousel();
   }
 </script>
-
-<style>
-  /* Clean up Instagram embed - show only the image */
-  .instagram-embed-wrapper {
-    position: relative;
-    overflow: hidden;
-    max-width: 480px;
-    height: 500px;
-    margin: 0 auto;
-    border-radius: 8px;
-  }
-
-  .instagram-embed-wrapper iframe,
-  .instagram-embed-wrapper .instagram-media-rendered {
-    border: none !important;
-    box-shadow: none !important;
-    margin: 0 !important;
-    position: relative !important;
-    /* Shift up to hide header (profile pic, username) */
-    top: -54px !important;
-    /* Clip bottom to hide likes, caption, footer */
-    clip-path: inset(0px 0px 160px 0px) !important;
-  }
-</style>

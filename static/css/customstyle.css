@@ -394,6 +394,46 @@ section#Photography .photography-blurb p {
   background: rgba(0, 0, 0, 0.5);
 }
 
+
+/* Instagram embed wrapper - crop header/footer with overflow */
+.instagram-embed-wrapper {
+  position: relative;
+  max-width: 500px;
+  height: 400px;
+  margin: 0 auto;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #fafafa;
+}
+
+/* Hide the blockquote before it renders as iframe */
+.instagram-embed-wrapper blockquote.instagram-media {
+  margin: 0 !important;
+  min-width: 100% !important;
+  opacity: 0;
+  height: 408px;
+}
+
+/* Position the iframe to hide header, let overflow hide footer */
+.instagram-embed-wrapper iframe {
+  border: none !important;
+  box-shadow: none !important;
+  margin: 0 !important;
+  position: relative !important;
+  /* Shift up to hide the header (profile pic, username, follow button) ~54px */
+  top: -54px !important;
+  left: 0 !important;
+  width: 100% !important;
+  /* Make iframe taller than container so footer gets clipped */
+  height: 900px !important;
+  min-height: 900px !important;
+}
+
+/* Show the rendered embed */
+.instagram-embed-wrapper .instagram-media-rendered {
+  opacity: 1 !important;
+}
+
 /* Software Section */
 section#Software {
   padding-top: 0;
