@@ -1,4 +1,5 @@
 @use "sass:math";
+@use "sass:color";
 @import "variables";
 
 /**
@@ -82,7 +83,7 @@ a {
     text-decoration: none;
 
     &:visited {
-        color: darken($brand-color, 15%);
+        color: color.adjust($brand-color, $lightness: -15%);
     }
 
     &:hover {
