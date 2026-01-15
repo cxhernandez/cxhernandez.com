@@ -1,76 +1,49 @@
 html { padding-top: 0 !important; }
 
-.theme-qtip-custom {
-    max-width: 400px;
-    padding: 7px 7px 11px 7px ;
-    border: 0;
-    width: 400px;
-    height: 200px;
-    background: #4D4D4D url(./images/loader.gif) no-repeat center center;
-}
-
-.theme-qtip-custom .qtip-content {
-    padding: 0;
-}
-
-.qtip .qtip-tip {
-    display: none !important;
-}
-
+/* Icon boxes */
 .icon-box {
-	padding:5px;
-	border-radius:8px;
-    -webkit-transition: opacity .2s ease-in-out;
-    -moz-transition: opacity .2s ease-in-out;
-    -ms-transition: opacity .2s ease-in-out;
-    -o-transition: opacity .2s ease-in-out;
-    transition: opacity .2s ease-in-out;
-}
-.icon-box:hover {
-	zoom: 1;
-	filter: alpha(opacity=50);
-	opacity: .5;
-    transition: none;
-    -o-transition: none;
-    -ms-transition: none;
-    -moz-transition: none;
-    -webkit-transition: none;
-}
-.bootbox { width: 80% !important; left: 0 !important; margin-left: 10% !important;height : 80% !important; display: block !important; float: left !important; }
-.bootbox-body{ height : 95% !important; width : 95% !important; margin-bottom:0; }
-a.contact {
-	color: gray;
-    -webkit-transition: color .2s ease-in-out;
-    -moz-transition: color .2s ease-in-out;
-    -ms-transition: color .2s ease-in-out;
-    -o-transition: color .2s ease-in-out;
-    transition: color .2s ease-in-out;
-}
-a.contact:hover{
-	color: black;
-    transition: none;
-    -o-transition: none;
-    -ms-transition: none;
-    -moz-transition: none;
-    -webkit-transition: none;
+  padding: 5px;
+  border-radius: 8px;
+  transition: opacity 0.2s ease-in-out;
 }
 
+.icon-box:hover {
+  opacity: 0.5;
+  transition: none;
+}
+
+/* Contact links */
+a.contact {
+  color: gray;
+  transition: color 0.2s ease-in-out;
+}
+
+a.contact:hover {
+  color: black;
+  transition: none;
+}
+
+/* Modal */
 .stop-scrolling {
   height: 100%;
   overflow: hidden;
 }
-div.modal-dialog,div.modal-content,div.modal-body{
-	height:100%;
+
+div.modal-dialog,
+div.modal-content,
+div.modal-body {
+  height: 100%;
 }
 
 h3 {
- font-size: 1.1em;
- color: white;
- text-align: center !important;
- padding: 0em !important;
- margin: 0em !important;
+  font-size: 1.1em;
+  color: white;
+  text-align: center !important;
+  padding: 0 !important;
+  margin: 0 !important;
 }
 
+/* Main Header */
 header#MainHeader.main-header.parallax {
   background-color: #fafafa;
   background-image: none;
@@ -108,6 +81,7 @@ header#MainHeader .initial-box {
   box-sizing: content-box;
 }
 
+/* Navigation */
 #MainNav .arrow {
   color: #000 !important;
   filter: invert(1);
@@ -120,9 +94,14 @@ header#MainHeader .initial-box {
 }
 
 #MainNav .navbar-inner .container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
   padding-left: 0 !important;
   margin-left: 0 !important;
 }
+
 #MainNav .nav-collapse {
   float: right !important;
   margin-left: auto;
@@ -131,13 +110,6 @@ header#MainHeader .initial-box {
 #MainNav .nav.nav-pills {
   float: right !important;
   margin-right: 40px;
-}
-
-#MainNav .navbar-inner .container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
 }
 
 .navbar-brand-logo {
@@ -179,86 +151,26 @@ header#MainHeader .initial-box {
   border-color: #333;
 }
 
-section#Photography.parallax {
-  background-color: #fafafa;
-  background-image: none;
+/* Section base styles */
+section.parallax {
+  position: relative;
 }
 
-section#Photography.parallax,
-section#Photography.parallax p,
-section#Photography.parallax a {
-  color: #000 !important;
+section.parallax::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 66.67%;
+  height: 1px;
+  background-color: rgba(0, 0, 0, 0.1);
 }
 
-section#Blog.parallax {
-  background-color: #fafafa;
-  background-image: none;
-}
-
-section#Software.parallax,
-section#Software .section-emphasis-2 {
-  background-color: #fafafa;
-  background-image: none;
-}
-
-section#Software.parallax,
-section#Software.parallax h2,
-section#Software.parallax h4,
-section#Software.parallax p,
-section#Software.parallax a,
-section#Software .section-emphasis-2,
-section#Software .section-emphasis-2 h2,
-section#Software .section-emphasis-2 h4,
-section#Software .section-emphasis-2 p,
-section#Software .section-emphasis-2 a {
-  color: #000 !important;
-}
-
-section#Software.parallax a:hover,
-section#Software .section-emphasis-2 a:hover {
-  color: red !important;
-}
-
-section#Publications.parallax {
-  background-color: #fafafa;
-  background-image: none;
-  overflow-x: hidden;
-  width: 100%;
-  max-width: 100vw;
-  box-sizing: border-box;
-}
-
-section#Publications.parallax * {
-  box-sizing: border-box;
-}
-
-section#About.parallax,
-section#About.parallax p,
-section#About.parallax a {
-  color: #000 !important;
-}
-
-section#About.parallax a:hover {
-  color: red !important;
-}
-
-section#About .about-layout {
-  display: flex;
-  align-items: flex-start;
-  gap: 40px;
-}
-
-section#About .about-layout .profile-container {
-  flex-shrink: 0;
-  margin: 0;
-}
-
-section#About .about-layout .about-text {
-  flex: 1;
-}
-
-section#About .about-layout .about-text p {
-  margin-top: 0;
+section.section-emphasis,
+section.section-emphasis-2 {
+  min-height: 450px;
+  margin-top: 0 !important;
 }
 
 /* Rotated section headers */
@@ -279,7 +191,7 @@ section#About .about-layout .about-text p {
   white-space: nowrap;
 }
 
-.section-header-rotate h2:after {
+.section-header-rotate h2::after {
   position: absolute;
   top: 8px;
   right: -50px;
@@ -289,28 +201,242 @@ section#About .about-layout .about-text p {
   height: 1px;
 }
 
-section.parallax {
-  position: relative;
+/* Light section common styles */
+section#About.parallax,
+section#Photography.parallax,
+section#Software.parallax,
+section#Publications.parallax {
+  background-color: #fafafa;
+  background-image: none;
 }
 
-section.parallax::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 66.67%;
-  height: 1px;
-  background-color: rgba(0, 0, 0, 0.1);
+section#About.parallax,
+section#About.parallax p,
+section#About.parallax a,
+section#Photography.parallax,
+section#Photography.parallax p,
+section#Photography.parallax a,
+section#Software.parallax,
+section#Software.parallax h2,
+section#Software.parallax h4,
+section#Software.parallax p,
+section#Software.parallax a,
+section#Publications.parallax,
+section#Publications.parallax p,
+section#Publications.parallax a {
+  color: #000 !important;
 }
 
-section.section-emphasis, section.section-emphasis-2 {
-  min-height: 450px;
-  margin-top: 0% !important;
+section#About.parallax a:hover,
+section#Software.parallax a:hover,
+section#Publications.parallax a:hover {
+  color: red !important;
 }
 
-section#Press p {
+/* About Section */
+section#About .about-layout {
+  display: flex;
+  align-items: flex-start;
+  gap: 40px;
+}
+
+section#About .about-layout .profile-container {
+  flex-shrink: 0;
+  margin: 0;
+}
+
+section#About .about-layout .about-text {
+  flex: 1;
+}
+
+section#About .about-layout .about-text p {
+  margin-top: 0;
+}
+
+div.profile-container {
+  min-width: 150px;
+  max-width: 300px;
+}
+
+div.profile-image {
+  background: url(../images/profile.jpg);
+  background-position: 50% 0;
+  background-size: cover;
+  padding-bottom: 375px;
+  width: 300px;
+  background-repeat: no-repeat;
+}
+
+/* Photography Section */
+section#Photography.parallax h2 {
+  padding-bottom: 1.5em;
+}
+
+section#Photography .photography-blurb,
+section#Photography .photography-blurb p {
   text-align: center;
+  color: #000 !important;
+  margin: 0 auto 30px auto;
+}
+
+.photo-carousel {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 0 50px;
+}
+
+.carousel-container {
+  overflow: hidden;
+  width: 100%;
+  border-radius: 8px;
+}
+
+.carousel-track {
+  display: flex;
+  transition: transform 0.5s ease-in-out;
+}
+
+.carousel-slide {
+  min-width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+.carousel-slide a {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  transition: transform 0.3s ease;
+}
+
+.carousel-slide a:hover {
+  transform: scale(1.02);
+}
+
+.carousel-slide img {
+  max-width: 100%;
+  max-height: 500px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  display: block;
+  margin: 0 auto;
+}
+
+.carousel-slide .instagram-media {
+  margin: 0 auto !important;
+}
+
+.carousel-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.9);
+  color: #333;
+  border: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  font-size: 18px;
+  cursor: pointer;
+  z-index: 10;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.carousel-btn:hover {
+  background: white;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.carousel-prev {
+  left: 0;
+}
+
+.carousel-next {
+  right: 0;
+}
+
+.carousel-dots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 20px;
+}
+
+.carousel-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.carousel-dot.active {
+  background: #000;
+  transform: scale(1.2);
+}
+
+.carousel-dot:hover {
+  background: rgba(0, 0, 0, 0.5);
+}
+
+/* Software Section */
+section#Software {
+  padding-top: 0;
+}
+
+section#Software .section-emphasis-2 {
+  background-color: #fafafa;
+  background-image: none;
+}
+
+section#Software .section-emphasis-2,
+section#Software .section-emphasis-2 h2,
+section#Software .section-emphasis-2 h4,
+section#Software .section-emphasis-2 p,
+section#Software .section-emphasis-2 a {
+  color: #000 !important;
+}
+
+section#Software .section-emphasis-2 a:hover {
+  color: red !important;
+}
+
+div.span4.icon-box img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 200px;
+}
+
+div.span4.icon-box {
+  margin-bottom: 4em;
+}
+
+/* Publications Section */
+section#Publications.parallax {
+  overflow-x: hidden;
+  width: 100%;
+  max-width: 100vw;
+  box-sizing: border-box;
+}
+
+section#Publications.parallax * {
+  box-sizing: border-box;
 }
 
 section#Publications .dataframe tbody td:first-of-type,
@@ -320,16 +446,6 @@ section#Publications .dataframe tbody td:first-of-type a {
 }
 
 section#Publications .dataframe tbody td:first-of-type a:hover {
-  color: red !important;
-}
-
-section#Publications.parallax,
-section#Publications.parallax p,
-section#Publications.parallax a {
-  color: #000 !important;
-}
-
-section#Publications.parallax a:hover {
   color: red !important;
 }
 
@@ -462,182 +578,4 @@ section#Publications table th {
 section#Publications table td:first-child,
 section#Publications table th:first-child {
   display: none;
-}
-
-div.span4.icon-box img {
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-  width: 200px;
-}
-
-div.span4.icon-box {
-  margin-bottom:4em;
-}
-
-div.profile-container {
-  min-width:150px;
-  max-width:300px;
-  margin: 0 auto;
-  margin-bottom: 20px;
-  border: 2px solid white;
-}
-
-div.profile-image {
-  background: url(../images/profile.jpg);
-  background-position: 50% 0;
-  background-size: cover;
-  padding-bottom: 375px;
-  width: 300px;
-  background-repeat: no-repeat;
-}
-
-section#Photography.parallax h2 {
-  padding-bottom: 1.5em;
-}
-
-section#Photography .photography-blurb,
-section#Photography .photography-blurb p {
-  text-align: center;
-  color: #000 !important;
-  margin: 0 auto 30px auto;
-}
-
-section#Software {
-  padding-top: 0em;
-}
-
-#instafeed a img {
-  padding: 1px;
-  border: 1px solid #f6f6f6;
-  background-color:#fcfcfc;
-}
-
-#instafeed a img {
-  padding: 1px;
-  border: 1px solid #f6f6f6;
-  background-color:#fcfcfc;
-  opacity: 1.0;
-  filter: alpha(opacity=100);
-}
-
-#instafeed a img:hover {
-  opacity: 0.8;
-  filter: alpha(opacity=80);
-}
-
-/* Photography Carousel Styles */
-.photo-carousel {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  max-width: 600px;
-  margin: 0 auto;
-  padding: 0 50px;
-}
-
-.carousel-container {
-  overflow: hidden;
-  width: 100%;
-  border-radius: 8px;
-}
-
-.carousel-track {
-  display: flex;
-  transition: transform 0.5s ease-in-out;
-}
-
-.carousel-slide {
-  min-width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 10px;
-  box-sizing: border-box;
-}
-
-.carousel-slide a {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  transition: transform 0.3s ease;
-}
-
-.carousel-slide a:hover {
-  transform: scale(1.02);
-}
-
-.carousel-slide img {
-  max-width: 100%;
-  max-height: 500px;
-  width: auto;
-  height: auto;
-  object-fit: contain;
-  border-radius: 8px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-  display: block;
-  margin: 0 auto;
-}
-
-.carousel-slide .instagram-media {
-  margin: 0 auto !important;
-}
-
-.carousel-btn {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  background: rgba(255, 255, 255, 0.9);
-  color: #333;
-  border: none;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  font-size: 18px;
-  cursor: pointer;
-  z-index: 10;
-  transition: all 0.3s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.carousel-btn:hover {
-  background: white;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-}
-
-.carousel-prev {
-  left: 0;
-}
-
-.carousel-next {
-  right: 0;
-}
-
-.carousel-dots {
-  display: flex;
-  justify-content: center;
-  gap: 8px;
-  margin-top: 20px;
-}
-
-.carousel-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: rgba(0, 0, 0, 0.3);
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.carousel-dot.active {
-  background: #000;
-  transform: scale(1.2);
-}
-
-.carousel-dot:hover {
-  background: rgba(0, 0, 0, 0.5);
 }
