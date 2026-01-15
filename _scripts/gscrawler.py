@@ -3,6 +3,7 @@
 
 import argparse
 import codecs
+import re
 from contextlib import closing
 from urllib.request import Request, urlopen
 
@@ -10,6 +11,26 @@ import pandas as pd
 from bs4 import BeautifulSoup
 
 pd.options.display.max_colwidth = 500
+
+
+def clean_journal_name(journal):
+    """Remove trailing volume/issue numbers from journal names.
+    
+    Examples:
+        'Biophysical Journal 109' -> 'Biophysical Journal'
+        'Accounts of chemical research 48 (2)' -> 'Accounts of chemical research'
+        'Physical Review E 97 (6)' -> 'Physical Review E'
+        'The Journal of Open Source Software 2 (12)' -> 'The Journal of Open Source Software'
+        'arXiv preprint arXiv:1802.10548' -> 'arXiv'
+    """
+    # Remove trailing parenthetical content like (1), (2), (12)
+    journal = re.sub(r'\s*\([^)]*\)\s*$', '', journal)
+    # Remove trailing numbers (volume numbers)
+    journal = re.sub(r'\s+\d+\s*$', '', journal)
+    # Clean up arXiv format - just use 'arXiv'
+    if journal.lower().startswith('arxiv'):
+        journal = 'arXiv'
+    return journal.strip()
 
 
 def get_soup(user):
@@ -41,7 +62,7 @@ def get_table(soup):
     ]
 
     journals = [
-        item.text.split(",")[0]
+        clean_journal_name(item.text.split(",")[0])
         for i, item in enumerate(table_data.find_all("div", {"class": "gs_gray"}))
         if i % 2
     ]
