@@ -688,12 +688,6 @@ section#Publications table th:first-child {
   margin-bottom: 0.5rem;
 }
 
-/* Contact icons row */
-.cv-modal h1 + p + br + a,
-.cv-modal h1 ~ p a {
-  font-size: 0.875rem;
-}
-
 /* Section headers (Experience, Education, etc.) */
 .cv-modal h2 {
   font-size: 1.25rem;
@@ -763,6 +757,7 @@ section#Publications table th:first-child {
 }
 
 .cv-modal a:hover {
+  color: red;
   text-decoration: underline;
 }
 
