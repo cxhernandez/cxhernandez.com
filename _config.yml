@@ -7,8 +7,8 @@ email: cxh@meta.com
 description: "Carlos Xavier Hernández – Senior Research Scientist at Meta Reality Labs specializing in machine learning, neural interfaces, and EMG signal processing."
 nav: About|Publications|Software|Photography
 
-baseurl: "" # the subpath of your site, e.g. /blog/
-url: "https://www.cxhernandez.com" # the base hostname & protocol for your site
+baseurl: "/cxhernandez.com" # the subpath of your site, e.g. /blog/
+url: "https://cxhernandez.github.io" # the base hostname & protocol for your site
 threads_username: cxhrndz
 github_username:  cxhernandez
 linkedin_username: carlos-xavier-hernández
