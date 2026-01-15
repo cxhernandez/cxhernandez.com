@@ -80,9 +80,43 @@ header#MainHeader.main-header.parallax h1 {
   color: #000 !important;
 }
 
+header#MainHeader h1.name-header {
+  display: inline-block;
+  text-align: left;
+}
+
+header#MainHeader .name-container {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+header#MainHeader .name-line {
+  display: block;
+}
+
+header#MainHeader .initial-box {
+  display: inline-block;
+  background: #000;
+  color: #fff !important;
+  padding: 0.1em 0.15em;
+  margin-right: 0.05em;
+  font-weight: 400;
+  line-height: 1;
+  width: 0.8em;
+  text-align: center;
+  box-sizing: content-box;
+}
+
 #MainNav .arrow {
   color: #000 !important;
   filter: invert(1);
+}
+
+#MainNav,
+#MainNav .navbar-inner {
+  background-color: #fafafa !important;
+  background-image: none !important;
 }
 
 #MainNav .arrow:after {
@@ -91,12 +125,12 @@ header#MainHeader.main-header.parallax h1 {
 
 .navbar-brand-logo {
   float: left;
-  font-size: 16px;
+  font-size: 13px;
   text-transform: uppercase;
   color: #fff;
   font-weight: 400;
   letter-spacing: 3px;
-  padding: 5px 7px;
+  padding: 4px 6px;
   border: 1px solid #000;
   display: block;
   text-align: center;
@@ -182,6 +216,38 @@ section#About.parallax a {
 
 section#About.parallax a:hover {
   color: red !important;
+}
+
+/* Rotated section headers */
+.section-header-rotate {
+  position: absolute;
+  top: 2em;
+  left: 40px;
+}
+
+.section-header-rotate h2 {
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.5em;
+  transform: rotate(90deg);
+  transform-origin: left top 0;
+  position: relative;
+  color: #000 !important;
+  white-space: nowrap;
+}
+
+.section-header-rotate h2:after {
+  position: absolute;
+  top: 8px;
+  right: -50px;
+  content: '';
+  background: #000;
+  width: 40px;
+  height: 1px;
+}
+
+section.parallax {
+  position: relative;
 }
 
 section.section-emphasis, section.section-emphasis-2 {
