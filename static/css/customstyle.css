@@ -242,6 +242,25 @@ section#About.parallax a:hover {
   color: red !important;
 }
 
+section#About .about-layout {
+  display: flex;
+  align-items: flex-start;
+  gap: 40px;
+}
+
+section#About .about-layout .profile-container {
+  flex-shrink: 0;
+  margin: 0;
+}
+
+section#About .about-layout .about-text {
+  flex: 1;
+}
+
+section#About .about-layout .about-text p {
+  margin-top: 0;
+}
+
 /* Rotated section headers */
 .section-header-rotate {
   position: absolute;
@@ -467,8 +486,9 @@ div.profile-container {
 div.profile-image {
   background: url(../images/profile.jpg);
   background-position: 50% 0;
-  background-size: 300px 300px;
-  padding-bottom:300px;
+  background-size: cover;
+  padding-bottom: 375px;
+  width: 300px;
   background-repeat: no-repeat;
 }
 
