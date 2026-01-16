@@ -7,6 +7,7 @@ on:
       - feature/photography-store
     paths:
       - 'cloudflare-worker/**'
+      - '.github/workflows/deploy-worker.yml'
   workflow_dispatch:  # Allow manual trigger
 
 jobs:
