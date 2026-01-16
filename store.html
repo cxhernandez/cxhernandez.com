@@ -1,0 +1,219 @@
+---
+layout: default
+title: Photography Store
+---
+
+<section id="Store" class="parallax">
+    <div class="section-header-rotate">
+        <h2>Store</h2>
+    </div>
+
+    <div class="container">
+        <div class="row-fluid">
+            <div class="store-content span12">
+                <div class="store-intro">
+                    <p>Purchase prints of my photography or book a portrait session.</p>
+                    <p><a href="/#Photography" class="back-link">&larr; Back to Photography</a></p>
+                </div>
+
+                <div class="store-sections">
+                    <!-- Prints Section -->
+                    <div class="store-section">
+                        <h3>Prints</h3>
+                        <p class="section-description">High-quality prints of my wildlife and street photography, professionally printed on archival paper.</p>
+
+                        <div class="product-grid" id="prints-grid">
+                            <!-- Products will be loaded dynamically -->
+                            <div class="loading-placeholder">Loading prints...</div>
+                        </div>
+                    </div>
+
+                    <!-- Services Section -->
+                    <div class="store-section">
+                        <h3>Photography Services</h3>
+                        <p class="section-description">Book a portrait session for professional headshots, family photos, or special occasions.</p>
+
+                        <div class="services-grid" id="services-grid">
+                            <div class="service-card">
+                                <div class="service-icon">📸</div>
+                                <h4>Portrait Session</h4>
+                                <p>1-hour professional portrait session at a location of your choice. Includes 10 edited digital photos.</p>
+                                <p class="price">$250</p>
+                                <button class="btn-book" data-service="portrait" data-price="25000">Book Now</button>
+                            </div>
+
+                            <div class="service-card">
+                                <h4>Extended Session</h4>
+                                <div class="service-icon">🎞️</div>
+                                <p>2-hour session ideal for families or multiple looks. Includes 25 edited digital photos.</p>
+                                <p class="price">$400</p>
+                                <button class="btn-book" data-service="extended" data-price="40000">Book Now</button>
+                            </div>
+
+                            <div class="service-card">
+                                <div class="service-icon">🏢</div>
+                                <h4>Corporate Headshots</h4>
+                                <p>Professional headshots for your team. Per-person pricing with volume discounts available.</p>
+                                <p class="price">Starting at $100/person</p>
+                                <button class="btn-book" data-service="corporate" data-price="10000">Inquire</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Checkout Modal -->
+                <div id="checkout-modal" class="modal-overlay" style="display: none;">
+                    <div class="modal-content">
+                        <button class="modal-close" onclick="closeCheckoutModal()">&times;</button>
+                        <h3 id="modal-title">Complete Your Purchase</h3>
+                        <div id="checkout-form-container">
+                            <!-- Square payment form will be injected here -->
+                        </div>
+                        <div id="checkout-loading" style="display: none;">
+                            <p>Processing...</p>
+                        </div>
+                        <div id="checkout-error" style="display: none; color: red;"></div>
+                        <div id="checkout-success" style="display: none;">
+                            <p>Thank you for your purchase! You'll receive a confirmation email shortly.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Square Web Payments SDK -->
+<script src="https://web.squarecdn.com/v1/square.js"></script>
+
+<script>
+    // Configuration (from Jekyll _config.yml)
+    const SQUARE_APP_ID = '{{ site.square.app_id }}';
+    const SQUARE_LOCATION_ID = '{{ site.square.location_id }}';
+    const WORKER_URL = '{{ site.square.worker_url }}';
+
+    let payments = null;
+    let card = null;
+    let currentItem = null;
+
+    // Initialize Square Payments
+    async function initializeSquare() {
+        if (!window.Square) {
+            console.error('Square SDK not loaded');
+            return;
+        }
+
+        try {
+            payments = window.Square.payments(SQUARE_APP_ID, SQUARE_LOCATION_ID);
+        } catch (e) {
+            console.error('Failed to initialize Square payments:', e);
+        }
+    }
+
+    // Open checkout modal
+    async function openCheckoutModal(item, price, title) {
+        currentItem = { item, price, title };
+        document.getElementById('modal-title').textContent = `Book: ${title}`;
+        document.getElementById('checkout-modal').style.display = 'flex';
+        document.getElementById('checkout-form-container').innerHTML = '';
+        document.getElementById('checkout-loading').style.display = 'none';
+        document.getElementById('checkout-error').style.display = 'none';
+        document.getElementById('checkout-success').style.display = 'none';
+
+        // Create card payment form
+        try {
+            if (!payments) {
+                await initializeSquare();
+            }
+
+            card = await payments.card();
+            await card.attach('#checkout-form-container');
+
+            // Add submit button
+            const submitBtn = document.createElement('button');
+            submitBtn.className = 'btn-submit-payment';
+            submitBtn.textContent = `Pay $${(price / 100).toFixed(2)}`;
+            submitBtn.onclick = handlePayment;
+            document.getElementById('checkout-form-container').appendChild(submitBtn);
+        } catch (e) {
+            console.error('Failed to initialize card form:', e);
+            document.getElementById('checkout-error').textContent = 'Failed to load payment form. Please try again.';
+            document.getElementById('checkout-error').style.display = 'block';
+        }
+    }
+
+    // Close checkout modal
+    function closeCheckoutModal() {
+        document.getElementById('checkout-modal').style.display = 'none';
+        if (card) {
+            card.destroy();
+            card = null;
+        }
+        currentItem = null;
+    }
+
+    // Handle payment submission
+    async function handlePayment() {
+        if (!card || !currentItem) return;
+
+        document.getElementById('checkout-loading').style.display = 'block';
+        document.getElementById('checkout-error').style.display = 'none';
+
+        try {
+            const result = await card.tokenize();
+            if (result.status === 'OK') {
+                // Send to Cloudflare Worker
+                const response = await fetch(`${WORKER_URL}/create-payment`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        sourceId: result.token,
+                        amount: currentItem.price,
+                        item: currentItem.item,
+                        title: currentItem.title
+                    })
+                });
+
+                const paymentResult = await response.json();
+
+                if (paymentResult.success) {
+                    document.getElementById('checkout-loading').style.display = 'none';
+                    document.getElementById('checkout-form-container').style.display = 'none';
+                    document.getElementById('checkout-success').style.display = 'block';
+                } else {
+                    throw new Error(paymentResult.error || 'Payment failed');
+                }
+            } else {
+                throw new Error(result.errors?.[0]?.message || 'Card validation failed');
+            }
+        } catch (e) {
+            console.error('Payment error:', e);
+            document.getElementById('checkout-loading').style.display = 'none';
+            document.getElementById('checkout-error').textContent = e.message || 'Payment failed. Please try again.';
+            document.getElementById('checkout-error').style.display = 'block';
+        }
+    }
+
+    // Bind click handlers to book buttons
+    document.addEventListener('DOMContentLoaded', function() {
+        initializeSquare();
+
+        document.querySelectorAll('.btn-book').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const service = this.dataset.service;
+                const price = parseInt(this.dataset.price, 10);
+                const title = this.parentElement.querySelector('h4').textContent;
+                openCheckoutModal(service, price, title);
+            });
+        });
+    });
+
+    // Close modal on outside click
+    document.getElementById('checkout-modal')?.addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeCheckoutModal();
+        }
+    });
+</script>

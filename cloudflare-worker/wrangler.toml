@@ -1,0 +1,11 @@
+name = "photography-store-api"
+main = "src/index.js"
+compatibility_date = "2024-01-01"
+
+[vars]
+# These are public - safe to commit
+SQUARE_ENVIRONMENT = "sandbox"  # Change to "production" when ready
+
+# IMPORTANT: Set these as secrets, not here!
+# Run: wrangler secret put SQUARE_ACCESS_TOKEN
+# Run: wrangler secret put SQUARE_LOCATION_ID

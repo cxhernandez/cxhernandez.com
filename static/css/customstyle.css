@@ -1576,3 +1576,257 @@ section#Publications table th:first-child {
     width: 100px;
   }
 }
+
+/* ============================================
+   Store Page Styles
+   ============================================ */
+
+section#Store.parallax {
+  background-color: #fafafa;
+  background-image: none;
+  min-height: 100vh;
+  padding-top: 80px;
+}
+
+section#Store.parallax,
+section#Store.parallax p,
+section#Store.parallax a,
+section#Store.parallax h3,
+section#Store.parallax h4 {
+  color: #000 !important;
+}
+
+section#Store.parallax a:hover {
+  color: red !important;
+}
+
+section#Store .store-content {
+  padding: 20px 40px;
+}
+
+section#Store .store-intro {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+section#Store .store-intro p {
+  font-size: 1.1em;
+  margin-bottom: 10px;
+}
+
+section#Store .back-link {
+  font-size: 0.9em;
+  color: #666 !important;
+}
+
+section#Store .back-link:hover {
+  color: #000 !important;
+}
+
+section#Store .store-section {
+  margin-bottom: 60px;
+}
+
+section#Store .store-section h3 {
+  font-size: 1.5em;
+  text-align: left !important;
+  margin-bottom: 10px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #000;
+}
+
+section#Store .section-description {
+  color: #666 !important;
+  margin-bottom: 30px;
+}
+
+/* Services Grid */
+section#Store .services-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 30px;
+}
+
+section#Store .service-card {
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 30px;
+  text-align: center;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+section#Store .service-card:hover {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+section#Store .service-icon {
+  font-size: 2.5em;
+  margin-bottom: 15px;
+}
+
+section#Store .service-card h4 {
+  font-size: 1.2em;
+  margin-bottom: 15px;
+  font-weight: 600;
+}
+
+section#Store .service-card p {
+  font-size: 0.95em;
+  line-height: 1.6;
+  color: #555 !important;
+}
+
+section#Store .service-card .price {
+  font-size: 1.3em;
+  font-weight: bold;
+  color: #000 !important;
+  margin: 20px 0;
+}
+
+section#Store .btn-book {
+  background: #000;
+  color: #fff !important;
+  border: none;
+  padding: 12px 30px;
+  font-size: 1em;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background 0.2s ease;
+}
+
+section#Store .btn-book:hover {
+  background: #333;
+}
+
+/* Product Grid (for prints) */
+section#Store .product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 25px;
+}
+
+section#Store .product-card {
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: box-shadow 0.2s ease;
+}
+
+section#Store .product-card:hover {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+section#Store .product-card img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+section#Store .product-info {
+  padding: 20px;
+}
+
+section#Store .product-info h4 {
+  margin-bottom: 10px;
+}
+
+section#Store .product-info .price {
+  font-weight: bold;
+  font-size: 1.1em;
+}
+
+section#Store .loading-placeholder {
+  text-align: center;
+  padding: 40px;
+  color: #666;
+}
+
+/* Checkout Modal */
+section#Store .modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+section#Store .modal-content {
+  background: #fff;
+  padding: 40px;
+  border-radius: 8px;
+  max-width: 450px;
+  width: 90%;
+  position: relative;
+}
+
+section#Store .modal-content h3 {
+  color: #000 !important;
+  text-align: left !important;
+  margin-bottom: 20px;
+  font-size: 1.3em;
+}
+
+section#Store .modal-close {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  background: none;
+  border: none;
+  font-size: 1.5em;
+  cursor: pointer;
+  color: #666;
+}
+
+section#Store .modal-close:hover {
+  color: #000;
+}
+
+section#Store .btn-submit-payment {
+  width: 100%;
+  background: #000;
+  color: #fff !important;
+  border: none;
+  padding: 15px;
+  font-size: 1.1em;
+  cursor: pointer;
+  border-radius: 4px;
+  margin-top: 20px;
+  transition: background 0.2s ease;
+}
+
+section#Store .btn-submit-payment:hover {
+  background: #333;
+}
+
+/* Square Card Form Styling */
+section#Store #checkout-form-container {
+  min-height: 100px;
+}
+
+/* Responsive adjustments for store */
+@media (max-width: 768px) {
+  section#Store .store-content {
+    padding: 20px;
+  }
+
+  section#Store .services-grid {
+    grid-template-columns: 1fr;
+  }
+
+  section#Store .service-card {
+    padding: 20px;
+  }
+
+  section#Store .modal-content {
+    padding: 25px;
+    margin: 20px;
+  }
+}
