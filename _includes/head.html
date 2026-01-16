@@ -71,29 +71,29 @@
     {% endfor %}
   {% endif %}
 
-  <script src="{{ "/static/js/jquery.min.js" | prepend: site.baseurl }}"></script>
-  <script src="{{ "/static/js/jquery.qtip.min.js" | prepend: site.baseurl }}"></script>
-  <script src="{{ "/static/js/jquery.tweet.js" | prepend: site.baseurl }}"></script>
-  <script src="{{ "/static/js/jquery.flexslider-min.js" | prepend: site.baseurl }}"></script>
+  <script src="{{ "/static/js/jquery.min.js" | prepend: site.baseurl }}" defer></script>
+  <script src="{{ "/static/js/jquery.qtip.min.js" | prepend: site.baseurl }}" defer></script>
+  <script src="{{ "/static/js/jquery.tweet.js" | prepend: site.baseurl }}" defer></script>
+  <script src="{{ "/static/js/jquery.flexslider-min.js" | prepend: site.baseurl }}" defer></script>
   <script src="https://cdn.datatables.net/1.10.6/js/jquery.dataTables.min.js"
           integrity="sha384-ShqaqoNf8jU7jX5t0rRB92xkhkJ2JmaO+w0CRy8038lVvRk/dkV/V0YlJ6ApAFnX"
-          crossorigin="anonymous"></script>
-  <script src="{{ "/static/js/jquery.parallax-1.1.3.js" | prepend: site.baseurl }}"></script>
-  <script src="{{ "/static/js/jquery.easing.1.3.js" | prepend: site.baseurl }}"></script>
-  <script src="{{ "/static/js/jquery.easy-pie-chart.js" | prepend: site.baseurl }}"></script>
-  <script src="{{ "/static/js/jquery.viewport.min.js" | prepend: site.baseurl }}"></script>
-  <script src="{{ "/static/js/jquery.isotope.min.js" | prepend: site.baseurl }}"></script>
-  <script src="{{ "/static/js/jquery.ba-bbq.min.js" | prepend: site.baseurl }}"></script>
-  <script src="{{ "/static/js/jquery.ddslick.js" | prepend: site.baseurl }}"></script>
-<script src="{{ "/static/js/bootstrap.min.js" | prepend: site.baseurl }}"></script>
-  <script src="{{ "/static/js/bootbox.min.js" | prepend: site.baseurl }}"></script>
-  <script src="{{ "/static/js/main.js" | prepend: site.baseurl }}"></script>
-  <script src="{{ "/static/js/switcher.js" | prepend: site.baseurl }}"></script>
-  <script src="{{ "/static/js/require.js" | prepend: site.baseurl }}"></script>
-  <script src="{{ "/static/js/instafeed.min.js" | prepend: site.baseurl }}"></script>
+          crossorigin="anonymous" defer></script>
+  <script src="{{ "/static/js/jquery.parallax-1.1.3.js" | prepend: site.baseurl }}" defer></script>
+  <script src="{{ "/static/js/jquery.easing.1.3.js" | prepend: site.baseurl }}" defer></script>
+  <script src="{{ "/static/js/jquery.easy-pie-chart.js" | prepend: site.baseurl }}" defer></script>
+  <script src="{{ "/static/js/jquery.viewport.min.js" | prepend: site.baseurl }}" defer></script>
+  <script src="{{ "/static/js/jquery.isotope.min.js" | prepend: site.baseurl }}" defer></script>
+  <script src="{{ "/static/js/jquery.ba-bbq.min.js" | prepend: site.baseurl }}" defer></script>
+  <script src="{{ "/static/js/jquery.ddslick.js" | prepend: site.baseurl }}" defer></script>
+  <script src="{{ "/static/js/bootstrap.min.js" | prepend: site.baseurl }}" defer></script>
+  <script src="{{ "/static/js/bootbox.min.js" | prepend: site.baseurl }}" defer></script>
+  <script src="{{ "/static/js/main.js" | prepend: site.baseurl }}" defer></script>
+  <script src="{{ "/static/js/switcher.js" | prepend: site.baseurl }}" defer></script>
+  <script src="{{ "/static/js/require.js" | prepend: site.baseurl }}" defer></script>
+  <script src="{{ "/static/js/instafeed.min.js" | prepend: site.baseurl }}" defer></script>
   {% if page.custom_js %}
     {% for js_file in page.custom_js %}
-  <script src='{{ js_file }}'></script>
+  <script src='{{ js_file }}' defer></script>
     {% endfor %}
   {% endif %}
 
