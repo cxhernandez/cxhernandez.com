@@ -33,9 +33,16 @@ jobs:
           auto-activate-base: false
 
       - name: Fetch publications from Google Scholar
+        id: fetch-publications
         shell: bash -el {0}
         run: python ./_scripts/gscrawler.py -u 6j85aJMAAAAJ -o ./_includes/publications.md
         continue-on-error: true
+
+      - name: Check publication fetch status
+        if: steps.fetch-publications.outcome == 'failure'
+        run: |
+          echo "::warning::Publication fetch from Google Scholar failed. Site will build with stale publication data."
+          echo "PUBLICATION_FETCH_FAILED=true" >> $GITHUB_ENV
 
       - name: Generate CV PDF
         shell: bash -el {0}
@@ -64,19 +71,3 @@ jobs:
         if: env.SHOULD_DEPLOY == 'true'
         id: deployment
         uses: actions/deploy-pages@v4
-
-      # - name: Configure AWS credentials
-      #   uses: aws-actions/configure-aws-credentials@v4
-      #   with:
-      #     aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      #     aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      #     aws-region: us-west-1
-
-      # - name: Deploy to S3
-      #   run: |
-      #     aws s3 sync _site/ s3://cxhernandez.com \
-      #       --delete \
-      #       --cache-control "max-age=300" \
-      #       --exclude "static/*"
-      #     aws s3 sync _site/static/ s3://cxhernandez.com/static/ \
-      #       --cache-control "max-age=6000"

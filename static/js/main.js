@@ -1,11 +1,20 @@
+'use strict';
+
+/* Global variables */
+var mainNavHeight;
+var siblings;
+var targets;
+
 function disable_scroll() {
-	$('body').addClass('stop-scrolling');
-	$('body').bind('touchmove', function(e){e.preventDefault()});
+	var $body = $('body');
+	$body.addClass('stop-scrolling');
+	$body.on('touchmove', function(e){e.preventDefault();});
 }
 
 function enable_scroll() {
-	$('body').removeClass('stop-scrolling');
-	$('body').unbind('touchmove');
+	var $body = $('body');
+	$body.removeClass('stop-scrolling');
+	$body.off('touchmove');
 }
 
 function loadPDF(url) {
@@ -203,11 +212,6 @@ setTimeout(function() {
     }
 }, 1);
 
-/* variable used for sticky menu calculations */
-var mainNavHeight;
-
-
-
 $(window).on('resize', function(){
     lightboxOnResize();
 });
@@ -312,7 +316,7 @@ $(window).load(function(){
 
         var hashChanged = false;
 
-        jQuery(window).bind('hashchange', function (event) {
+        jQuery(window).on('hashchange', function (event) {
             // get options object from hash
             var hashOptions = window.location.hash ? jQuery.deparam.fragment(window.location.hash, true) : {}, // do not animate first call
                 aniEngine = hashChanged ? 'best-available' : 'none', // apply defaults where no option was specified
@@ -486,7 +490,7 @@ $(window).load(function(){
             ptarget = list.last().attr("href");
         } else {
             ptarget = list.filter(function(){
-                return ($(this).data("index") == pindex)
+                return ($(this).data("index") == pindex);
             });
             ptarget = ptarget.attr("href");
         }
@@ -497,18 +501,21 @@ $(window).load(function(){
             ntarget = list.first().attr("href");
         } else {
             ntarget = list.filter(function(){
-                return ($(this).data("index") == nindex)
+                return ($(this).data("index") == nindex);
             });
             ntarget = ntarget.attr("href");
         }
-        siblings = new Object();
-        siblings.p = new Object();
-        siblings.p.index = pindex;
-        siblings.p.target = ptarget;
-        siblings.n = new Object();
-        siblings.n.index = nindex;
-        siblings.n.target = ntarget;
-        return siblings;
+        var siblingsResult = {
+            p: {
+                index: pindex,
+                target: ptarget
+            },
+            n: {
+                index: nindex,
+                target: ntarget
+            }
+        };
+        return siblingsResult;
     }
 
     var container = $(".work > .container");
@@ -517,10 +524,13 @@ $(window).load(function(){
     $(".work .preview .slides a").on('click',function (e) {
         e.preventDefault();
         var $work = $(".work");
-        targets = new Object();
-        targets.c = new Object();
-        targets.c.target = $(this).attr('href');
-        targets.c.index = $(this).data('index');
+        targets = {
+            c: {
+                target: $(this).attr('href'),
+                index: $(this).data('index')
+            },
+            s: null
+        };
         targets.s = findSiblings(targets.c.index, workThumbnails);
 
         if (targets.c.target != "#" && targets.c.target != "") {
@@ -557,11 +567,11 @@ $(window).load(function(){
         if (dir == "l") {
 
             $work.data('target', siblings.n.target).data('index', findSiblings($work.data("index"), workThumbnails).n.index);
-            siblings = new Object();
             siblings = findSiblings($work.data("index"), workThumbnails);
-            siblings.c = new Object();
-            siblings.c.target = $work.data("target");
-            siblings.c.index = $work.data("index");
+            siblings.c = {
+                target: $work.data("target"),
+                index: $work.data("index")
+            };
 
             var targetH = rclone.height();
             rclone.toggleClass("clone right original");
@@ -574,11 +584,11 @@ $(window).load(function(){
         } else if (dir == "r") {
 
             $work.data('target', siblings.p.target).data('index', findSiblings($work.data("index"), workThumbnails).p.index);
-            siblings = new Object();
             siblings = findSiblings($work.data("index"), workThumbnails);
-            siblings.c = new Object();
-            siblings.c.target = $work.data("target");
-            siblings.c.index = $work.data("index");
+            siblings.c = {
+                target: $work.data("target"),
+                index: $work.data("index")
+            };
 
             var targetH = lclone.height();
             lclone.toggleClass("clone left original");
