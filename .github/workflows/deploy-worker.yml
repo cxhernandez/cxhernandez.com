@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - master
+      - feature/photography-store
     paths:
       - 'cloudflare-worker/**'
   workflow_dispatch:  # Allow manual trigger
