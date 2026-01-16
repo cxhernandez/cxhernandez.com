@@ -33,9 +33,16 @@ jobs:
           auto-activate-base: false
 
       - name: Fetch publications from Google Scholar
+        id: fetch-publications
         shell: bash -el {0}
         run: python ./_scripts/gscrawler.py -u 6j85aJMAAAAJ -o ./_includes/publications.md
         continue-on-error: true
+
+      - name: Check publication fetch status
+        if: steps.fetch-publications.outcome == 'failure'
+        run: |
+          echo "::warning::Publication fetch from Google Scholar failed. Site will build with stale publication data."
+          echo "PUBLICATION_FETCH_FAILED=true" >> $GITHUB_ENV
 
       - name: Generate CV PDF
         shell: bash -el {0}
