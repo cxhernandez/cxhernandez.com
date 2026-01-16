@@ -196,9 +196,64 @@ title: Photography Store
         }
     }
 
+    // Load prints from Square catalog
+    async function loadPrints() {
+        const grid = document.getElementById('prints-grid');
+
+        try {
+            const response = await fetch(`${WORKER_URL}/catalog`);
+            const data = await response.json();
+
+            if (!data.success || !data.items || data.items.length === 0) {
+                grid.innerHTML = '<p class="no-prints">No prints available at this time.</p>';
+                return;
+            }
+
+            grid.innerHTML = data.items.map(item => {
+                const variation = item.variations[0] || {};
+                const price = variation.price ? (variation.price / 100).toFixed(2) : '0.00';
+                const imageUrl = item.images[0] || '/static/img/placeholder.jpg';
+
+                return `
+                    <div class="product-card">
+                        <div class="product-image">
+                            <img src="${imageUrl}" alt="${item.name}" loading="lazy">
+                        </div>
+                        <div class="product-info">
+                            <h4>${item.name}</h4>
+                            ${item.description ? `<p>${item.description}</p>` : ''}
+                            <p class="price">$${price}</p>
+                            <button class="btn-buy"
+                                data-item-id="${item.id}"
+                                data-variation-id="${variation.id}"
+                                data-price="${variation.price || 0}"
+                                data-title="${item.name}">
+                                Buy Print
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            // Bind click handlers to buy buttons
+            grid.querySelectorAll('.btn-buy').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const price = parseInt(this.dataset.price, 10);
+                    const title = this.dataset.title;
+                    const itemId = this.dataset.itemId;
+                    openCheckoutModal(itemId, price, title);
+                });
+            });
+        } catch (error) {
+            console.error('Failed to load prints:', error);
+            grid.innerHTML = '<p class="error">Failed to load prints. Please try again later.</p>';
+        }
+    }
+
     // Bind click handlers to book buttons
     document.addEventListener('DOMContentLoaded', function() {
         initializeSquare();
+        loadPrints();
 
         document.querySelectorAll('.btn-book').forEach(btn => {
             btn.addEventListener('click', function() {
