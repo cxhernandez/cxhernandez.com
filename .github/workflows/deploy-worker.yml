@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - master
-      - feature/photography-store
     paths:
       - 'cloudflare-worker/**'
       - '.github/workflows/deploy-worker.yml'
