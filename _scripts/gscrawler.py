@@ -3,12 +3,23 @@
 
 import argparse
 import codecs
+import logging
 import re
+import time
 from contextlib import closing
+from pathlib import Path
+from urllib.error import URLError
 from urllib.request import Request, urlopen
 
 import pandas as pd
 from bs4 import BeautifulSoup
+
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger(__name__)
 
 pd.options.display.max_colwidth = 500
 
@@ -93,16 +104,49 @@ def clean_journal_name(journal):
     return journal
 
 
-def get_soup(user):
-    url = "https://scholar.google.com/citations?" "hl=en&user=%s&pagesize=100" % user
+def get_soup(user, max_retries=3, backoff_factor=2):
+    """Fetch Google Scholar page with retry logic.
+
+    Args:
+        user: Google Scholar user ID
+        max_retries: Maximum number of retry attempts
+        backoff_factor: Multiplier for exponential backoff
+
+    Returns:
+        BeautifulSoup object of the page
+
+    Raises:
+        URLError: If all retry attempts fail
+    """
+    url = f"https://scholar.google.com/citations?hl=en&user={user}&pagesize=100"
     user_agent = (
-        "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.9.0.7)"
-        " Gecko/2009021910 Firefox/3.0.7"
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+        "AppleWebKit/537.36 (KHTML, like Gecko) "
+        "Chrome/91.0.4472.124 Safari/537.36"
     )
-    req = Request(url, None, headers={"User-Agent": user_agent})
-    with closing(urlopen(req)) as r:
-        soup = BeautifulSoup(r.read(), "html5lib")
-    return soup
+
+    for attempt in range(max_retries):
+        try:
+            logger.info(f"Fetching publications for user {user} (attempt {attempt + 1}/{max_retries})")
+            req = Request(url, None, headers={"User-Agent": user_agent})
+            with closing(urlopen(req, timeout=10)) as r:
+                soup = BeautifulSoup(r.read(), "html.parser")
+            logger.info("Successfully fetched publication data")
+            return soup
+        except URLError as e:
+            logger.warning(f"Attempt {attempt + 1} failed: {e}")
+            if attempt < max_retries - 1:
+                sleep_time = backoff_factor ** attempt
+                logger.info(f"Retrying in {sleep_time} seconds...")
+                time.sleep(sleep_time)
+            else:
+                logger.error("All retry attempts failed")
+                raise
+        except Exception as e:
+            logger.error(f"Unexpected error: {e}")
+            raise
+
+    raise URLError("Failed to fetch data after all retries")
 
 
 def get_table(soup):
@@ -209,7 +253,25 @@ output = {"html": get_html, "json": get_json, "latex": get_latex, "tab": get_tab
 
 if __name__ == "__main__":
     options = parse_cmdln()
-    soup = get_soup(options.user)
-    table = get_table(soup)
-    with codecs.open(options.out, "w", "utf-8") as file:
-        file.write(output[options.format](table))
+
+    # Validate user ID
+    if not options.user or len(options.user) < 5:
+        logger.error("Invalid Google Scholar user ID")
+        raise ValueError("User ID must be at least 5 characters long")
+
+    # Validate output path
+    output_path = Path(options.out)
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+
+    try:
+        soup = get_soup(options.user)
+        table = get_table(soup)
+
+        logger.info(f"Writing {len(table)} publications to {output_path}")
+        with codecs.open(output_path, "w", "utf-8") as file:
+            file.write(output[options.format](table))
+
+        logger.info(f"Successfully wrote publications to {output_path}")
+    except Exception as e:
+        logger.error(f"Failed to generate publication list: {e}")
+        raise

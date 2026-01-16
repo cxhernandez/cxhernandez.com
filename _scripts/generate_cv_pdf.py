@@ -11,14 +11,23 @@ Output:
     ../static/files/CXHernandez_CV.pdf
 """
 
-import os
+import logging
+import sys
+from pathlib import Path
 
 import markdown
 from weasyprint import CSS, HTML
 
-SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-CV_MD_PATH = os.path.join(SCRIPT_DIR, "..", "_includes", "cv.md")
-OUTPUT_PATH = os.path.join(SCRIPT_DIR, "..", "static", "files", "CXHernandez_CV.pdf")
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger(__name__)
+
+SCRIPT_DIR = Path(__file__).parent.resolve()
+CV_MD_PATH = SCRIPT_DIR / ".." / "_includes" / "cv.md"
+OUTPUT_PATH = SCRIPT_DIR / ".." / "static" / "files" / "CXHernandez_CV.pdf"
 
 CSS_STYLES = """
 @page {
@@ -141,38 +150,55 @@ h2, h3, h4 {
 
 
 def main():
-    # Read markdown content
-    with open(CV_MD_PATH, "r", encoding="utf-8") as f:
-        md_content = f.read()
+    """Generate CV PDF from markdown source."""
+    try:
+        # Validate input file exists
+        if not CV_MD_PATH.exists():
+            logger.error(f"CV markdown file not found: {CV_MD_PATH}")
+            sys.exit(1)
 
-    # Convert markdown to HTML
-    html_content = markdown.markdown(
-        md_content,
-        extensions=["extra", "smarty"],
-    )
+        logger.info(f"Reading CV from {CV_MD_PATH}")
+        md_content = CV_MD_PATH.read_text(encoding="utf-8")
 
-    # Wrap in full HTML document
-    full_html = f"""
-    <!DOCTYPE html>
-    <html>
-    <head>
-        <meta charset="utf-8">
-    </head>
-    <body>
-        {html_content}
-    </body>
-    </html>
-    """
+        if not md_content.strip():
+            logger.error("CV markdown file is empty")
+            sys.exit(1)
 
-    # Ensure output directory exists
-    os.makedirs(os.path.dirname(OUTPUT_PATH), exist_ok=True)
+        # Convert markdown to HTML
+        logger.info("Converting markdown to HTML")
+        html_content = markdown.markdown(
+            md_content,
+            extensions=["extra", "smarty"],
+        )
 
-    # Generate PDF
-    html_doc = HTML(string=full_html)
-    css = CSS(string=CSS_STYLES)
-    html_doc.write_pdf(OUTPUT_PATH, stylesheets=[css])
+        # Wrap in full HTML document
+        full_html = f"""
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="utf-8">
+        </head>
+        <body>
+            {html_content}
+        </body>
+        </html>
+        """
 
-    print(f"PDF generated: {OUTPUT_PATH}")
+        # Ensure output directory exists
+        OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
+
+        # Generate PDF
+        logger.info(f"Generating PDF at {OUTPUT_PATH}")
+        html_doc = HTML(string=full_html)
+        css = CSS(string=CSS_STYLES)
+        html_doc.write_pdf(OUTPUT_PATH, stylesheets=[css])
+
+        logger.info(f"Successfully generated PDF: {OUTPUT_PATH}")
+        logger.info(f"PDF size: {OUTPUT_PATH.stat().st_size / 1024:.1f} KB")
+
+    except Exception as e:
+        logger.error(f"Failed to generate CV PDF: {e}")
+        sys.exit(1)
 
 
 if __name__ == "__main__":
