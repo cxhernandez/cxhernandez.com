@@ -15,9 +15,9 @@ linkedin_username: carlos-xavier-hernández
 
 # Build settings
 markdown: kramdown
-highlighter: pygments
+highlighter: rouge
 excerpt_separator: "jsdjfaksfkas"
 
 kramdown:
     input: GFM
-    syntax_highlighter: pygments
+    syntax_highlighter: rouge
