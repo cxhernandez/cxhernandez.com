@@ -1,22 +1,32 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  <meta name="viewport" content="width=device-width initial-scale=1
-  maximum-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
   <title>{% if page.title %}{{ page.title }}{% else %}{{ site.title }}{% endif %}</title>
   <meta name="description" content="{% if page.excerpt %}{{ page.excerpt | strip_html | strip_newlines | truncate: 160 }}{% else %}{{ site.description }}{% endif %}">
 
+  <!-- Additional Meta Tags -->
+  <meta name="author" content="Carlos Xavier Hernández">
+  <meta name="keywords" content="machine learning, neural interfaces, EMG signal processing, deep learning, PyTorch, TensorFlow, Python, data science, brain-computer interface, wearable technology, Meta Reality Labs, research scientist, AI, artificial intelligence">
+  <meta name="theme-color" content="#000000">
+
   <!-- Open Graph -->
+  <meta property="og:site_name" content="{{ site.title }}">
   <meta property="og:title" content="{{ page.title | default: site.title }}">
   <meta property="og:description" content="{{ site.description }}">
   <meta property="og:url" content="{{ page.url | absolute_url }}">
   <meta property="og:type" content="website">
+  <meta property="og:image" content="{{ "/static/images/profile.jpg" | absolute_url }}">
+  <meta property="og:image:width" content="400">
+  <meta property="og:image:height" content="400">
+  <meta property="og:locale" content="en_US">
 
-  <!-- Twitter Card -->
+  <!-- Threads/Social Card (uses Twitter Card format for compatibility) -->
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="{{ page.title | default: site.title }}">
   <meta name="twitter:description" content="{{ site.description }}">
+  <meta name="twitter:image" content="{{ "/static/images/profile.jpg" | absolute_url }}">
 
   <!-- JSON-LD Person Schema -->
   <script type="application/ld+json">
@@ -24,6 +34,8 @@
     "@context": "https://schema.org",
     "@type": "Person",
     "name": "Carlos Xavier Hernández",
+    "image": "https://www.cxhernandez.com/static/images/profile.jpg",
+    "description": "Senior Research Scientist at Meta Reality Labs specializing in machine learning, neural interfaces, and EMG signal processing. PhD from Stanford University.",
     "jobTitle": "Senior Research Scientist",
     "worksFor": {
       "@type": "Organization",
@@ -34,7 +46,8 @@
     "sameAs": [
       "https://github.com/cxhernandez",
       "https://linkedin.com/in/cxhernandez",
-      "https://www.threads.net/@cxhrndz"
+      "https://www.threads.net/@cxhrndz",
+      "https://scholar.google.com/citations?user=6j85aJMAAAAJ"
     ],
     "alumniOf": [
       {
@@ -52,7 +65,174 @@
       "EMG Signal Processing",
       "Deep Learning",
       "PyTorch",
-      "Human-Computer Interaction"
+      "TensorFlow",
+      "Python",
+      "Data Science",
+      "Brain-Computer Interfaces",
+      "Human-Computer Interaction",
+      "Wearable Technology"
+    ]
+  }
+  </script>
+
+  <!-- JSON-LD ScholarlyArticle Schema for Key Publications -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "itemListElement": [
+      {
+        "@type": "ScholarlyArticle",
+        "headline": "A generic non-invasive neuromotor interface for human-computer interaction",
+        "author": [
+          {
+            "@type": "Person",
+            "name": "P Kaifosh"
+          },
+          {
+            "@type": "Person",
+            "name": "TR Reardon"
+          },
+          {
+            "@type": "Organization",
+            "name": "CTRL-labs"
+          }
+        ],
+        "datePublished": "2025",
+        "publisher": {
+          "@type": "Organization",
+          "name": "Nature"
+        },
+        "url": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=6j85aJMAAAAJ&citation_for_view=6j85aJMAAAAJ:ML0RJ9NH7IQC"
+      },
+      {
+        "@type": "ScholarlyArticle",
+        "headline": "MDTraj: a modern, open library for the analysis of molecular dynamics trajectories",
+        "author": [
+          {
+            "@type": "Person",
+            "name": "RT McGibbon"
+          },
+          {
+            "@type": "Person",
+            "name": "KA Beauchamp"
+          },
+          {
+            "@type": "Person",
+            "name": "MP Harrigan"
+          },
+          {
+            "@type": "Person",
+            "name": "C Klein"
+          },
+          {
+            "@type": "Person",
+            "name": "JM Swails"
+          }
+        ],
+        "datePublished": "2015",
+        "publisher": {
+          "@type": "Organization",
+          "name": "Biophysical Journal"
+        },
+        "url": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=6j85aJMAAAAJ&citation_for_view=6j85aJMAAAAJ:W7OEmFMy1HYC",
+        "citation": "2485 citations"
+      },
+      {
+        "@type": "ScholarlyArticle",
+        "headline": "MSMBuilder: statistical models for biomolecular dynamics",
+        "author": [
+          {
+            "@type": "Person",
+            "name": "MP Harrigan"
+          },
+          {
+            "@type": "Person",
+            "name": "MM Sultan"
+          },
+          {
+            "@type": "Person",
+            "name": "CX Hernández"
+          },
+          {
+            "@type": "Person",
+            "name": "BE Husic"
+          },
+          {
+            "@type": "Person",
+            "name": "P Eastman"
+          }
+        ],
+        "datePublished": "2017",
+        "publisher": {
+          "@type": "Organization",
+          "name": "Biophysical Journal"
+        },
+        "url": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=6j85aJMAAAAJ&citation_for_view=6j85aJMAAAAJ:Mojj43d5GZwC",
+        "citation": "307 citations"
+      },
+      {
+        "@type": "ScholarlyArticle",
+        "headline": "Markov state models provide insights into dynamic modulation of protein function",
+        "author": [
+          {
+            "@type": "Person",
+            "name": "D Shukla"
+          },
+          {
+            "@type": "Person",
+            "name": "CX Hernández"
+          },
+          {
+            "@type": "Person",
+            "name": "JK Weber"
+          },
+          {
+            "@type": "Person",
+            "name": "VS Pande"
+          }
+        ],
+        "datePublished": "2015",
+        "publisher": {
+          "@type": "Organization",
+          "name": "Accounts of Chemical Research"
+        },
+        "url": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=6j85aJMAAAAJ&citation_for_view=6j85aJMAAAAJ:qjMakFHDy7sC",
+        "citation": "295 citations"
+      },
+      {
+        "@type": "ScholarlyArticle",
+        "headline": "Variational encoding of complex dynamics",
+        "author": [
+          {
+            "@type": "Person",
+            "name": "CX Hernández"
+          },
+          {
+            "@type": "Person",
+            "name": "HK Wayment-Steele"
+          },
+          {
+            "@type": "Person",
+            "name": "MM Sultan"
+          },
+          {
+            "@type": "Person",
+            "name": "BE Husic"
+          },
+          {
+            "@type": "Person",
+            "name": "VS Pande"
+          }
+        ],
+        "datePublished": "2018",
+        "publisher": {
+          "@type": "Organization",
+          "name": "Physical Review E"
+        },
+        "url": "https://scholar.google.com/citations?view_op=view_citation&hl=en&user=6j85aJMAAAAJ&citation_for_view=6j85aJMAAAAJ:dQ2og3OwTAUC",
+        "citation": "208 citations"
+      }
     ]
   }
   </script>
