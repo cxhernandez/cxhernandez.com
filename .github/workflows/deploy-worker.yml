@@ -32,9 +32,3 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           workingDirectory: 'cloudflare-worker'
           command: deploy
-          secrets: |
-            SQUARE_ACCESS_TOKEN
-            SQUARE_LOCATION_ID
-        env:
-          SQUARE_ACCESS_TOKEN: ${{ secrets.SQUARE_ACCESS_TOKEN }}
-          SQUARE_LOCATION_ID: ${{ secrets.SQUARE_LOCATION_ID }}
