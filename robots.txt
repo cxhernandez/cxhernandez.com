@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://cxhernandez.com/sitemap.xml
+
+# Crawl-delay (be respectful to your server)
+Crawl-delay: 1

@@ -1,0 +1,48 @@
+---
+layout: null
+---
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>{{ site.url }}/</loc>
+    <lastmod>{{ site.time | date_to_xmlschema }}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  {% for page in site.pages %}
+  {% if page.layout != null %}
+  {% if page.layout != 'feed' %}
+  <url>
+    <loc>{{ site.url }}{{ page.url }}</loc>
+    {% if page.lastmod == null %}
+    <lastmod>{{ site.time | date_to_xmlschema }}</lastmod>
+    {% else %}
+    <lastmod>{{ page.lastmod | date_to_xmlschema }}</lastmod>
+    {% endif %}
+    {% if page.changefreq == null %}
+    <changefreq>monthly</changefreq>
+    {% else %}
+    <changefreq>{{ page.changefreq }}</changefreq>
+    {% endif %}
+    {% if page.priority == null %}
+    <priority>0.8</priority>
+    {% else %}
+    <priority>{{ page.priority }}</priority>
+    {% endif %}
+  </url>
+  {% endif %}
+  {% endif %}
+  {% endfor %}
+  {% for post in site.posts %}
+  <url>
+    <loc>{{ site.url }}{{ post.url }}</loc>
+    {% if post.lastmod == null %}
+    <lastmod>{{ post.date | date_to_xmlschema }}</lastmod>
+    {% else %}
+    <lastmod>{{ post.lastmod | date_to_xmlschema }}</lastmod>
+    {% endif %}
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  {% endfor %}
+</urlset>
