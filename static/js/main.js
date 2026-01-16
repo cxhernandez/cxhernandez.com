@@ -380,15 +380,27 @@ $(window).load(function(){
     $('#BlogBody .post-media.flexslider').flexslider({slideshow:false, controlNav: false});
 
 
-	/* main navigation scrolling */
-    var a={selector:"#MainNav.sticky","class":"stick",offset:0};
-    var b=$(a.selector);
-    a.offset=b.offset().top;
-    var c=$(window).scrollTop();
-    c>=a.offset?(b.addClass(a["class"])):b.removeClass(a["class"]);
+/* main navigation scrolling */
+    var $nav = $('#MainNav.sticky');
+    var mainHeaderHeight = $('#MainHeader').outerHeight() || 0;
+
+    // Hide navbar initially when at top of page
+    function updateNavbarVisibility() {
+        var scrollTop = $(window).scrollTop();
+        // Show navbar only after scrolling past the main header
+        if (scrollTop > mainHeaderHeight - 100) {
+            $nav.removeClass('navbar-hidden').addClass('stick');
+        } else {
+            $nav.addClass('navbar-hidden').removeClass('stick');
+        }
+    }
+
+    // Initial check
+    updateNavbarVisibility();
+
+    // Update on scroll
     $(window).scroll(function(){
-        var c=$(window).scrollTop();
-        c>=a.offset?(b.addClass(a["class"])):b.removeClass(a["class"]);
+        updateNavbarVisibility();
     });
 
 

@@ -113,9 +113,42 @@ header#MainHeader .initial-box {
 }
 
 /* Navigation */
+/* Hide navbar content initially, show after scrolling past header */
+/* Keep the navbar element itself in place so the arrow stays visible */
+#MainNav.navbar-hidden .navbar-inner {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-100%);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+/* Arrow should always be visible and clickable */
 #MainNav .arrow {
   color: #000 !important;
   filter: invert(1);
+  z-index: 10;
+  transition: opacity 0.3s ease;
+}
+
+/* Hide arrow when navbar is fully visible (stick mode) */
+#MainNav.sticky.stick .arrow {
+  opacity: 0;
+  pointer-events: none;
+}
+
+#MainNav.sticky.stick {
+  position: fixed !important;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+}
+
+#MainNav.sticky.stick .navbar-inner {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+  transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
 #MainNav,
@@ -442,7 +475,7 @@ section#Photography .photography-blurb p {
   margin: 0 !important;
   min-width: 100% !important;
   opacity: 0;
-  height: 408px;
+  height: 400px;
 }
 
 /* Position the iframe to hide header, let overflow hide footer */
@@ -451,13 +484,13 @@ section#Photography .photography-blurb p {
   box-shadow: none !important;
   margin: 0 !important;
   position: relative !important;
-  /* Shift up to hide the header (profile pic, username, follow button) ~54px */
-  top: -54px !important;
+  /* Shift up to hide the header (profile pic, username, follow button) ~58px */
+  top: -58px !important;
   left: 0 !important;
   width: 100% !important;
   /* Make iframe taller than container so footer gets clipped */
-  height: 900px !important;
-  min-height: 900px !important;
+  height: 1000px !important;
+  min-height: 1000px !important;
 }
 
 /* Show the rendered embed */
@@ -940,7 +973,7 @@ section#Publications table th:first-child {
   #MainNav .btn-navbar::before {
     content: '☰';
     color: #fff;
-    font-size: 18px;
+    font-size: 22px;
   }
 
   /* Hide nav-collapse from flex flow when collapsed */
@@ -1270,9 +1303,17 @@ section#Publications table th:first-child {
   }
 
   .navbar-brand-logo {
-    margin-left: 10px;
-    font-size: 11px;
-    padding: 3px 5px;
+    margin-left: 0 !important;
+    font-size: 12px;
+    padding: 4px 6px;
+    width: 44px;
+    box-sizing: border-box;
+  }
+
+  .navbar-brand-logo span {
+    display: block;
+    line-height: 1.1;
+    text-align: center;
   }
 
   /* Nav collapse for mobile - show hamburger menu */
@@ -1303,7 +1344,7 @@ section#Publications table th:first-child {
   }
 
   #MainNav .navbar-inner {
-    width: 80% !important;
+    width: 95% !important;
     margin: 0 auto !important;
     padding: 0 !important;
     height: auto !important;
@@ -1324,20 +1365,21 @@ section#Publications table th:first-child {
     margin: 0 !important;
   }
 
-  /* Keep brand logo on the left */
+  /* Keep brand logo on the extreme left */
   #MainNav .navbar-brand-logo {
     order: 1;
     flex-shrink: 0;
-    margin-left: 0;
+    margin-left: 0 !important;
     align-self: stretch !important;
     display: flex !important;
+    flex-direction: column !important;
     align-items: center !important;
     justify-content: center !important;
     margin-top: 0 !important;
     margin-bottom: 0 !important;
   }
 
-  /* Move hamburger button to the right */
+  /* Move hamburger button to the extreme right */
   #MainNav .btn-navbar,
   #MainNav .navbar-inner .container .btn-navbar,
   #MainNav.navbar .navbar-inner .container .btn-navbar {
@@ -1350,12 +1392,12 @@ section#Publications table th:first-child {
     margin-right: 0 !important;
     margin-top: 0 !important;
     margin-bottom: 0 !important;
-    padding: 0 12px !important;
+    padding: 0 !important;
     background: #000 !important;
     background-image: none !important;
     border: none !important;
     border-radius: 0 !important;
-    width: auto !important;
+    width: 44px !important;
     height: auto !important;
     box-sizing: border-box !important;
   }
@@ -1363,7 +1405,7 @@ section#Publications table th:first-child {
   #MainNav .btn-navbar::before {
     content: '☰';
     color: #fff;
-    font-size: 18px;
+    font-size: 22px;
   }
 
   /* Hide nav-collapse from flex flow when collapsed */
@@ -1405,6 +1447,8 @@ section#Publications table th:first-child {
   .photo-carousel {
     max-width: 100%;
     padding: 0 35px;
+    transform: scale(0.9);
+    transform-origin: top center;
   }
 
   .carousel-btn {
@@ -1413,20 +1457,35 @@ section#Publications table th:first-child {
     font-size: 14px;
   }
 
-  /* Instagram embed - smaller for mobile */
+  /* Instagram embed - fixed 5:4 aspect ratio on mobile */
   .instagram-embed-wrapper {
     max-width: 100%;
-    height: 300px;
+    width: 100%;
+    height: 420px;
+    padding-bottom: 0;
+    overflow: hidden;
+    position: relative;
   }
 
   .instagram-embed-wrapper iframe {
-    top: -48px !important;
-    height: 700px !important;
-    min-height: 700px !important;
+    position: relative !important;
+    top: -58px !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 900px !important;
+    min-height: 900px !important;
+    transform: none;
   }
 
   .instagram-embed-wrapper blockquote.instagram-media {
-    height: 300px;
+    position: relative;
+    width: 100%;
+    height: 420px;
+    min-height: 0;
+  }
+
+  .carousel-slide {
+    overflow: hidden;
   }
 
   /* Publications table - scroll horizontally */
