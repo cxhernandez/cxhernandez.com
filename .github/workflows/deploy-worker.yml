@@ -13,6 +13,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     name: Deploy Worker
+    environment: github-pages
     steps:
       - uses: actions/checkout@v4
 
