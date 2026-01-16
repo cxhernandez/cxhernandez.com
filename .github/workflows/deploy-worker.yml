@@ -29,7 +29,8 @@ jobs:
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          workingDirectory: './cloudflare-worker'
+          workingDirectory: 'cloudflare-worker'
+          command: deploy
           secrets: |
             SQUARE_ACCESS_TOKEN
             SQUARE_LOCATION_ID
