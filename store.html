@@ -11,62 +11,6 @@ layout: default
     </div>
 </div>
 
-<style>
-    .checkout-modal {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        z-index: 9999;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-    .checkout-modal-backdrop {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.7);
-    }
-    .checkout-modal-content {
-        position: relative;
-        width: 80%;
-        height: 80%;
-        max-height: 700px;
-        background: #fff;
-        border-radius: 12px;
-        overflow: hidden;
-        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-    }
-    .checkout-modal-close {
-        position: absolute;
-        top: 10px;
-        right: 10px;
-        width: 36px;
-        height: 36px;
-        border: none;
-        background: rgba(0, 0, 0, 0.1);
-        border-radius: 50%;
-        font-size: 24px;
-        line-height: 1;
-        cursor: pointer;
-        z-index: 10;
-        color: #333;
-        transition: background 0.2s;
-    }
-    .checkout-modal-close:hover {
-        background: rgba(0, 0, 0, 0.2);
-    }
-    #checkout-iframe {
-        width: 100%;
-        height: 100%;
-        border: none;
-    }
-</style>
-
 <section id="Store" class="parallax">
     <div class="container">
         <div class="row-fluid">
@@ -138,7 +82,7 @@ layout: default
         }
     }
 
-    // Render a product card (Square embed style)
+    // Render a product card
     function renderProductCard(entry, index, type) {
         const url = entry.url || '#';
         const name = entry.name || `${type} ${index + 1}`;
@@ -148,14 +92,14 @@ layout: default
         const icon = entry.icon || '';
 
         return `
-            <div style="overflow: auto; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; width: 259px; background: #FFFFFF; border: 1px solid rgba(0, 0, 0, 0.1); box-shadow: -2px 10px 5px rgba(0, 0, 0, 0); border-radius: 10px; font-family: SQ Market, SQ Market, Helvetica, Arial, sans-serif;">
-                ${image ? `<img src="${image}" alt="${name}" onerror="this.style.display='none'" style="width: 100%;">` : ''}
-                <div style="padding: 20px; text-align: center;">
-                    ${icon ? `<div style="font-size: 32px; margin-bottom: 10px;">${icon}</div>` : ''}
-                    <p style="font-size: 18px; line-height: 20px; font-weight: 600;">${name}</p>
-                    ${description ? `<p style="font-size: 14px; line-height: 18px; color: #666; margin: 10px 0;">${description}</p>` : ''}
-                    ${price ? `<p style="font-size: 18px; line-height: 20px; font-weight: 600; margin-bottom: 15px;">${price}</p>` : ''}
-                    <a href="${url}" onclick="openCheckoutModal('${url}'); return false;" style="display: inline-block; font-size: 18px; line-height: 48px; height: 48px; color: #ffffff; min-width: 212px; background-color: #006aff; text-align: center; box-shadow: 0 0 0 1px rgba(0,0,0,.1) inset; border-radius: 6px; text-decoration: none; cursor: pointer;">${type === 'Service' ? 'Book Now' : 'Buy Now'}</a>
+            <div class="product-card">
+                ${image ? `<img src="${image}" alt="${name}" onerror="this.style.display='none'" class="product-card-image">` : ''}
+                <div class="product-card-body">
+                    ${icon ? `<div class="product-card-icon">${icon}</div>` : ''}
+                    <p class="product-card-name">${name}</p>
+                    ${description ? `<p class="product-card-description">${description}</p>` : ''}
+                    ${price ? `<p class="product-card-price">${price}</p>` : ''}
+                    <a href="${url}" onclick="openCheckoutModal('${url}'); return false;" class="product-card-button">${type === 'Service' ? 'Book Now' : 'Buy Now'}</a>
                 </div>
             </div>
         `;
