@@ -1,34 +1,34 @@
 {
     "prints": [
         {
-            "url": "https://square.link/u/sWZ2V5x3",
+            "url": "https://square.link/u/yrrQuN50",
             "name": "Prince of Borneo",
             "price_display": "From $6.00",
-            "description": null,
-            "image": "https://items-images-production-f.squarecdn.com/files/562e444858963df32aab61072e03286eb3dbed08/original.jpeg"
+            "description": "This little cutie is just waiting to be hung up on your wall. Prints available in 4x6, 11x14, and 16x20.",
+            "image": "https://items-images-production.s3.us-west-2.amazonaws.com/files/562e444858963df32aab61072e03286eb3dbed08/original.jpeg"
         },
         {
-            "url": "https://square.link/u/fJfjuVYs",
+            "url": "https://square.link/u/jK2CyQov",
             "name": "The Pigeonaire",
             "price_display": "From $6.00",
-            "description": null,
-            "image": "https://items-images-production-f.squarecdn.com/files/22338c4f119f46c5b3044bcc6634dd05ffb5c270/original.jpeg"
+            "description": "Used to house pigeons within its walls, now it can be hung on a wall in your house. Prints available in 4x6, 11x14, and 16x20.",
+            "image": "https://items-images-production.s3.us-west-2.amazonaws.com/files/22338c4f119f46c5b3044bcc6634dd05ffb5c270/original.jpeg"
         }
     ],
     "services": [
         {
-            "url": "https://square.link/u/bl3UHEom",
+            "url": "https://square.link/u/xBjI4k3E",
             "name": "Portrait Session",
             "price_display": "$250.00",
-            "description": null,
-            "image": "https://cdn3.editmysite.com/app/checkout/static/checkout-link-social-facebook.png"
+            "description": "1-hour professional portrait session at a location of your choice. Includes 10 edited digital photos and a print of your choice.",
+            "image": null
         },
         {
-            "url": "https://square.link/u/PUxVoHBR",
+            "url": "https://square.link/u/c1R9EzOL",
             "name": "Pet Portrait Session",
             "price_display": "$200.00",
-            "description": null,
-            "image": "https://cdn3.editmysite.com/app/checkout/static/checkout-link-social-facebook.png"
+            "description": "Capture your furry friend's personality in a 1-hour session. Includes 10 edited digital photos and a print of your choice.",
+            "image": null
         }
     ]
 }
