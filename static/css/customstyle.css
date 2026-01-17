@@ -1590,13 +1590,13 @@ section#Store.parallax {
 
 section#Store.parallax,
 section#Store.parallax p,
-section#Store.parallax a,
+section#Store.parallax a:not(.product-card-button),
 section#Store.parallax h3,
 section#Store.parallax h4 {
   color: #000 !important;
 }
 
-section#Store.parallax a:hover {
+section#Store.parallax a:not(.product-card-button):hover {
   color: red !important;
 }
 
@@ -1700,42 +1700,13 @@ section#Store .btn-book:hover {
   background: #333;
 }
 
-/* Product Grid (for prints) */
-section#Store .product-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+/* Product Grid (for prints and services) */
+section#Store .product-grid,
+section#Store .services-grid {
+  display: flex;
+  flex-wrap: wrap;
   gap: 25px;
-}
-
-section#Store .product-card {
-  background: #fff;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  overflow: hidden;
-  transition: box-shadow 0.2s ease;
-}
-
-section#Store .product-card:hover {
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-}
-
-section#Store .product-card img {
-  width: 100%;
-  height: 200px;
-  object-fit: cover;
-}
-
-section#Store .product-info {
-  padding: 20px;
-}
-
-section#Store .product-info h4 {
-  margin-bottom: 10px;
-}
-
-section#Store .product-info .price {
-  font-weight: bold;
-  font-size: 1.1em;
+  justify-content: center;
 }
 
 section#Store .loading-placeholder {
@@ -1744,49 +1715,135 @@ section#Store .loading-placeholder {
   color: #666;
 }
 
-/* Checkout Modal */
-section#Store .modal-overlay {
+/* Checkout Modal (iframe style) */
+.checkout-modal {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.7);
+  z-index: 9999;
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 9999;
 }
 
-section#Store .modal-content {
-  background: #fff;
-  padding: 40px;
-  border-radius: 8px;
-  max-width: 450px;
-  width: 90%;
-  position: relative;
-}
-
-section#Store .modal-content h3 {
-  color: #000 !important;
-  text-align: left !important;
-  margin-bottom: 20px;
-  font-size: 1.3em;
-}
-
-section#Store .modal-close {
+.checkout-modal-backdrop {
   position: absolute;
-  top: 15px;
-  right: 20px;
-  background: none;
-  border: none;
-  font-size: 1.5em;
-  cursor: pointer;
-  color: #666;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
 }
 
-section#Store .modal-close:hover {
-  color: #000;
+.checkout-modal-content {
+  position: relative;
+  width: 80%;
+  height: 80%;
+  max-height: 700px;
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.checkout-modal-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 36px;
+  height: 36px;
+  border: none;
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
+  z-index: 10;
+  color: #333;
+  transition: background 0.2s;
+}
+
+.checkout-modal-close:hover {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+#checkout-iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+/* Product Cards (Square embed style) */
+.product-card {
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  width: 259px;
+  background: #FFFFFF;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: -2px 10px 5px rgba(0, 0, 0, 0);
+  border-radius: 10px;
+  font-family: SQ Market, Helvetica, Arial, sans-serif;
+}
+
+.product-card-image {
+  width: 100%;
+}
+
+.product-card-body {
+  padding: 20px;
+  text-align: center;
+}
+
+.product-card-icon {
+  font-size: 32px;
+  margin-bottom: 10px;
+}
+
+.product-card-name {
+  font-size: 18px;
+  line-height: 20px;
+  font-weight: 600;
+  margin-bottom: 0;
+}
+
+.product-card-description {
+  font-size: 14px;
+  line-height: 18px;
+  color: #666;
+  margin: 10px 0;
+}
+
+.product-card-price {
+  font-size: 18px;
+  line-height: 20px;
+  font-weight: 600;
+  margin: 0 0 15px 0;
+}
+
+a.product-card-button {
+  display: inline-block;
+  font-size: 18px;
+  line-height: 48px;
+  height: 48px;
+  color: #ffffff !important;
+  min-width: 212px;
+  background-color: #006aff;
+  text-align: center;
+  box-shadow: 0 0 0 1px rgba(0,0,0,.1) inset;
+  border-radius: 6px;
+  text-decoration: none !important;
+  cursor: pointer;
+}
+
+a.product-card-button:visited,
+a.product-card-button:hover {
+  color: #ffffff !important;
+  text-decoration: none !important;
 }
 
 section#Store .btn-submit-payment {
