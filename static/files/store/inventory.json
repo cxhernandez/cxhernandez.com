@@ -8,5 +8,20 @@
             "image": "https://items-images-production-f.squarecdn.com/files/562e444858963df32aab61072e03286eb3dbed08/original.jpeg"
         }
     ],
-    "services": []
+    "services": [
+        {
+            "url": "https://square.link/u/bl3UHEom",
+            "name": "Portrait Session",
+            "price_display": "$250.00",
+            "description": null,
+            "image": "https://cdn3.editmysite.com/app/checkout/static/checkout-link-social-facebook.png"
+        },
+        {
+            "url": "https://square.link/u/PUxVoHBR",
+            "name": "Pet Portrait Session",
+            "price_display": "$200.00",
+            "description": null,
+            "image": "https://cdn3.editmysite.com/app/checkout/static/checkout-link-social-facebook.png"
+        }
+    ]
 }
