@@ -1585,7 +1585,7 @@ section#Store.parallax {
   background-color: #fafafa;
   background-image: none;
   min-height: 100vh;
-  padding-top: 80px;
+  padding-top: 0;
 }
 
 section#Store.parallax,
@@ -1601,7 +1601,7 @@ section#Store.parallax a:hover {
 }
 
 section#Store .store-content {
-  padding: 20px 40px;
+  padding: 0 40px 20px;
 }
 
 section#Store .store-intro {
