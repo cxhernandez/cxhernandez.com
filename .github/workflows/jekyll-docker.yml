@@ -48,6 +48,11 @@ jobs:
         shell: bash -el {0}
         run: python ./_scripts/generate_cv_pdf.py
 
+      - name: Enrich store inventory
+        shell: bash -el {0}
+        run: python ./scripts/enrich_inventory.py static/files/store/inventory.json
+        continue-on-error: true
+
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:

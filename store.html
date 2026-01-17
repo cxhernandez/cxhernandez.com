@@ -10,6 +10,11 @@ layout: default
                     <p>Purchase prints of my photography or book a portrait session.</p>
                 </div>
 
+                <!-- Success Message -->
+                <div id="success-message" class="success-banner" style="display: none;">
+                    <p>Thank you for your purchase! You'll receive a confirmation email shortly.</p>
+                </div>
+
                 <div class="store-sections">
                     <!-- Prints Section -->
                     <div class="store-section">
@@ -17,7 +22,6 @@ layout: default
                         <p class="section-description">High-quality prints of my wildlife and street photography, professionally printed on archival paper.</p>
 
                         <div class="product-grid" id="prints-grid">
-                            <!-- Products will be loaded dynamically -->
                             <div class="loading-placeholder">Loading prints...</div>
                         </div>
                     </div>
@@ -28,22 +32,7 @@ layout: default
                         <p class="section-description">Book a portrait session for professional headshots, family photos, or special occasions.</p>
 
                         <div class="services-grid" id="services-grid">
-                            <div class="service-card">
-                                <div class="service-icon">📸</div>
-                                <h4>Portrait Session</h4>
-                                <p>1-hour professional portrait session at a location of your choice. Includes 10 edited digital photos and a print of your choice.</p>
-                                <p class="price">$250</p>
-                                <button class="btn-book" data-service="portrait" data-price="25000">Book Now</button>
-                            </div>
-
-                            <div class="service-card">
-                                <div class="service-icon">🐾</div>
-                                <h4>Pet Portrait Session</h4>
-                                <p>Capture your furry friend's personality in a 1-hour session. Includes 10 edited digital photos and a print of your choice.</p>
-                                <p class="price">$200</p>
-                                <button class="btn-book" data-service="pet" data-price="20000">Book Now</button>
-                            </div>
-
+                            <div class="loading-placeholder">Loading services...</div>
                         </div>
                     </div>
                 </div>
@@ -51,215 +40,90 @@ layout: default
                 <div class="store-outro">
                     <p><a href="/#Photography" class="back-link">&larr; Back</a></p>
                 </div>
-
-                <!-- Checkout Modal -->
-                <div id="checkout-modal" class="modal-overlay" style="display: none;">
-                    <div class="modal-content">
-                        <button class="modal-close" onclick="closeCheckoutModal()">&times;</button>
-                        <h3 id="modal-title">Complete Your Purchase</h3>
-                        <div id="checkout-form-container">
-                            <!-- Square payment form will be injected here -->
-                        </div>
-                        <div id="checkout-loading" style="display: none;">
-                            <p>Processing...</p>
-                        </div>
-                        <div id="checkout-error" style="display: none; color: red;"></div>
-                        <div id="checkout-success" style="display: none;">
-                            <p>Thank you for your purchase! You'll receive a confirmation email shortly.</p>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
 </section>
 
-<!-- Square Web Payments SDK -->
-<script src="https://web.squarecdn.com/v1/square.js"></script>
-
 <script>
-    // Configuration (from Jekyll _config.yml)
-    const SQUARE_APP_ID = '{{ site.square.app_id }}';
-    const SQUARE_LOCATION_ID = '{{ site.square.location_id }}';
-    const WORKER_URL = '{{ site.square.worker_url }}';
-
-    let payments = null;
-    let card = null;
-    let currentItem = null;
-
-    // Initialize Square Payments
-    async function initializeSquare() {
-        if (!window.Square) {
-            console.error('Square SDK not loaded');
-            return;
-        }
-
-        try {
-            payments = window.Square.payments(SQUARE_APP_ID, SQUARE_LOCATION_ID);
-        } catch (e) {
-            console.error('Failed to initialize Square payments:', e);
+    // Check for success parameter in URL
+    function checkForSuccess() {
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('success') === 'true') {
+            document.getElementById('success-message').style.display = 'block';
+            // Clean up URL
+            window.history.replaceState({}, '', window.location.pathname);
         }
     }
 
-    // Open checkout modal
-    async function openCheckoutModal(item, price, title) {
-        currentItem = { item, price, title };
-        document.getElementById('modal-title').textContent = `Book: ${title}`;
-        document.getElementById('checkout-modal').style.display = 'flex';
-        document.getElementById('checkout-form-container').innerHTML = '';
-        document.getElementById('checkout-loading').style.display = 'none';
-        document.getElementById('checkout-error').style.display = 'none';
-        document.getElementById('checkout-success').style.display = 'none';
+    // Render a product card (Square embed style)
+    function renderProductCard(entry, index, type) {
+        const url = entry.url || '#';
+        const name = entry.name || `${type} ${index + 1}`;
+        const image = entry.image || '';
+        const price = entry.price_display || '';
+        const description = entry.description || '';
+        const icon = entry.icon || '';
 
-        // Create card payment form
-        try {
-            if (!payments) {
-                await initializeSquare();
-            }
-
-            card = await payments.card();
-            await card.attach('#checkout-form-container');
-
-            // Add submit button
-            const submitBtn = document.createElement('button');
-            submitBtn.className = 'btn-submit-payment';
-            submitBtn.textContent = `Pay $${(price / 100).toFixed(2)}`;
-            submitBtn.onclick = handlePayment;
-            document.getElementById('checkout-form-container').appendChild(submitBtn);
-        } catch (e) {
-            console.error('Failed to initialize card form:', e);
-            document.getElementById('checkout-error').textContent = 'Failed to load payment form. Please try again.';
-            document.getElementById('checkout-error').style.display = 'block';
-        }
+        return `
+            <div style="overflow: auto; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; width: 259px; background: #FFFFFF; border: 1px solid rgba(0, 0, 0, 0.1); box-shadow: -2px 10px 5px rgba(0, 0, 0, 0); border-radius: 10px; font-family: SQ Market, SQ Market, Helvetica, Arial, sans-serif;">
+                ${image ? `<img src="${image}" alt="${name}" onerror="this.style.display='none'" style="width: 100%;">` : ''}
+                <div style="padding: 20px; text-align: center;">
+                    ${icon ? `<div style="font-size: 32px; margin-bottom: 10px;">${icon}</div>` : ''}
+                    <p style="font-size: 18px; line-height: 20px; font-weight: 600;">${name}</p>
+                    ${description ? `<p style="font-size: 14px; line-height: 18px; color: #666; margin: 10px 0;">${description}</p>` : ''}
+                    ${price ? `<p style="font-size: 18px; line-height: 20px; font-weight: 600; margin-bottom: 15px;">${price}</p>` : ''}
+                    <a target="_blank" href="${url}" style="display: inline-block; font-size: 18px; line-height: 48px; height: 48px; color: #ffffff; min-width: 212px; background-color: #006aff; text-align: center; box-shadow: 0 0 0 1px rgba(0,0,0,.1) inset; border-radius: 6px; text-decoration: none;">${type === 'Service' ? 'Book Now' : 'Buy Now'}</a>
+                </div>
+            </div>
+        `;
     }
 
-    // Close checkout modal
-    function closeCheckoutModal() {
-        document.getElementById('checkout-modal').style.display = 'none';
-        if (card) {
-            card.destroy();
-            card = null;
-        }
-        currentItem = null;
-    }
-
-    // Handle payment submission
-    async function handlePayment() {
-        if (!card || !currentItem) return;
-
-        document.getElementById('checkout-loading').style.display = 'block';
-        document.getElementById('checkout-error').style.display = 'none';
+    // Load inventory from local JSON and render
+    async function loadInventory() {
+        const printsGrid = document.getElementById('prints-grid');
+        const servicesGrid = document.getElementById('services-grid');
 
         try {
-            const result = await card.tokenize();
-            if (result.status === 'OK') {
-                // Send to Cloudflare Worker
-                const response = await fetch(`${WORKER_URL}/create-payment`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        sourceId: result.token,
-                        amount: currentItem.price,
-                        item: currentItem.item,
-                        title: currentItem.title
-                    })
-                });
-
-                const paymentResult = await response.json();
-
-                if (paymentResult.success) {
-                    document.getElementById('checkout-loading').style.display = 'none';
-                    document.getElementById('checkout-form-container').style.display = 'none';
-                    document.getElementById('checkout-success').style.display = 'block';
-                } else {
-                    throw new Error(paymentResult.error || 'Payment failed');
-                }
-            } else {
-                throw new Error(result.errors?.[0]?.message || 'Card validation failed');
-            }
-        } catch (e) {
-            console.error('Payment error:', e);
-            document.getElementById('checkout-loading').style.display = 'none';
-            document.getElementById('checkout-error').textContent = e.message || 'Payment failed. Please try again.';
-            document.getElementById('checkout-error').style.display = 'block';
-        }
-    }
-
-    // Load prints from Square catalog
-    async function loadPrints() {
-        const grid = document.getElementById('prints-grid');
-
-        try {
-            const response = await fetch(`${WORKER_URL}/catalog`);
-            const data = await response.json();
-
-            if (!data.success || !data.items || data.items.length === 0) {
-                grid.innerHTML = '<p class="no-prints">No prints available at this time.</p>';
+            // Add cache-busting parameter
+            const response = await fetch('/static/files/store/inventory.json?v=' + Date.now());
+            if (!response.ok) {
+                printsGrid.innerHTML = '<p class="no-prints">No prints available at this time.</p>';
+                servicesGrid.innerHTML = '<p class="no-services">No services available at this time.</p>';
                 return;
             }
 
-            grid.innerHTML = data.items.map(item => {
-                const variation = item.variations[0] || {};
-                const price = variation.price ? (variation.price / 100).toFixed(2) : '0.00';
-                const imageUrl = item.images[0] || '/static/img/placeholder.jpg';
+            const data = await response.json();
 
-                return `
-                    <div class="product-card">
-                        <div class="product-image">
-                            <img src="${imageUrl}" alt="${item.name}" loading="lazy">
-                        </div>
-                        <div class="product-info">
-                            <h4>${item.name}</h4>
-                            ${item.description ? `<p>${item.description}</p>` : ''}
-                            <p class="price">$${price}</p>
-                            <button class="btn-buy"
-                                data-item-id="${item.id}"
-                                data-variation-id="${variation.id}"
-                                data-price="${variation.price || 0}"
-                                data-title="${item.name}">
-                                Buy Print
-                            </button>
-                        </div>
-                    </div>
-                `;
-            }).join('');
+            // Render prints
+            if (data.prints && data.prints.length > 0) {
+                printsGrid.innerHTML = data.prints.map((p, i) => {
+                    const entry = (typeof p === 'string') ? { url: p } : p || {};
+                    return renderProductCard(entry, i, 'Print');
+                }).join('');
+            } else {
+                printsGrid.innerHTML = '<p class="no-prints">No prints available at this time.</p>';
+            }
 
-            // Bind click handlers to buy buttons
-            grid.querySelectorAll('.btn-buy').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const price = parseInt(this.dataset.price, 10);
-                    const title = this.dataset.title;
-                    const itemId = this.dataset.itemId;
-                    openCheckoutModal(itemId, price, title);
-                });
-            });
+            // Render services
+            if (data.services && data.services.length > 0) {
+                servicesGrid.innerHTML = data.services.map((s, i) => {
+                    const entry = (typeof s === 'string') ? { url: s } : s || {};
+                    return renderProductCard(entry, i, 'Service');
+                }).join('');
+            } else {
+                servicesGrid.innerHTML = '<p class="no-services">No services available at this time.</p>';
+            }
         } catch (error) {
-            console.error('Failed to load prints:', error);
-            grid.innerHTML = '<p class="error">Failed to load prints. Please try again later.</p>';
+            console.error('Failed to load inventory:', error);
+            printsGrid.innerHTML = '<p class="error">Failed to load prints. Please try again later.</p>';
+            servicesGrid.innerHTML = '<p class="error">Failed to load services. Please try again later.</p>';
         }
     }
 
-    // Bind click handlers to book buttons
+    // Initialize
     document.addEventListener('DOMContentLoaded', function() {
-        initializeSquare();
-        loadPrints();
-
-        document.querySelectorAll('.btn-book').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const service = this.dataset.service;
-                const price = parseInt(this.dataset.price, 10);
-                const title = this.parentElement.querySelector('h4').textContent;
-                openCheckoutModal(service, price, title);
-            });
-        });
-    });
-
-    // Close modal on outside click
-    document.getElementById('checkout-modal')?.addEventListener('click', function(e) {
-        if (e.target === this) {
-            closeCheckoutModal();
-        }
+        checkForSuccess();
+        loadInventory();
     });
 </script>
