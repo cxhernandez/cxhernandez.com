@@ -41,6 +41,11 @@ jobs:
         shell: bash -el {0}
         run: python ./_scripts/generate_cv_pdf.py
 
+      - name: Enrich store inventory
+        shell: bash -el {0}
+        run: python ./scripts/enrich_inventory.py static/files/store/inventory.json
+        continue-on-error: true
+
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
@@ -64,19 +69,3 @@ jobs:
         if: env.SHOULD_DEPLOY == 'true'
         id: deployment
         uses: actions/deploy-pages@v4
-
-      # - name: Configure AWS credentials
-      #   uses: aws-actions/configure-aws-credentials@v4
-      #   with:
-      #     aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      #     aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      #     aws-region: us-west-1
-
-      # - name: Deploy to S3
-      #   run: |
-      #     aws s3 sync _site/ s3://cxhernandez.com \
-      #       --delete \
-      #       --cache-control "max-age=300" \
-      #       --exclude "static/*"
-      #     aws s3 sync _site/static/ s3://cxhernandez.com/static/ \
-      #       --cache-control "max-age=6000"
