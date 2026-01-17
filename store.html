@@ -2,6 +2,20 @@
 layout: default
 ---
 
+<!-- Password Protection -->
+<div id="password-gate" class="password-gate">
+    <div class="password-gate-wrapper">
+        <div class="password-gate-content">
+            <h2>Coming Soon...</h2>
+            <form id="password-form" onsubmit="return checkPassword(event)">
+                <input type="password" id="password-input" placeholder="Enter password" autocomplete="off">
+            </form>
+            <p id="password-error" class="password-error" style="display: none;">Incorrect password</p>
+        </div>
+        <p class="password-gate-back"><a href="/#Photography" class="back-link">&larr; Back</a></p>
+    </div>
+</div>
+
 <!-- Checkout Modal -->
 <div id="checkout-modal" class="checkout-modal" style="display: none;">
     <div class="checkout-modal-backdrop"></div>
@@ -11,6 +25,7 @@ layout: default
     </div>
 </div>
 
+<div id="store-main" style="display: none;">
 <section id="Store" class="parallax">
     <div class="container">
         <div class="row-fluid">
@@ -53,8 +68,45 @@ layout: default
         </div>
     </div>
 </section>
+</div>
 
 <script>
+    // Password protection (SHA-256 hash)
+    const STORE_PASSWORD_HASH = '83006a438f94daf3a7dd9c7b27f70c15e443c0ca55d58fcdfa76899ae466b455';
+
+    async function hashPassword(password) {
+        const encoder = new TextEncoder();
+        const data = encoder.encode(password);
+        const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    async function checkPassword(e) {
+        e.preventDefault();
+        const input = document.getElementById('password-input');
+        const error = document.getElementById('password-error');
+
+        const inputHash = await hashPassword(input.value);
+        if (inputHash === STORE_PASSWORD_HASH) {
+            sessionStorage.setItem('store_access', 'granted');
+            document.getElementById('password-gate').style.display = 'none';
+            document.getElementById('store-main').style.display = 'block';
+        } else {
+            error.style.display = 'block';
+            input.value = '';
+            input.focus();
+        }
+        return false;
+    }
+
+    function checkAccess() {
+        if (sessionStorage.getItem('store_access') === 'granted') {
+            document.getElementById('password-gate').style.display = 'none';
+            document.getElementById('store-main').style.display = 'block';
+        }
+    }
+
     // Modal functions
     function openCheckoutModal(url) {
         const modal = document.getElementById('checkout-modal');
@@ -149,6 +201,7 @@ layout: default
 
     // Initialize
     document.addEventListener('DOMContentLoaded', function() {
+        checkAccess();
         checkForSuccess();
         loadInventory();
 
