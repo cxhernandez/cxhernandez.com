@@ -1832,7 +1832,7 @@ a.product-card-button {
   height: 48px;
   color: #ffffff !important;
   min-width: 212px;
-  background-color: #006aff;
+  background-color: #000;
   text-align: center;
   box-shadow: 0 0 0 1px rgba(0,0,0,.1) inset;
   border-radius: 6px;
@@ -1840,9 +1840,13 @@ a.product-card-button {
   cursor: pointer;
 }
 
-a.product-card-button:visited,
-a.product-card-button:hover {
+a.product-card-button:visited {
   color: #ffffff !important;
+  text-decoration: none !important;
+}
+
+a.product-card-button:hover {
+  color: red !important;
   text-decoration: none !important;
 }
 
