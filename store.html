@@ -32,22 +32,7 @@ layout: default
                         <p class="section-description">Book a portrait session for professional headshots, family photos, or special occasions.</p>
 
                         <div class="services-grid" id="services-grid">
-                            <div class="service-card">
-                                <div class="service-icon">📸</div>
-                                <h4>Portrait Session</h4>
-                                <p>1-hour professional portrait session at a location of your choice. Includes 10 edited digital photos and a print of your choice.</p>
-                                <p class="price">$250</p>
-                                <button class="btn-book" data-name="Portrait Session" data-price="25000">Book Now</button>
-                            </div>
-
-                            <div class="service-card">
-                                <div class="service-icon">🐾</div>
-                                <h4>Pet Portrait Session</h4>
-                                <p>Capture your furry friend's personality in a 1-hour session. Includes 10 edited digital photos and a print of your choice.</p>
-                                <p class="price">$200</p>
-                                <button class="btn-book" data-name="Pet Portrait Session" data-price="20000">Book Now</button>
-                            </div>
-
+                            <div class="loading-placeholder">Loading services...</div>
                         </div>
                     </div>
                 </div>
@@ -61,8 +46,6 @@ layout: default
 </section>
 
 <script>
-    const WORKER_URL = '{{ site.square.worker_url }}';
-
     // Check for success parameter in URL
     function checkForSuccess() {
         const params = new URLSearchParams(window.location.search);
@@ -73,91 +56,74 @@ layout: default
         }
     }
 
-    // Redirect to Square hosted checkout
-    async function checkout(name, price) {
-        try {
-            const response = await fetch(`${WORKER_URL}/checkout`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ name, price })
-            });
+    // Render a product card (Square embed style)
+    function renderProductCard(entry, index, type) {
+        const url = entry.url || '#';
+        const name = entry.name || `${type} ${index + 1}`;
+        const image = entry.image || '';
+        const price = entry.price_display || '';
+        const description = entry.description || '';
+        const icon = entry.icon || '';
 
-            const data = await response.json();
-
-            if (data.success && data.checkoutUrl) {
-                window.location.href = data.checkoutUrl;
-            } else {
-                alert('Failed to create checkout. Please try again.');
-                console.error('Checkout error:', data.error);
-            }
-        } catch (error) {
-            alert('Failed to create checkout. Please try again.');
-            console.error('Checkout error:', error);
-        }
+        return `
+            <div style="overflow: auto; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; width: 259px; background: #FFFFFF; border: 1px solid rgba(0, 0, 0, 0.1); box-shadow: -2px 10px 5px rgba(0, 0, 0, 0); border-radius: 10px; font-family: SQ Market, SQ Market, Helvetica, Arial, sans-serif;">
+                ${image ? `<img src="${image}" alt="${name}" onerror="this.style.display='none'" style="width: 100%;">` : ''}
+                <div style="padding: 20px; text-align: center;">
+                    ${icon ? `<div style="font-size: 32px; margin-bottom: 10px;">${icon}</div>` : ''}
+                    <p style="font-size: 18px; line-height: 20px; font-weight: 600;">${name}</p>
+                    ${description ? `<p style="font-size: 14px; line-height: 18px; color: #666; margin: 10px 0;">${description}</p>` : ''}
+                    ${price ? `<p style="font-size: 18px; line-height: 20px; font-weight: 600; margin-bottom: 15px;">${price}</p>` : ''}
+                    <a target="_blank" href="${url}" style="display: inline-block; font-size: 18px; line-height: 48px; height: 48px; color: #ffffff; min-width: 212px; background-color: #006aff; text-align: center; box-shadow: 0 0 0 1px rgba(0,0,0,.1) inset; border-radius: 6px; text-decoration: none;">${type === 'Service' ? 'Book Now' : 'Buy Now'}</a>
+                </div>
+            </div>
+        `;
     }
 
-    // Load prints from Square catalog
-    async function loadPrints() {
-        const grid = document.getElementById('prints-grid');
+    // Load inventory from local JSON and render
+    async function loadInventory() {
+        const printsGrid = document.getElementById('prints-grid');
+        const servicesGrid = document.getElementById('services-grid');
 
         try {
-            const response = await fetch(`${WORKER_URL}/catalog`);
-            const data = await response.json();
-
-            if (!data.success || !data.items || data.items.length === 0) {
-                grid.innerHTML = '<p class="no-prints">No prints available at this time.</p>';
+            // Add cache-busting parameter
+            const response = await fetch('/static/files/store/inventory.json?v=' + Date.now());
+            if (!response.ok) {
+                printsGrid.innerHTML = '<p class="no-prints">No prints available at this time.</p>';
+                servicesGrid.innerHTML = '<p class="no-services">No services available at this time.</p>';
                 return;
             }
 
-            grid.innerHTML = data.items.map(item => {
-                const variation = item.variations[0] || {};
-                const price = variation.price || 0;
-                const priceDisplay = (price / 100).toFixed(2);
-                const imageUrl = item.images[0] || '/static/img/placeholder.jpg';
+            const data = await response.json();
 
-                return `
-                    <div class="product-card">
-                        <div class="product-image">
-                            <img src="${imageUrl}" alt="${item.name}" loading="lazy">
-                        </div>
-                        <div class="product-info">
-                            <h4>${item.name}</h4>
-                            ${item.description ? `<p>${item.description}</p>` : ''}
-                            <p class="price">$${priceDisplay}</p>
-                            <button class="btn-buy" data-name="${item.name}" data-price="${price}">
-                                Buy Print
-                            </button>
-                        </div>
-                    </div>
-                `;
-            }).join('');
+            // Render prints
+            if (data.prints && data.prints.length > 0) {
+                printsGrid.innerHTML = data.prints.map((p, i) => {
+                    const entry = (typeof p === 'string') ? { url: p } : p || {};
+                    return renderProductCard(entry, i, 'Print');
+                }).join('');
+            } else {
+                printsGrid.innerHTML = '<p class="no-prints">No prints available at this time.</p>';
+            }
 
-            // Bind click handlers to buy buttons
-            grid.querySelectorAll('.btn-buy').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const name = this.dataset.name;
-                    const price = parseInt(this.dataset.price, 10);
-                    checkout(name, price);
-                });
-            });
+            // Render services
+            if (data.services && data.services.length > 0) {
+                servicesGrid.innerHTML = data.services.map((s, i) => {
+                    const entry = (typeof s === 'string') ? { url: s } : s || {};
+                    return renderProductCard(entry, i, 'Service');
+                }).join('');
+            } else {
+                servicesGrid.innerHTML = '<p class="no-services">No services available at this time.</p>';
+            }
         } catch (error) {
-            console.error('Failed to load prints:', error);
-            grid.innerHTML = '<p class="error">Failed to load prints. Please try again later.</p>';
+            console.error('Failed to load inventory:', error);
+            printsGrid.innerHTML = '<p class="error">Failed to load prints. Please try again later.</p>';
+            servicesGrid.innerHTML = '<p class="error">Failed to load services. Please try again later.</p>';
         }
     }
 
     // Initialize
     document.addEventListener('DOMContentLoaded', function() {
         checkForSuccess();
-        loadPrints();
-
-        // Bind click handlers to service booking buttons
-        document.querySelectorAll('.btn-book').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const name = this.dataset.name;
-                const price = parseInt(this.dataset.price, 10);
-                checkout(name, price);
-            });
-        });
+        loadInventory();
     });
 </script>

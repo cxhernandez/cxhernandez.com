@@ -13,12 +13,6 @@ threads_username: cxhrndz
 github_username:  cxhernandez
 linkedin_username: carlos-xavier-hernández
 
-# Square Payment Integration
-square:
-  app_id: sandbox-sq0idb-OhZ_4lsmdubD3DJ9l6WfEA
-  location_id: LKWZ18MHXGJSW
-  worker_url: https://photography-store-api.cxhernandez.workers.dev
-
 # Build settings
 markdown: kramdown
 highlighter: pygments

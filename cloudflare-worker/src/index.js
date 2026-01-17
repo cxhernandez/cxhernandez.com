@@ -50,6 +50,10 @@ export default {
       return handleCreateCheckout(request, env, corsHeaders);
     }
 
+    if (url.pathname === '/payment-link-details' && request.method === 'GET') {
+      return handleGetPaymentLinkDetails(url, env, corsHeaders);
+    }
+
     if (url.pathname === '/health') {
       return new Response(JSON.stringify({ status: 'ok' }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -195,4 +199,67 @@ function errorResponse(message, status, corsHeaders = CORS_HEADERS) {
     JSON.stringify({ success: false, error: message }),
     { status, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
   );
+}
+
+// Fetch payment link details by matching a provided square.link URL.
+// Uses Square's Payment Links list endpoint server-side and returns the first match.
+async function handleGetPaymentLinkDetails(urlObj, env, corsHeaders) {
+  try {
+    const linkParam = urlObj.searchParams.get('link');
+    if (!linkParam) return errorResponse('Missing query parameter: link', 400, corsHeaders);
+
+    const apiBase = env.SQUARE_ENVIRONMENT === 'production'
+      ? SQUARE_API.production
+      : SQUARE_API.sandbox;
+
+    // List payment links (paginated). We'll fetch up to a reasonable limit and search.
+    const listResponse = await fetch(`${apiBase}/online-checkout/payment-links?limit=100`, {
+      method: 'GET',
+      headers: {
+        'Square-Version': '2024-01-18',
+        'Authorization': `Bearer ${env.SQUARE_ACCESS_TOKEN}`,
+        'Content-Type': 'application/json',
+      },
+    });
+
+    const listResult = await listResponse.json();
+    if (!listResponse.ok) {
+      const errorMessage = listResult.errors?.[0]?.detail || 'Failed to list payment links';
+      console.error('Square payment-links list error:', JSON.stringify(listResult.errors));
+      return errorResponse(errorMessage, 400, corsHeaders);
+    }
+
+    const links = listResult.payment_links || [];
+
+    // Normalize the incoming link (compare by pathname or full URL)
+    const target = linkParam.trim();
+
+    const match = links.find(pl => {
+      if (!pl || !pl.url) return false;
+      try {
+        // Compare by full URL, and also by ending segment (short id)
+        const plUrl = pl.url;
+        if (plUrl === target) return true;
+        if (plUrl.endsWith(target)) return true;
+        const t = new URL(target, 'https://example.com');
+        const plPath = new URL(plUrl).pathname;
+        if (t.pathname && plPath && plPath.endsWith(t.pathname)) return true;
+      } catch (e) {
+        // ignore URL parse errors
+      }
+      return false;
+    });
+
+    if (!match) {
+      return errorResponse('Payment link not found', 404, corsHeaders);
+    }
+
+    // Return the payment link object as-is (front-end can read quick_pay, price, url, etc.)
+    return new Response(JSON.stringify({ success: true, payment_link: match }), {
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    });
+  } catch (error) {
+    console.error('Payment link details error:', error);
+    return errorResponse('Internal server error', 500, corsHeaders);
+  }
 }
