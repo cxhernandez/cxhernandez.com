@@ -17,6 +17,37 @@ async function hashPassword(password) {
     return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 }
 
+// Animate transition from password gate to store
+function unlockStore() {
+    const gate = document.getElementById('password-gate');
+    const store = document.getElementById('store-main');
+    const gateContent = gate.querySelector('.password-gate-content');
+
+    // Show welcome message
+    if (gateContent) {
+        gateContent.innerHTML = '<h2>Welcome, friend =)</h2>';
+    }
+
+    // Brief pause to show welcome, then fade out
+    setTimeout(() => {
+        gate.style.transition = 'opacity 0.4s ease';
+        gate.style.opacity = '0';
+
+        setTimeout(() => {
+            gate.style.display = 'none';
+
+            // Prepare store for fade in
+            store.style.opacity = '0';
+            store.style.display = 'block';
+            store.style.transition = 'opacity 0.4s ease';
+
+            // Trigger reflow, then fade in
+            store.offsetHeight;
+            store.style.opacity = '1';
+        }, 400);
+    }, 600);
+}
+
 async function checkPassword(e) {
     e.preventDefault();
     const input = document.getElementById('password-input');
@@ -25,8 +56,7 @@ async function checkPassword(e) {
     const inputHash = await hashPassword(input.value);
     if (inputHash === STORE_PASSWORD_HASH) {
         sessionStorage.setItem('store_access', 'granted');
-        document.getElementById('password-gate').style.display = 'none';
-        document.getElementById('store-main').style.display = 'block';
+        unlockStore();
     } else {
         error.style.display = 'block';
         input.value = '';
@@ -50,8 +80,7 @@ function setupPasswordInputListener() {
                 const inputHash = await hashPassword(input.value);
                 if (inputHash === STORE_PASSWORD_HASH) {
                     sessionStorage.setItem('store_access', 'granted');
-                    document.getElementById('password-gate').style.display = 'none';
-                    document.getElementById('store-main').style.display = 'block';
+                    unlockStore();
                 }
             }
         });
