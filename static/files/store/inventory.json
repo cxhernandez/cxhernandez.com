@@ -63,7 +63,8 @@
             "price_max": 250.0,
             "price_display": "$250.00",
             "description": null,
-            "image": "https://cdn3.editmysite.com/app/checkout/static/checkout-link-social-facebook.png"
+            "image": null,
+            "emoji": "📸"
         },
         {
             "url": "https://square.link/u/PUxVoHBR",
@@ -72,7 +73,8 @@
             "price_max": 200.0,
             "price_display": "$200.00",
             "description": null,
-            "image": "https://cdn3.editmysite.com/app/checkout/static/checkout-link-social-facebook.png"
+            "image": null,
+            "emoji": "🐾"
         }
     ]
 }

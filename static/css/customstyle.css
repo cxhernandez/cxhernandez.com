@@ -1590,13 +1590,13 @@ section#Store.parallax {
 
 section#Store.parallax,
 section#Store.parallax p,
-section#Store.parallax a:not(.product-card-button),
+section#Store.parallax a:not(.product-card),
 section#Store.parallax h3,
 section#Store.parallax h4 {
   color: #000 !important;
 }
 
-section#Store.parallax a:not(.product-card-button):hover {
+section#Store.parallax a:not(.product-card):hover {
   color: red !important;
 }
 
@@ -1796,6 +1796,18 @@ section#Store .loading-placeholder {
   opacity: 0.5;
 }
 
+/* Emoji as image replacement */
+.product-card-emoji {
+  width: 100%;
+  height: 259px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 96px;
+  background: #64748b;
+  user-select: none;
+}
+
 /* Checkout Modal (iframe style) */
 .checkout-modal {
   position: fixed;
@@ -1913,6 +1925,19 @@ section#Store .loading-placeholder {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   border-radius: 10px;
   font-family: SQ Market, Helvetica, Arial, sans-serif;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.product-card:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
+}
+
+.product-card:active {
+  transform: translateY(0);
 }
 
 .product-card-image {
@@ -1952,7 +1977,7 @@ section#Store .loading-placeholder {
   line-height: 18px;
   font-weight: 500;
   color: #666;
-  margin: 5px 0 15px 0;
+  margin: 5px 0 0 0;
 }
 
 .product-card-size-hint {
@@ -1961,31 +1986,6 @@ section#Store .loading-placeholder {
   font-weight: 400;
   color: #888;
   margin-top: 4px;
-}
-
-a.product-card-button {
-  display: inline-block;
-  font-size: 18px;
-  line-height: 48px;
-  height: 48px;
-  color: #ffffff !important;
-  min-width: 212px;
-  background-color: #000;
-  text-align: center;
-  box-shadow: 0 0 0 1px rgba(0,0,0,.1) inset;
-  border-radius: 6px;
-  text-decoration: none !important;
-  cursor: pointer;
-}
-
-a.product-card-button:visited {
-  color: #ffffff !important;
-  text-decoration: none !important;
-}
-
-a.product-card-button:hover {
-  color: red !important;
-  text-decoration: none !important;
 }
 
 /* Password Gate */
@@ -2170,5 +2170,30 @@ section#Store #checkout-form-container {
     width: 44px;
     height: 44px;
     font-size: 28px;
+  }
+
+  /* Product cards expand on small screens */
+  .product-card {
+    max-width: 100%;
+  }
+
+  .product-card-image,
+  .product-card-emoji,
+  .product-card-image-placeholder {
+    height: 200px;
+  }
+
+  .product-card-emoji {
+    font-size: 72px;
+  }
+
+  /* Disable hover lift on touch - use active state instead */
+  .product-card:hover {
+    transform: none;
+  }
+
+  .product-card:active {
+    transform: scale(0.98);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   }
 }

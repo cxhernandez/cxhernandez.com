@@ -173,11 +173,21 @@ hide_nav: true
         img.parentNode.replaceChild(placeholder, img);
     }
 
+    // Render image area (image, emoji, or placeholder)
+    function renderImageArea(entry, altText) {
+        if (entry.image) {
+            return `<img src="${escapeHtml(entry.image)}" alt="${escapeHtml(altText)}" onerror="handleImageError(this)" class="product-card-image" loading="lazy">`;
+        }
+        if (entry.emoji) {
+            return `<div class="product-card-emoji" aria-hidden="true">${entry.emoji}</div>`;
+        }
+        return '<div class="product-card-image-placeholder"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div>';
+    }
+
     // Render a product card
     function renderProductCard(entry, index, type) {
         const url = escapeHtml(entry.url) || '#';
         const name = escapeHtml(entry.name) || `${type} ${index + 1}`;
-        const image = escapeHtml(entry.image) || '';
         const price = escapeHtml(formatPrice(entry));
         const description = escapeHtml(entry.description) || '';
         const icon = escapeHtml(entry.icon) || '';
@@ -194,16 +204,15 @@ hide_nav: true
         const sizeHint = hasSizeOptions ? '<span class="product-card-size-hint">Multiple sizes available</span>' : '';
 
         return `
-            <div class="product-card">
-                ${image ? `<img src="${image}" alt="${escapeHtml(altText)}" onerror="handleImageError(this)" class="product-card-image" loading="lazy">` : '<div class="product-card-image-placeholder"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div>'}
+            <a href="${url}" class="product-card" onclick="openCheckoutModal('${url}'); return false;">
+                ${renderImageArea(entry, altText)}
                 <div class="product-card-body">
                     ${icon ? `<div class="product-card-icon" aria-hidden="true">${icon}</div>` : ''}
                     <p class="product-card-name">${name}</p>
                     ${price ? `<p class="product-card-price">${sizeHint}${price}</p>` : ''}
                     ${description ? `<p class="product-card-description">${description}</p>` : ''}
-                    <a href="${url}" onclick="openCheckoutModal('${url}'); return false;" class="product-card-button">${type === 'Service' ? 'Book' : 'Buy'}</a>
                 </div>
-            </div>
+            </a>
         `;
     }
 
