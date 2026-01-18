@@ -28,6 +28,14 @@ def api_base():
     return 'https://connect.squareupsandbox.com/v2'
 
 
+def format_price_display(price_min, price_max):
+    """Format price range for display."""
+    if price_min == price_max:
+        return f"${price_min:.2f}"
+    else:
+        return f"${price_min:.2f} - ${price_max:.2f}"
+
+
 def fetch_payment_links(token, limit=100):
     base = api_base()
     headers = {
@@ -186,23 +194,23 @@ def scrape_checkout_page(url):
         amount_matches = re.findall(r'"amount"\s*:\s*(\d+)', content)
         if amount_matches:
             # Convert cents to dollars and find unique prices
-            prices_cents = [int(a) for a in amount_matches if int(a) > 100]  # Filter out likely non-prices
+            # Filter out likely non-prices (less than $1 or more than $10000)
+            prices_cents = [int(a) for a in amount_matches if 100 <= int(a) <= 1000000]
             if prices_cents:
                 unique_prices = sorted(set(p / 100 for p in prices_cents))
-                if len(unique_prices) > 1:
-                    result['price_display'] = f"From ${unique_prices[0]:.2f}"
-                else:
-                    result['price_display'] = f"${unique_prices[0]:.2f}"
+                result['price_min'] = unique_prices[0]
+                result['price_max'] = unique_prices[-1]
+                result['price_display'] = format_price_display(unique_prices[0], unique_prices[-1])
 
         # Fallback: look for dollar amounts in content
-        if not result.get('price_display'):
+        if not result.get('price_min'):
             all_prices = re.findall(r'\$(\d+(?:\.\d{2})?)', content)
             if all_prices:
-                unique_prices = sorted(set(float(p) for p in all_prices))
-                if len(unique_prices) > 1:
-                    result['price_display'] = f"From ${unique_prices[0]:.2f}"
-                elif unique_prices:
-                    result['price_display'] = f"${unique_prices[0]:.2f}"
+                unique_prices = sorted(set(float(p) for p in all_prices if 1 <= float(p) <= 10000))
+                if unique_prices:
+                    result['price_min'] = unique_prices[0]
+                    result['price_max'] = unique_prices[-1]
+                    result['price_display'] = format_price_display(unique_prices[0], unique_prices[-1])
 
         return result if result.get('name') else None
 
@@ -225,13 +233,16 @@ def enrich_entry(entry, links, index, entry_type='print'):
             name = qp.get('name') or entry.get('name') or pl.get('description')
             price_money = qp.get('price_money') or {}
             amount = price_money.get('amount')
-            price_display = f"${amount/100:.2f}" if isinstance(amount, int) else None
+
+            # API only gives us single price, so min=max
+            price_dollars = amount / 100 if isinstance(amount, int) else None
 
             enriched_entry = {
                 'url': url,  # Keep original short URL
                 'name': name,
-                'price': amount if isinstance(amount, int) else None,
-                'price_display': price_display,
+                'price_min': price_dollars,
+                'price_max': price_dollars,
+                'price_display': f"${price_dollars:.2f}" if price_dollars else None,
                 'description': pl.get('description') or entry.get('description'),
             }
             if entry.get('image'):
@@ -249,6 +260,8 @@ def enrich_entry(entry, links, index, entry_type='print'):
         enriched_entry = {
             'url': url,
             'name': scraped.get('name') or entry.get('name'),
+            'price_min': scraped.get('price_min'),
+            'price_max': scraped.get('price_max'),
             'price_display': scraped.get('price_display') or entry.get('price_display'),
             'description': scraped.get('description') or entry.get('description'),
             'image': entry.get('image') or scraped.get('image'),

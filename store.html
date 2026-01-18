@@ -168,12 +168,30 @@ layout: default
         }
     }
 
+    // Format price for display
+    function formatPrice(entry) {
+        // Use structured price data if available
+        const priceMin = entry.price_min;
+        const priceMax = entry.price_max;
+
+        if (priceMin != null && priceMax != null) {
+            if (priceMin === priceMax) {
+                return `$${priceMin.toFixed(2)}`;
+            } else {
+                return `$${priceMin.toFixed(2)} – $${priceMax.toFixed(2)}`;
+            }
+        }
+
+        // Fallback to price_display string
+        return entry.price_display || '';
+    }
+
     // Render a product card
     function renderProductCard(entry, index, type) {
         const url = escapeHtml(entry.url) || '#';
         const name = escapeHtml(entry.name) || `${type} ${index + 1}`;
         const image = escapeHtml(entry.image) || '';
-        const price = escapeHtml(entry.price_display) || '';
+        const price = escapeHtml(formatPrice(entry));
         const description = escapeHtml(entry.description) || '';
         const icon = escapeHtml(entry.icon) || '';
 
@@ -185,7 +203,7 @@ layout: default
                     <p class="product-card-name">${name}</p>
                     ${price ? `<p class="product-card-price">${price}</p>` : ''}
                     ${description ? `<p class="product-card-description">${description}</p>` : ''}
-                    <a href="${url}" onclick="openCheckoutModal('${url}'); return false;" class="product-card-button">${type === 'Service' ? 'Book Now' : 'Buy Now'}</a>
+                    <a href="${url}" onclick="openCheckoutModal('${url}'); return false;" class="product-card-button">${type === 'Service' ? 'Book' : 'Buy'}</a>
                 </div>
             </div>
         `;
