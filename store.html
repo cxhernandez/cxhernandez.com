@@ -10,7 +10,7 @@ layout: default
             <form id="password-form" onsubmit="return checkPassword(event)">
                 <input type="password" id="password-input" placeholder="Enter password" autocomplete="off">
             </form>
-            <p id="password-error" class="password-error" style="display: none;">Incorrect password</p>
+            <p id="password-error" class="password-error" role="alert" aria-live="polite" style="display: none;">Incorrect password</p>
         </div>
         <p class="password-gate-back"><a href="/#Photography" class="back-link">&larr; Back</a></p>
     </div>
@@ -30,7 +30,7 @@ layout: default
             <div style="width: 48px; height: 48px; border: 4px solid #e0e0e0; border-top-color: #000; border-radius: 50%; animation: checkout-spin 0.8s linear infinite;"></div>
             <p style="margin-top: 16px; color: #666;">Loading checkout...</p>
         </div>
-        <iframe id="checkout-iframe" title="Square Checkout" src="" frameborder="0" style="display: none;"></iframe>
+        <iframe id="checkout-iframe" title="Square Checkout" src="" frameborder="0" sandbox="allow-scripts allow-forms allow-same-origin allow-popups allow-popups-to-escape-sandbox" style="display: none;"></iframe>
     </div>
 </div>
 
@@ -40,11 +40,11 @@ layout: default
         <div class="row-fluid">
             <div class="store-content span12">
                 <div class="store-intro">
-                    <p>Purchase prints of my photography or book a portrait session.</p>
+                    <p>Purchase prints or book a portrait session.</p>
                 </div>
 
                 <!-- Success Message -->
-                <div id="success-message" class="success-banner" style="display: none;">
+                <div id="success-message" class="success-banner" role="status" aria-live="polite" style="display: none;">
                     <p>Thank you for your purchase! You'll receive a confirmation email shortly.</p>
                 </div>
 
@@ -52,7 +52,7 @@ layout: default
                     <!-- Prints Section -->
                     <div class="store-section">
                         <h3>Prints</h3>
-                        <p class="section-description">High-quality prints of my wildlife and street photography, professionally printed on archival paper.</p>
+                        <p class="section-description">High-quality prints of my photography, professionally printed on archival paper.</p>
 
                         <div class="product-grid" id="prints-grid">
                             <div class="loading-placeholder">Loading prints...</div>
@@ -83,8 +83,27 @@ layout: default
 
 <script>
 
+    // Allowed domains for checkout iframe
+    const ALLOWED_CHECKOUT_DOMAINS = ['square.link'];
+
+    // Validate checkout URL before loading in iframe
+    function isValidCheckoutUrl(url) {
+        try {
+            const parsed = new URL(url);
+            return ALLOWED_CHECKOUT_DOMAINS.some(domain => parsed.hostname === domain || parsed.hostname.endsWith('.' + domain));
+        } catch {
+            return false;
+        }
+    }
+
     // Modal functions
     function openCheckoutModal(url) {
+        // Security: only allow whitelisted domains in iframe
+        if (!isValidCheckoutUrl(url)) {
+            console.error('Blocked checkout URL from untrusted domain:', url);
+            return;
+        }
+
         const modal = document.getElementById('checkout-modal');
         const iframe = document.getElementById('checkout-iframe');
         const loading = document.getElementById('checkout-loading');
@@ -145,6 +164,14 @@ layout: default
         return entry.price_display || '';
     }
 
+    // Handle image load errors with placeholder
+    function handleImageError(img) {
+        const placeholder = document.createElement('div');
+        placeholder.className = 'product-card-image-placeholder';
+        placeholder.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>';
+        img.parentNode.replaceChild(placeholder, img);
+    }
+
     // Render a product card
     function renderProductCard(entry, index, type) {
         const url = escapeHtml(entry.url) || '#';
@@ -154,13 +181,24 @@ layout: default
         const description = escapeHtml(entry.description) || '';
         const icon = escapeHtml(entry.icon) || '';
 
+        // Build descriptive alt text
+        const altText = type === 'Print'
+            ? `${name} - photography print`
+            : `${name} - photography service`;
+
+        // Add size hint for prints with price ranges
+        const priceMin = entry.price_min;
+        const priceMax = entry.price_max;
+        const hasSizeOptions = type === 'Print' && priceMin != null && priceMax != null && priceMin !== priceMax;
+        const sizeHint = hasSizeOptions ? '<span class="product-card-size-hint">Multiple sizes available</span>' : '';
+
         return `
             <div class="product-card">
-                ${image ? `<img src="${image}" alt="${name}" onerror="this.style.display='none'" class="product-card-image">` : ''}
+                ${image ? `<img src="${image}" alt="${escapeHtml(altText)}" onerror="handleImageError(this)" class="product-card-image" loading="lazy">` : '<div class="product-card-image-placeholder"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div>'}
                 <div class="product-card-body">
-                    ${icon ? `<div class="product-card-icon">${icon}</div>` : ''}
+                    ${icon ? `<div class="product-card-icon" aria-hidden="true">${icon}</div>` : ''}
                     <p class="product-card-name">${name}</p>
-                    ${price ? `<p class="product-card-price">${price}</p>` : ''}
+                    ${price ? `<p class="product-card-price">${sizeHint}${price}</p>` : ''}
                     ${description ? `<p class="product-card-description">${description}</p>` : ''}
                     <a href="${url}" onclick="openCheckoutModal('${url}'); return false;" class="product-card-button">${type === 'Service' ? 'Book' : 'Buy'}</a>
                 </div>
@@ -182,18 +220,36 @@ layout: default
         }
     }
 
+    // Generate skeleton loading cards
+    function renderSkeletonCards(count) {
+        const skeletonCard = `
+            <div class="skeleton-card" aria-hidden="true">
+                <div class="skeleton-image"></div>
+                <div class="skeleton-body">
+                    <div class="skeleton-text skeleton-title"></div>
+                    <div class="skeleton-text skeleton-price"></div>
+                    <div class="skeleton-text skeleton-button"></div>
+                </div>
+            </div>
+        `;
+        return `<div class="skeleton-grid">${skeletonCard.repeat(count)}</div>`;
+    }
+
+    // Inventory version for cache control (update when inventory changes)
+    const INVENTORY_VERSION = '1';
+
     // Load inventory from local JSON and render
     async function loadInventory() {
         const printsGrid = document.getElementById('prints-grid');
         const servicesGrid = document.getElementById('services-grid');
 
-        // Reset grids to loading state if retrying
-        if (printsGrid) printsGrid.innerHTML = '<div class="loading-placeholder">Loading prints...</div>';
-        if (servicesGrid) servicesGrid.innerHTML = '<div class="loading-placeholder">Loading services...</div>';
+        // Show skeleton loaders
+        if (printsGrid) printsGrid.innerHTML = renderSkeletonCards(3);
+        if (servicesGrid) servicesGrid.innerHTML = renderSkeletonCards(2);
 
         try {
-            // Add cache-busting parameter
-            const response = await fetch('/static/files/store/inventory.json?v=' + Date.now());
+            // Use version-based cache control
+            const response = await fetch('/static/files/store/inventory.json?v=' + INVENTORY_VERSION);
             if (!response.ok) {
                 showStoreError('Unable to load store inventory. Please try again.');
                 return;
