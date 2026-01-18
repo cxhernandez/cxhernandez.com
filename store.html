@@ -150,7 +150,7 @@ layout: default
                     ${icon ? `<div class="product-card-icon">${icon}</div>` : ''}
                     <p class="product-card-name">${name}</p>
                     ${description ? `<p class="product-card-description">${description}</p>` : ''}
-                    ${price ? `<p class="product-card-price">${price}</p>` : ''}
+                    <br>
                     <a href="${url}" onclick="openCheckoutModal('${url}'); return false;" class="product-card-button">${type === 'Service' ? 'Book Now' : 'Buy Now'}</a>
                 </div>
             </div>
