@@ -22,10 +22,12 @@ function unlockStore() {
     const gate = document.getElementById('password-gate');
     const store = document.getElementById('store-main');
     const gateContent = gate.querySelector('.password-gate-content');
+    const gateBack = gate.querySelector('.password-gate-back');
 
     // Show welcome message
     if (gateContent) {
-        gateContent.innerHTML = '<h2>Welcome, friend =)</h2>';
+        gateContent.innerHTML = '<h2>Welcome, friend<br>(˶ᵔ ᵕ ᵔ˶)</h2>';
+        gateBack.style.display = 'none';
     }
 
     // Brief pause to show welcome, then fade out
