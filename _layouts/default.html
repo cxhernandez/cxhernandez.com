@@ -4,7 +4,7 @@
   {% include head.html %}
 
   <body>
-    {% include post-nav.html %}
+    {% unless page.hide_nav %}{% include post-nav.html %}{% endunless %}
     {% if page.is_post %}
     <div class="page-content" style="background-color: #f6f6f6;">
     {% else %}
