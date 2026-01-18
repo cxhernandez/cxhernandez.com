@@ -17,11 +17,20 @@ layout: default
 </div>
 
 <!-- Checkout Modal -->
-<div id="checkout-modal" class="checkout-modal" style="display: none;">
+<style>
+    @keyframes checkout-spin {
+        to { transform: rotate(360deg); }
+    }
+</style>
+<div id="checkout-modal" class="checkout-modal" style="display: none;" role="dialog" aria-modal="true" aria-label="Square Checkout">
     <div class="checkout-modal-backdrop"></div>
     <div class="checkout-modal-content">
-        <button class="checkout-modal-close" aria-label="Close">&times;</button>
-        <iframe id="checkout-iframe" src="" frameborder="0"></iframe>
+        <button class="checkout-modal-close" aria-label="Close checkout">&times;</button>
+        <div id="checkout-loading" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #fff;">
+            <div style="width: 48px; height: 48px; border: 4px solid #e0e0e0; border-top-color: #000; border-radius: 50%; animation: checkout-spin 0.8s linear infinite;"></div>
+            <p style="margin-top: 16px; color: #666;">Loading checkout...</p>
+        </div>
+        <iframe id="checkout-iframe" title="Square Checkout" src="" frameborder="0" style="display: none;"></iframe>
     </div>
 </div>
 
@@ -74,6 +83,14 @@ layout: default
     // Password protection (SHA-256 hash)
     const STORE_PASSWORD_HASH = '83006a438f94daf3a7dd9c7b27f70c15e443c0ca55d58fcdfa76899ae466b455';
 
+    // HTML escaping to prevent XSS
+    function escapeHtml(str) {
+        if (!str) return '';
+        const div = document.createElement('div');
+        div.textContent = str;
+        return div.innerHTML;
+    }
+
     async function hashPassword(password) {
         const encoder = new TextEncoder();
         const data = encoder.encode(password);
@@ -111,16 +128,33 @@ layout: default
     function openCheckoutModal(url) {
         const modal = document.getElementById('checkout-modal');
         const iframe = document.getElementById('checkout-iframe');
+        const loading = document.getElementById('checkout-loading');
+
+        // Show loading state
+        loading.style.display = 'flex';
+        iframe.style.display = 'none';
+
+        // Load the checkout URL
         iframe.src = url;
         modal.style.display = 'flex';
         document.body.style.overflow = 'hidden';
+
+        // Hide loading when iframe loads
+        iframe.onload = function() {
+            loading.style.display = 'none';
+            iframe.style.display = 'block';
+        };
     }
 
     function closeCheckoutModal() {
         const modal = document.getElementById('checkout-modal');
         const iframe = document.getElementById('checkout-iframe');
+        const loading = document.getElementById('checkout-loading');
+
         modal.style.display = 'none';
         iframe.src = '';
+        iframe.style.display = 'none';
+        loading.style.display = 'flex';
         document.body.style.overflow = '';
     }
 
@@ -136,12 +170,12 @@ layout: default
 
     // Render a product card
     function renderProductCard(entry, index, type) {
-        const url = entry.url || '#';
-        const name = entry.name || `${type} ${index + 1}`;
-        const image = entry.image || '';
-        const price = entry.price_display || '';
-        const description = entry.description || '';
-        const icon = entry.icon || '';
+        const url = escapeHtml(entry.url) || '#';
+        const name = escapeHtml(entry.name) || `${type} ${index + 1}`;
+        const image = escapeHtml(entry.image) || '';
+        const price = escapeHtml(entry.price_display) || '';
+        const description = escapeHtml(entry.description) || '';
+        const icon = escapeHtml(entry.icon) || '';
 
         return `
             <div class="product-card">
@@ -149,12 +183,26 @@ layout: default
                 <div class="product-card-body">
                     ${icon ? `<div class="product-card-icon">${icon}</div>` : ''}
                     <p class="product-card-name">${name}</p>
+                    ${price ? `<p class="product-card-price">${price}</p>` : ''}
                     ${description ? `<p class="product-card-description">${description}</p>` : ''}
-                    <br>
                     <a href="${url}" onclick="openCheckoutModal('${url}'); return false;" class="product-card-button">${type === 'Service' ? 'Book Now' : 'Buy Now'}</a>
                 </div>
             </div>
         `;
+    }
+
+    // Show error state for the entire store
+    function showStoreError(message) {
+        const storeSections = document.querySelector('.store-sections');
+        if (storeSections) {
+            storeSections.innerHTML = `
+                <div class="store-error">
+                    <p>${escapeHtml(message)}</p>
+                    <button onclick="loadInventory()" class="retry-button">Try Again</button>
+                    <p class="store-error-fallback">Or <a href="/#Photography">&larr; return to Photography</a></p>
+                </div>
+            `;
+        }
     }
 
     // Load inventory from local JSON and render
@@ -162,19 +210,31 @@ layout: default
         const printsGrid = document.getElementById('prints-grid');
         const servicesGrid = document.getElementById('services-grid');
 
+        // Reset grids to loading state if retrying
+        if (printsGrid) printsGrid.innerHTML = '<div class="loading-placeholder">Loading prints...</div>';
+        if (servicesGrid) servicesGrid.innerHTML = '<div class="loading-placeholder">Loading services...</div>';
+
         try {
             // Add cache-busting parameter
             const response = await fetch('/static/files/store/inventory.json?v=' + Date.now());
             if (!response.ok) {
-                printsGrid.innerHTML = '<p class="no-prints">No prints available at this time.</p>';
-                servicesGrid.innerHTML = '<p class="no-services">No services available at this time.</p>';
+                showStoreError('Unable to load store inventory. Please try again.');
                 return;
             }
 
             const data = await response.json();
 
+            // Check if we have any products at all
+            const hasPrints = data.prints && data.prints.length > 0;
+            const hasServices = data.services && data.services.length > 0;
+
+            if (!hasPrints && !hasServices) {
+                showStoreError('No products are currently available.');
+                return;
+            }
+
             // Render prints
-            if (data.prints && data.prints.length > 0) {
+            if (hasPrints) {
                 printsGrid.innerHTML = data.prints.map((p, i) => {
                     const entry = (typeof p === 'string') ? { url: p } : p || {};
                     return renderProductCard(entry, i, 'Print');
@@ -184,7 +244,7 @@ layout: default
             }
 
             // Render services
-            if (data.services && data.services.length > 0) {
+            if (hasServices) {
                 servicesGrid.innerHTML = data.services.map((s, i) => {
                     const entry = (typeof s === 'string') ? { url: s } : s || {};
                     return renderProductCard(entry, i, 'Service');
@@ -194,8 +254,7 @@ layout: default
             }
         } catch (error) {
             console.error('Failed to load inventory:', error);
-            printsGrid.innerHTML = '<p class="error">Failed to load prints. Please try again later.</p>';
-            servicesGrid.innerHTML = '<p class="error">Failed to load services. Please try again later.</p>';
+            showStoreError('Failed to load store. Please check your connection and try again.');
         }
     }
 

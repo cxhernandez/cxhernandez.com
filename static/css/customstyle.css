@@ -1775,17 +1775,61 @@ section#Store .loading-placeholder {
   border: none;
 }
 
+/* Checkout Loading State */
+.checkout-loading {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  color: #666;
+  z-index: 5;
+}
+
+.checkout-spinner {
+  width: 48px;
+  height: 48px;
+  border: 4px solid #e0e0e0;
+  border-top-color: #000;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin-bottom: 16px;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Visually hidden (for screen readers) */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 /* Product Cards (Square embed style) */
 .product-card {
-  overflow: auto;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
   align-items: center;
-  width: 259px;
+  width: 100%;
+  max-width: 259px;
   background: #FFFFFF;
   border: 1px solid rgba(0, 0, 0, 0.1);
-  box-shadow: -2px 10px 5px rgba(0, 0, 0, 0);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   border-radius: 10px;
   font-family: SQ Market, Helvetica, Arial, sans-serif;
 }
@@ -1936,6 +1980,49 @@ a.product-card-button:hover {
 
 .password-gate-back a:hover {
   color: red;
+}
+
+/* Store Error State */
+.store-error {
+  text-align: center;
+  padding: 60px 20px;
+  background: #fafafa;
+  border-radius: 10px;
+  margin: 40px 0;
+}
+
+.store-error p {
+  font-size: 1.1em;
+  color: #666;
+  margin-bottom: 20px;
+}
+
+.retry-button {
+  background: #000;
+  color: #fff;
+  border: none;
+  padding: 12px 30px;
+  font-size: 1em;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.retry-button:hover {
+  background: #333;
+}
+
+.store-error-fallback {
+  margin-top: 20px;
+  font-size: 0.9em;
+}
+
+.store-error-fallback a {
+  color: #666 !important;
+}
+
+.store-error-fallback a:hover {
+  color: #000 !important;
 }
 
 section#Store .btn-submit-payment {

@@ -49,14 +49,14 @@
             "name": "Portrait Session",
             "price_display": "$250.00",
             "description": null,
-            "image": "https://cdn3.editmysite.com/app/checkout/static/checkout-link-social-facebook.png"
+            "image": null
         },
         {
             "url": "https://square.link/u/PUxVoHBR",
             "name": "Pet Portrait Session",
             "price_display": "$200.00",
             "description": null,
-            "image": "https://cdn3.editmysite.com/app/checkout/static/checkout-link-social-facebook.png"
+            "image": null
         }
     ]
 }
