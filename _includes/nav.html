@@ -13,11 +13,22 @@
             <div class="nav-collapse collapse">
                 <ul class="nav nav-pills">
                     {% assign nav = site.nav | split: "|" %}
+                    {% assign nav_index = 0 %}
+
+                    {%- comment -%}Check if Publications has content{%- endcomment -%}
+                    {% capture publications_check %}{% include publications.md %}{% endcapture %}
+                    {% assign publications_has_content = publications_check | strip | size %}
+
                     {% for item in nav %}
-                        {% if forloop.index0 == 0  %}
-                    <li class="dropdown active"><a href="#{{ item }}">{{ item }}</a></li>
+                        {% if item == "Publications" and publications_has_content == 0 %}
+                            {%- comment -%}Skip Publications nav link - no content{%- endcomment -%}
                         {% else %}
+                            {% if nav_index == 0 %}
+                    <li class="dropdown active"><a href="#{{ item }}">{{ item }}</a></li>
+                            {% else %}
                     <li class=""><a href="#{{ item }}">{{ item }}</a></li>
+                            {% endif %}
+                            {% assign nav_index = nav_index | plus: 1 %}
                         {% endif %}
                     {% endfor %}
                     <li class=""><a href="#" onclick="loadCV(); return false;">CV</a></li>
