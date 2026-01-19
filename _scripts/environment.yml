@@ -9,4 +9,4 @@ dependencies:
   - markdown
   # Google Scholar crawler (gscrawler.py)
   - pandas
-  - scholarly
+  - scholarly>=1.7.12  # Requires version with proxy fix (PR #579)
