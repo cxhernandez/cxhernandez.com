@@ -1,80 +1,32 @@
 {
     "prints": [
         {
-            "url": "https://square.link/u/sWZ2V5x3",
-            "name": "Prince of Borneo",
-            "price_min": 6.0,
-            "price_max": 65.0,
-            "price_display": "$6.00 - $65.00",
-            "description": null,
-            "image": "https://items-images-production-f.squarecdn.com/files/562e444858963df32aab61072e03286eb3dbed08/original.jpeg"
+            "url": "https://square.link/u/sWZ2V5x3"
         },
         {
-            "url": "https://square.link/u/fJfjuVYs",
-            "name": "The Pigeonaire",
-            "price_min": 6.0,
-            "price_max": 65.0,
-            "price_display": "$6.00 - $65.00",
-            "description": null,
-            "image": "https://items-images-production-f.squarecdn.com/files/22338c4f119f46c5b3044bcc6634dd05ffb5c270/original.jpeg"
+            "url": "https://square.link/u/fJfjuVYs"
         },
         {
-            "url": "https://square.link/u/EmJJlzfz",
-            "name": "Three's Company",
-            "price_min": 6.0,
-            "price_max": 65.0,
-            "price_display": "$6.00 - $65.00",
-            "description": null,
-            "image": "https://items-images-production-f.squarecdn.com/files/a0d376eeaf45b47709f86084ab5033b649dbdae8/original.jpeg"
+            "url": "https://square.link/u/EmJJlzfz"
         },
         {
-            "url": "https://square.link/u/Osbph4ez",
-            "name": "No Parking",
-            "price_min": 6.0,
-            "price_max": 65.0,
-            "price_display": "$6.00 - $65.00",
-            "description": null,
-            "image": "https://items-images-production-f.squarecdn.com/files/2b0e74d5d4b5f8bbfb710f246b8613c93b6ad777/original.jpeg"
+            "url": "https://square.link/u/Osbph4ez"
         },
         {
-            "url": "https://square.link/u/9dSWfKzF",
-            "name": "Here Kitty, Kitty",
-            "price_min": 6.0,
-            "price_max": 65.0,
-            "price_display": "$6.00 - $65.00",
-            "description": null,
-            "image": "https://items-images-production-f.squarecdn.com/files/de15019d7eac52a0ce300359c197662c26547e28/original.jpeg"
+            "url": "https://square.link/u/9dSWfKzF"
         },
         {
-            "url": "https://square.link/u/Aib2jdGt",
-            "name": "Love Ewe, From Norway",
-            "price_min": 6.0,
-            "price_max": 65.0,
-            "price_display": "$6.00 - $65.00",
-            "description": null,
-            "image": "https://items-images-production-f.squarecdn.com/files/1fa9e3a3eafd51fe74955bb250b43242001b3a58/original.png"
+            "url": "https://square.link/u/Aib2jdGt"
         }
     ],
     "services": [
         {
             "url": "https://square.link/u/bl3UHEom",
-            "name": "Portrait Session",
-            "price_min": 250.0,
-            "price_max": 250.0,
-            "price_display": "$250.00",
-            "description": null,
-            "image": "https://cdn3.editmysite.com/app/checkout/static/checkout-link-social-facebook.png",
             "emoji": "\ud83d\udcf8"
         },
         {
             "url": "https://square.link/u/PUxVoHBR",
-            "name": "Pet Portrait Session",
-            "price_min": 200.0,
-            "price_max": 200.0,
-            "price_display": "$200.00",
-            "description": null,
-            "image": "https://cdn3.editmysite.com/app/checkout/static/checkout-link-social-facebook.png",
-            "emoji": "\ud83d\udc3e"
+             "emoji": "\ud83d\udc3e"
         }
     ]
 }

@@ -54,7 +54,6 @@ jobs:
       - name: Enrich store inventory
         shell: bash -el {0}
         run: python ./_scripts/enrich_inventory.py static/files/store/inventory.json
-        continue-on-error: true
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
