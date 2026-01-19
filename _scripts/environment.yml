@@ -7,7 +7,6 @@ dependencies:
   # PDF generation (generate_cv_pdf.py)
   - weasyprint
   - markdown
-  # Google Scholar crawler (gscrawler.py)
+  # Publication scraper (semantic_scholar_scraper.py)
   - pandas
-  - scholarly
-  - free-proxy  # Required for FreeProxies
+  - requests  # Required for Semantic Scholar API
