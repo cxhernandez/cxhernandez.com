@@ -94,7 +94,7 @@ MP Harrigan, MM Sultan, **CX Hernández**, BE Husic, P Eastman, CR Schwantes, KA
 `Python` · ⭐ 92  · 🍴 18
 
 #### Osprey: Hyperparameter Optimization for Machine Learning
-RT McGibbon, CX Hernández, MP Harrigan, S Kearnes, MM Sultan, S Jastrzebski, BE Husic, and VS Pande · [msmbuilder/osprey](https://github.com/msmbuilder/osprey)<br>
+RT McGibbon, **CX Hernández**, MP Harrigan, S Kearnes, MM Sultan, S Jastrzebski, BE Husic, and VS Pande · [msmbuilder/osprey](https://github.com/msmbuilder/osprey)<br>
 `Python` · ⭐ 73  · 🍴 26
 
 
