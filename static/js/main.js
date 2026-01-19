@@ -1,130 +1,137 @@
 'use strict';
 
 /* Global variables */
-var mainNavHeight;
-var siblings;
-var targets;
+let mainNavHeight;
+let siblings;
+let targets;
 
 function disable_scroll() {
-	var $body = $('body');
-	$body.addClass('stop-scrolling');
-	$body.on('touchmove', function(e){e.preventDefault();});
+	const body = document.body;
+	body.classList.add('stop-scrolling');
+	body.addEventListener('touchmove', e => e.preventDefault(), { passive: false });
 }
 
 function enable_scroll() {
-	var $body = $('body');
-	$body.removeClass('stop-scrolling');
-	$body.off('touchmove');
+	const body = document.body;
+	body.classList.remove('stop-scrolling');
+	body.removeEventListener('touchmove', e => e.preventDefault());
 }
 
 function loadPDF(url) {
-
-	if ($('.bootbox').length) {
+	if (document.querySelector('.bootbox')) {
 		bootbox.hideAll();
 	}
 
 	disable_scroll();
 
-	bootbox.dialog(
-	{	"message" : "<iframe style='width:inherit;height:inherit;position:absolute' src='"+url+"'/>",
-	    "label" : "",
-	    "class" : "",
-	    "callback": function() {}
+	bootbox.dialog({
+		message: `<iframe style="width:inherit;height:inherit;position:absolute" src="${url}"/>`,
+		label: '',
+		class: '',
+		callback: function() {}
 	});
 
-	$('button.bootbox-close-button.close').click(function () {enable_scroll();});
-	$('div.modal-backdrop').click( function(){
-	        bootbox.hideAll();
-			enable_scroll();
+	document.querySelector('button.bootbox-close-button.close')?.addEventListener('click', enable_scroll);
+	document.querySelector('div.modal-backdrop')?.addEventListener('click', () => {
+		bootbox.hideAll();
+		enable_scroll();
 	});
 }
 
 function loadCV() {
-
-	if ($('.bootbox').length) {
+	if (document.querySelector('.bootbox')) {
 		bootbox.hideAll();
 	}
 
 	// Check if we need to scroll to About section first
-	var $about = $('#About');
-	var aboutTop = $about.offset().top - mainNavHeight;
-	var currentScroll = $(window).scrollTop();
+	const aboutEl = document.getElementById('About');
+	const aboutTop = aboutEl.getBoundingClientRect().top + window.scrollY - mainNavHeight;
+	const currentScroll = window.scrollY;
 
 	function openCVModal() {
 		disable_scroll();
 
-		bootbox.dialog(
-		{	"message" : $('#cv-content').html(),
-		    "label" : "",
-		    "class" : "",
-		    "callback": function() {}
+		bootbox.dialog({
+			message: document.getElementById('cv-content').innerHTML,
+			label: '',
+			class: '',
+			callback: function() {}
 		});
-$('.bootbox').addClass('cv-modal');
+		const bootboxEl = document.querySelector('.bootbox');
+		bootboxEl.classList.add('cv-modal');
 
 		// Style the download button positioning within modal
-		$('.bootbox .modal-body').css({
-			'position': 'relative'
-		});
+		const modalBody = document.querySelector('.bootbox .modal-body');
+		if (modalBody) modalBody.style.position = 'relative';
 
-$('.bootbox #cv-download-btn').css({
-			'position': 'absolute',
-			'top': '45px',
-			'right': '50px',
-			'z-index': '100'
-		});
+		const downloadBtn = document.querySelector('.bootbox #cv-download-btn');
+		if (downloadBtn) {
+			Object.assign(downloadBtn.style, {
+				position: 'absolute',
+				top: '45px',
+				right: '50px',
+				zIndex: '100'
+			});
+		}
 
 		// Calculate even spacing: 20px from navbar bottom and 20px from viewport bottom
-		var spacing = 20;
-		var topOffset = mainNavHeight + spacing;
-		var bottomOffset = spacing;
-		var availableHeight = $(window).height() - topOffset - bottomOffset;
+		const spacing = 20;
+		const topOffset = mainNavHeight + spacing;
+		const availableHeight = window.innerHeight - topOffset - spacing;
 
 		// Style the outer modal container for proper positioning
-		$('.bootbox').css({
-			"overflow": "hidden"
-		});
+		bootboxEl.style.overflow = 'hidden';
 
 		// Style the modal dialog with fixed positioning for precise control
-		$('.bootbox .modal-dialog').css({
-			"position": "fixed",
-			"top": topOffset + "px",
-			"left": "50%",
-			"transform": "translateX(-50%)",
-			"background-color": "#fff",
-			"border": "none",
-			"border-radius": "8px",
-			"box-shadow": "0 10px 40px rgba(0,0,0,0.3)",
-			"width": "80%",
-			"max-width": "900px",
-			"height": availableHeight + "px",
-			"max-height": availableHeight + "px",
-			"overflow-y": "auto",
-			"margin": "0"
-		});
+		const modalDialog = document.querySelector('.bootbox .modal-dialog');
+		if (modalDialog) {
+			Object.assign(modalDialog.style, {
+				position: 'fixed',
+				top: `${topOffset}px`,
+				left: '50%',
+				transform: 'translateX(-50%)',
+				backgroundColor: '#fff',
+				border: 'none',
+				borderRadius: '8px',
+				boxShadow: '0 10px 40px rgba(0,0,0,0.3)',
+				width: '80%',
+				maxWidth: '900px',
+				height: `${availableHeight}px`,
+				maxHeight: `${availableHeight}px`,
+				overflowY: 'auto',
+				margin: '0'
+			});
+		}
 
 		// Ensure modal content fills the dialog
-		$('.bootbox .modal-content').css({
-			"border": "none",
-			"box-shadow": "none",
-			"width": "100%"
-		});
+		const modalContent = document.querySelector('.bootbox .modal-content');
+		if (modalContent) {
+			Object.assign(modalContent.style, {
+				border: 'none',
+				boxShadow: 'none',
+				width: '100%'
+			});
+		}
 
 		// Style the close button
-		$('.bootbox .bootbox-close-button').css({
-			"color": "#333",
-			"opacity": "0.6",
-			"font-size": "24px",
-			"padding": "10px",
-			"position": "absolute",
-			"right": "15px",
-			"top": "10px",
-			"z-index": "10"
-		});
+		const closeBtn = document.querySelector('.bootbox .bootbox-close-button');
+		if (closeBtn) {
+			Object.assign(closeBtn.style, {
+				color: '#333',
+				opacity: '0.6',
+				fontSize: '24px',
+				padding: '10px',
+				position: 'absolute',
+				right: '15px',
+				top: '10px',
+				zIndex: '10'
+			});
+		}
 
-		$('button.bootbox-close-button.close').click(function () {enable_scroll();});
-		$('div.modal-backdrop').click( function(){
-		        bootbox.hideAll();
-				enable_scroll();
+		document.querySelector('button.bootbox-close-button.close')?.addEventListener('click', enable_scroll);
+		document.querySelector('div.modal-backdrop')?.addEventListener('click', () => {
+			bootbox.hideAll();
+			enable_scroll();
 		});
 	}
 
@@ -141,46 +148,56 @@ $('.bootbox #cv-download-btn').css({
 }
 
 function showBlurb(thing) {
-
-	if ($('.bootbox').length) {
+	if (document.querySelector('.bootbox')) {
 		bootbox.hideAll();
 	}
 
-  var blurbid = "#" + $(thing).attr("id") + "-blurb";
+	const blurbId = thing.id + '-blurb';
+	const blurbEl = document.getElementById(blurbId);
 
 	disable_scroll();
 
-	bootbox.dialog(
-	{	"message" : $(blurbid).html(),
-	    "label" : "",
-	    "class" : "",
-	    "callback": function() {}
-	});
-	$('.bootbox').css({"background-color" : "#f6f6f6","border-width":"10px","border-color" : "white","border-style":"solid"});
-	$('.bootbox p, .bootbox h3').css({"color" : "black"});
-	$('.bootbox-close-button').css({"color" : "black"})
-
-	$('button.bootbox-close-button.close').click(function () {enable_scroll();});
-	$('div.modal-backdrop').click( function(){
-	        bootbox.hideAll();
-			enable_scroll();
+	bootbox.dialog({
+		message: blurbEl.innerHTML,
+		label: '',
+		class: '',
+		callback: function() {}
 	});
 
+	const bootboxEl = document.querySelector('.bootbox');
+	Object.assign(bootboxEl.style, {
+		backgroundColor: '#f6f6f6',
+		borderWidth: '10px',
+		borderColor: 'white',
+		borderStyle: 'solid'
+	});
+
+	bootboxEl.querySelectorAll('p, h3').forEach(el => el.style.color = 'black');
+	const closeBtnEl = document.querySelector('.bootbox-close-button');
+	if (closeBtnEl) closeBtnEl.style.color = 'black';
+
+	document.querySelector('button.bootbox-close-button.close')?.addEventListener('click', enable_scroll);
+	document.querySelector('div.modal-backdrop')?.addEventListener('click', () => {
+		bootbox.hideAll();
+		enable_scroll();
+	});
 }
 
-function lightboxOnResize(){
-    if ($(window).width() <= 768) {
-        $('[data-lightbox]').each(function(){
-            var currentData = $(this).attr("data-lightbox");
-            if (currentData){
-                $('a[data-lightbox]').attr("data-lightbox-off", currentData).removeAttr("data-lightbox");
+function lightboxOnResize() {
+    if (window.innerWidth <= 768) {
+        document.querySelectorAll('[data-lightbox]').forEach(el => {
+            const currentData = el.getAttribute('data-lightbox');
+            if (currentData) {
+                el.setAttribute('data-lightbox-off', currentData);
+                el.removeAttribute('data-lightbox');
             }
         });
     } else {
-        $('[data-lightbox]').each(function(){
-            var currentData = $(this).attr("data-lightbox-off");
-            if (currentData){
-                $('a[data-lightbox]').attr("data-lightbox", currentData).removeAttr("data-lightbox-off");
+        document.querySelectorAll('[data-lightbox-off]').forEach(el => {
+            const currentData = el.getAttribute('data-lightbox-off');
+            if (currentData) {
+                el.setAttribute('data-lightbox', currentData);
+                el.removeAttribute('data-lightbox-off');
             }
         });
     }
@@ -201,169 +218,139 @@ function accordionActive() {
 
 /* helper : scroll function */
 
-function scrollToAnchor(aid){
-    $('html,body').animate({scrollTop: aid.offset().top-mainNavHeight}, 600, 'swing');
+function scrollToAnchor(aid) {
+    const targetTop = aid.offset().top - mainNavHeight;
+    $('html,body').animate({ scrollTop: targetTop }, 600, 'swing');
 }
 
-/* prevent default browser behaviour when there is # in url (this is replaced on line 46)*/
-setTimeout(function() {
+/* prevent default browser behaviour when there is # in url */
+setTimeout(() => {
     if (location.hash) {
         window.scrollTo(0, 0);
     }
 }, 1);
 
-$(window).on('resize', function(){
-    lightboxOnResize();
-});
+window.addEventListener('resize', lightboxOnResize);
 
-$(window).on('scroll', function(){
-
+window.addEventListener('scroll', () => {
     /* progress bars */
     /* uses jquery viewport plugin */
-
     jQuery('.progress:in-viewport').each(function() {
-        var $barEl = jQuery(this).find('.bar');
+        const $barEl = jQuery(this).find('.bar');
 
-        if($barEl.width()==5) {
+        if ($barEl.width() === 5) {
             $barEl.delay(700).stop().animate({
-                'width':jQuery(this).attr('data-percentage')+'%'
+                width: jQuery(this).attr('data-percentage') + '%'
             }, 1000, 'swing');
         }
     });
 });
 
 
-$(document).ready(function(){
-    mainNavHeight = $('#MainNav').height();
+document.addEventListener('DOMContentLoaded', () => {
+    mainNavHeight = document.getElementById('MainNav').offsetHeight;
     accordionActive();
 
     /* Custom mobile nav toggle */
-    $('#MainNav .btn-navbar').on('click', function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        var $navCollapse = $('#MainNav .nav-collapse');
-        $navCollapse.toggleClass('in');
-        $(this).toggleClass('collapsed');
-    });
+    const navToggle = document.querySelector('#MainNav .btn-navbar');
+    if (navToggle) {
+        navToggle.addEventListener('click', e => {
+            e.preventDefault();
+            e.stopPropagation();
+            const navCollapse = document.querySelector('#MainNav .nav-collapse');
+            navCollapse.classList.toggle('in');
+            navToggle.classList.toggle('collapsed');
+        });
+    }
 });
 
 
 
-$(window).load(function(){
-
+window.addEventListener('load', () => {
     lightboxOnResize();
 
     /* ISOTOPE */
-    (function(){
-        var $container = jQuery('#IsotopeContainer'), // object that will keep track of options
-            isotopeOptions = {}, // defaults, used if not explicitly set in hash
-            defaultOptions = {
-                filter: '*',
-                sortBy: 'original-order',
-                sortAscending: true,
-                layoutMode: 'masonry'
-            };
+    (function() {
+        const $container = jQuery('#IsotopeContainer');
+        let isotopeOptions = {};
+        const defaultOptions = {
+            filter: '*',
+            sortBy: 'original-order',
+            sortAscending: true,
+            layoutMode: 'masonry'
+        };
 
-
-        var setupOptions = jQuery.extend({}, defaultOptions, {
+        const setupOptions = jQuery.extend({}, defaultOptions, {
             itemSelector: '.isotope-item',
-            masonry: {
-                // columnWidth: $container.width() / 4
-            }
+            masonry: {}
         });
 
         // set up Isotope
         $container.isotope(setupOptions);
 
-        var $optionSets = jQuery('#IsotopeOptions').find('.isotope-options'), isOptionLinkClicked = false;
+        const $optionSets = jQuery('#IsotopeOptions').find('.isotope-options');
+        let isOptionLinkClicked = false;
 
         // switches selected class on buttons
         function changeSelectedLink($elem) {
-            // remove selected class on previous item
             $elem.parents('.isotope-options').find('.selected').removeClass('selected');
-            // set selected class on new item
             $elem.addClass('selected');
         }
 
-
-        $optionSets.find('a').click(function () {
-            var $this = jQuery(this);
-            // don't proceed if already selected
+        $optionSets.find('a').click(function() {
+            const $this = jQuery(this);
             if ($this.hasClass('selected')) {
                 return;
             }
             changeSelectedLink($this);
-            // get href attr, remove leading #
-            var href = $this.attr('href').replace(/^#/, ''), // convert href into object
-            // i.e. 'filter=.inner-transition' -> { filter: '.inner-transition' }
-                option = jQuery.deparam(href, true);
-            // apply new option to previous
+            const href = $this.attr('href').replace(/^#/, '');
+            const option = jQuery.deparam(href, true);
             jQuery.extend(isotopeOptions, option);
-            // set hash, triggers hashchange on window
             jQuery.bbq.pushState(isotopeOptions);
             isOptionLinkClicked = true;
             return false;
         });
 
+        let hashChanged = false;
 
-        var hashChanged = false;
-
-        jQuery(window).on('hashchange', function (event) {
-            // get options object from hash
-            var hashOptions = window.location.hash ? jQuery.deparam.fragment(window.location.hash, true) : {}, // do not animate first call
-                aniEngine = hashChanged ? 'best-available' : 'none', // apply defaults where no option was specified
-                options = jQuery.extend({}, defaultOptions, hashOptions, { animationEngine: aniEngine });
-            // apply options from hash
+        jQuery(window).on('hashchange', function() {
+            const hashOptions = window.location.hash ? jQuery.deparam.fragment(window.location.hash, true) : {};
+            const aniEngine = hashChanged ? 'best-available' : 'none';
+            const options = jQuery.extend({}, defaultOptions, hashOptions, { animationEngine: aniEngine });
             $container.isotope(options);
-            // save options
             isotopeOptions = hashOptions;
 
-            // if option link was not clicked
-            // then we'll need to update selected links
             if (!isOptionLinkClicked) {
-                // iterate over options
-                var hrefObj, hrefValue, $selectedLink;
-                for (var key in options) {
-                    hrefObj = {};
-                    hrefObj[ key ] = options[ key ];
-                    // convert object into parameter string
-                    // i.e. { filter: '.inner-transition' } -> 'filter=.inner-transition'
-                    hrefValue = jQuery.param(hrefObj);
-                    // get matching link
-                    $selectedLink = $optionSets.find('a[href="#' + hrefValue + '"]');
+                for (const key in options) {
+                    const hrefObj = { [key]: options[key] };
+                    const hrefValue = jQuery.param(hrefObj);
+                    const $selectedLink = $optionSets.find('a[href="#' + hrefValue + '"]');
                     changeSelectedLink($selectedLink);
                 }
             }
 
             isOptionLinkClicked = false;
             hashChanged = true;
-        })// trigger hashchange to capture any hash data on init
-            .trigger('hashchange');
+        }).trigger('hashchange');
     })();
     /* ISOTOPE */
 
     /* parallax */
-
-    //.parallax(xPosition, speedFactor, outerHeight) options:
-    //xPosition - Horizontal position of the element
-    //inertia - speed to move relative to vertical scroll. Example: 0.1 is one tenth the speed of scrolling, 2 is twice the speed of scrolling
-    //outerHeight (true/false) - Whether or not jQuery should use it's outerHeight option to determine when a section is in the viewport
-    $('.parallax').each(function(){
-       $(this).parallax("20%", 0.2);
+    $('.parallax').each(function() {
+        $(this).parallax('20%', 0.2);
     });
 
-
     /* easy pie chart */
-    jQuery('.pie-chart').each(function(){
-        var $t = jQuery(this);
-        var scaleColor = $t.attr('data-scalecolor');
-        var trackColor = $t.attr('data-trackcolor');
+    jQuery('.pie-chart').each(function() {
+        const $t = jQuery(this);
+        const scaleColor = $t.attr('data-scalecolor');
+        const trackColor = $t.attr('data-trackcolor');
 
         $t.easyPieChart({
             animate: $t.attr('data-animate'),
             barColor: $t.attr('data-barcolor'),
             trackColor: trackColor,
-            scaleColor: scaleColor == 'false'?false:scaleColor,
+            scaleColor: scaleColor === 'false' ? false : scaleColor,
             lineCap: $t.attr('data-linecap'),
             lineWidth: $t.attr('data-linewidth'),
             size: $t.attr('data-size')
@@ -376,14 +363,12 @@ $(window).load(function(){
     $('#BlogBody .post-media.flexslider').flexslider({slideshow:false, controlNav: false});
 
 
-/* main navigation scrolling */
-    var $nav = $('#MainNav.sticky');
-    var mainHeaderHeight = $('#MainHeader').outerHeight() || 0;
+    /* main navigation scrolling */
+    const $nav = $('#MainNav.sticky');
+    const mainHeaderHeight = $('#MainHeader').outerHeight() || 0;
 
-    // Hide navbar initially when at top of page
     function updateNavbarVisibility() {
-        var scrollTop = $(window).scrollTop();
-        // Show navbar only after scrolling past the main header
+        const scrollTop = window.scrollY;
         if (scrollTop > mainHeaderHeight - 100) {
             $nav.removeClass('navbar-hidden').addClass('stick');
         } else {
@@ -391,131 +376,100 @@ $(window).load(function(){
         }
     }
 
-    // Initial check
     updateNavbarVisibility();
-
-    // Update on scroll
-    $(window).scroll(function(){
-        updateNavbarVisibility();
-    });
+    window.addEventListener('scroll', updateNavbarVisibility);
 
 
-    $('#MainNav a[href^="#"]').on('click',function (e) {
-        if(!$('#MainNav button').hasClass("collapsed")) {
-            $('#MainNav button').click();
+    $('#MainNav a[href^="#"]').on('click', function(e) {
+        const navBtn = document.querySelector('#MainNav button');
+        if (navBtn && !navBtn.classList.contains('collapsed')) {
+            navBtn.click();
         }
 
         e.preventDefault();
-        var target = this.hash,
-            $target = $(target);
-        if (target == "#MainNav") {
-            var offset = $target.offset().top;
+        const target = this.hash;
+        const $target = $(target);
+        let offset;
+        if (target === '#MainNav') {
+            offset = $target.offset().top;
+        } else if (document.documentElement.clientWidth <= 980) {
+            offset = $target.offset().top;
         } else {
-            if ($(document).width() <= 980) {
-                var offset = $target.offset().top;
-            } else {
-                var offset = $target.offset().top - mainNavHeight;
-            }
+            offset = $target.offset().top - mainNavHeight;
         }
-        $('html, body').stop().animate({
-            'scrollTop': offset
-        }, 600, 'swing', function () {
-            /*window.location.hash = target;*/
-        });
+        $('html, body').stop().animate({ scrollTop: offset }, 600, 'swing');
     });
 
-    /* 100ms after everything is loaded we scroll to # */
-    setTimeout(function(){
+    /* After everything is loaded, scroll to hash */
+    setTimeout(() => {
         if (location.hash) {
-            if($('#MainNav.sticky').css('position') == 'static') {
-                window.scrollTo(0, $(location.hash).offset().top);
-            } else if($('#MainNav.sticky').css('position') == 'fixed') {
-                window.scrollTo(0, $(location.hash).offset().top-mainNavHeight);
-            } else if($('#MainNav.sticky').css('position') == 'relative') {
-                window.scrollTo(0, $(location.hash).offset().top);
-            } else {
-                window.scrollTo(0, $(location.hash).offset().top);
-            }
+            const navPosition = $('#MainNav.sticky').css('position');
+            const hashOffset = $(location.hash).offset().top;
+            const scrollOffset = navPosition === 'fixed' ? hashOffset - mainNavHeight : hashOffset;
+            window.scrollTo(0, scrollOffset);
         }
     }, 150);
 
-    $('.post-meta .comment a[href^="#"]').on('click',function (e) {
+    $('.post-meta .comment a[href^="#"]').on('click', function(e) {
         e.preventDefault();
-        var target = this.hash,
-            $target = $(target);
-            if ($(document).width() <= 980) {
-                var offset = $target.offset().top;
-            } else {
-                var offset = $target.offset().top - mainNavHeight;
-            }
-        $('html, body').stop().animate({
-            'scrollTop': offset
-        }, 600, 'swing', function () {
-            /*window.location.hash = target;*/
-        });
+        const $target = $(this.hash);
+        const offset = document.documentElement.clientWidth <= 980
+            ? $target.offset().top
+            : $target.offset().top - mainNavHeight;
+        $('html, body').stop().animate({ scrollTop: offset }, 600, 'swing');
     });
 
-	/* works ajax portfolio */
+    /* works ajax portfolio */
 
-    /* numbers thumbnails in work list (#Work .slides) from 1 to x */
-    var workThumbnails = $(".work .preview ul.slides li a");
+    const workThumbnails = $('.work .preview ul.slides li a');
 
-    workThumbnails.each(function(index, thumbnail) {
-        var i = index + 1;
-        $(thumbnail).data("index", i);
+    workThumbnails.each(function(index) {
+        $(this).data('index', index + 1);
     });
 
-    /* show/hide animation */
-    function showFullView (){
-        $(".work").removeClass("general").addClass("details");
+    function showFullView() {
+        $('.work').removeClass('general').addClass('details');
     }
-    function hideFullView () {
-        $(".work").removeClass("details").addClass("general");
+    function hideFullView() {
+        $('.work').removeClass('details').addClass('general');
     }
     hideFullView();
 
-    function findSiblings (index, list) {
-        var pindex = index-1;
-        var ptarget = "";
+    function findSiblings(index, list) {
+        let pindex = index - 1;
+        let ptarget;
         if (pindex <= 0) {
             pindex = list.length;
-            ptarget = list.last().attr("href");
+            ptarget = list.last().attr('href');
         } else {
-            ptarget = list.filter(function(){
-                return ($(this).data("index") == pindex);
-            });
-            ptarget = ptarget.attr("href");
+            ptarget = list.filter(function() {
+                return $(this).data('index') === pindex;
+            }).attr('href');
         }
-        var nindex = index+1;
-        var ntarget = "";
+
+        let nindex = index + 1;
+        let ntarget;
         if (nindex > workThumbnails.length) {
             nindex = 1;
-            ntarget = list.first().attr("href");
+            ntarget = list.first().attr('href');
         } else {
-            ntarget = list.filter(function(){
-                return ($(this).data("index") == nindex);
-            });
-            ntarget = ntarget.attr("href");
+            ntarget = list.filter(function() {
+                return $(this).data('index') === nindex;
+            }).attr('href');
         }
-        var siblingsResult = {
-            p: {
-                index: pindex,
-                target: ptarget
-            },
-            n: {
-                index: nindex,
-                target: ntarget
-            }
+
+        return {
+            p: { index: pindex, target: ptarget },
+            n: { index: nindex, target: ntarget }
         };
-        return siblingsResult;
     }
 
-    var container = $(".work > .container");
-    var box = $("section.full-view", container);
+    const container = $('.work > .container');
+    const box = $('section.full-view', container);
     /* Load content with Ajax when thumbnail is clicked */
-    $(".work .preview .slides a").on('click',function (e) {
+    $('.work .preview .slides a').on('click', function(e) {
         e.preventDefault();
-        var $work = $(".work");
+        const $work = $('.work');
         targets = {
             c: {
                 target: $(this).attr('href'),
@@ -525,100 +479,77 @@ $(window).load(function(){
         };
         targets.s = findSiblings(targets.c.index, workThumbnails);
 
-        if (targets.c.target != "#" && targets.c.target != "") {
-            $(".work .full-view").load(targets.c.target, function(){
-                $(".work").data('target', targets.c.target);
-                $(".work").data('index', targets.c.index);
+        if (targets.c.target !== '#' && targets.c.target !== '') {
+            $('.work .full-view').load(targets.c.target, function() {
+                $('.work').data('target', targets.c.target);
+                $('.work').data('index', targets.c.index);
 
-                /*$(this).parent().height($(this).outerHeight(true));*/
                 showFullView();
 
-                /* create sibling box elements. pre-load next/prev works there. needed in next/prev animation */
-                $(function () {
-                    box.clone().removeClass().addClass("full-view row-fluid left clone").appendTo(container).load(targets.s.p.target);
-                    box.clone().removeClass().addClass("full-view row-fluid right clone").appendTo(container).load(targets.s.n.target);
-                    box.addClass("original");
-                });
+                /* create sibling box elements for next/prev navigation */
+                box.clone().removeClass().addClass('full-view row-fluid left clone').appendTo(container).load(targets.s.p.target);
+                box.clone().removeClass().addClass('full-view row-fluid right clone').appendTo(container).load(targets.s.n.target);
+                box.addClass('original');
+
                 lightboxOnResize();
             });
         }
-	    scrollToAnchor($work);
+        scrollToAnchor($work);
     });
 
-    /* ------------------------------------------ */
-    /* ------------------------------------------ */
-    /* ------------------------------------------ */
+    function slide(dir) {
+        const $work = $('.work');
+        $('.full-view', $work).removeClass('invisible');
+        let rclone = $('.clone.right', $work);
+        let lclone = $('.clone.left', $work);
+        const original = $('.original', $work);
 
-    function slide (dir){
-        var $work = $(".work");
-        $(".full-view", $work).removeClass("invisible");
-        var rclone = $(".clone.right", $work);
-        var lclone = $(".clone.left", $work);
-        var original = $(".original", $work);
-        var targetH = original.height();
-        if (dir == "l") {
-
-            $work.data('target', siblings.n.target).data('index', findSiblings($work.data("index"), workThumbnails).n.index);
-            siblings = findSiblings($work.data("index"), workThumbnails);
+        if (dir === 'l') {
+            $work.data('target', siblings.n.target).data('index', findSiblings($work.data('index'), workThumbnails).n.index);
+            siblings = findSiblings($work.data('index'), workThumbnails);
             siblings.c = {
-                target: $work.data("target"),
-                index: $work.data("index")
+                target: $work.data('target'),
+                index: $work.data('index')
             };
 
-            var targetH = rclone.height();
-            rclone.toggleClass("clone right original");
-            original.toggleClass("clone original left");
-            lclone.toggleClass("left right invisible");
-            rclone = $(".clone.right", $work);
-            rclone.load(siblings.n.target, function(){
-                lightboxOnResize();
-            });
-        } else if (dir == "r") {
-
-            $work.data('target', siblings.p.target).data('index', findSiblings($work.data("index"), workThumbnails).p.index);
-            siblings = findSiblings($work.data("index"), workThumbnails);
+            rclone.toggleClass('clone right original');
+            original.toggleClass('clone original left');
+            lclone.toggleClass('left right invisible');
+            rclone = $('.clone.right', $work);
+            rclone.load(siblings.n.target, lightboxOnResize);
+        } else if (dir === 'r') {
+            $work.data('target', siblings.p.target).data('index', findSiblings($work.data('index'), workThumbnails).p.index);
+            siblings = findSiblings($work.data('index'), workThumbnails);
             siblings.c = {
-                target: $work.data("target"),
-                index: $work.data("index")
+                target: $work.data('target'),
+                index: $work.data('index')
             };
 
-            var targetH = lclone.height();
-            lclone.toggleClass("clone left original");
-            original.toggleClass("clone original right");
-            rclone.toggleClass("right left invisible");
-            lclone = $(".clone.left", $work);
-            lclone.load(siblings.p.target, function(){
-                lightboxOnResize();
-            });
+            lclone.toggleClass('clone left original');
+            original.toggleClass('clone original right');
+            rclone.toggleClass('right left invisible');
+            lclone = $('.clone.left', $work);
+            lclone.load(siblings.p.target, lightboxOnResize);
         }
     }
-    $(document).on('click', ".work .full-view nav a.all", function() {
+    $(document).on('click', '.work .full-view nav a.all', function() {
         hideFullView();
-        $(".work .clone").remove();
-
-	    return false;
-    });
-    $(document).on('click', ".work .full-view nav a.prev", function(){
-        slide("r");
-
-	    return false;
-    });
-    $(document).on('click', ".work .full-view nav a.next", function(){
-        slide("l");
-
-	    return false;
+        $('.work .clone').remove();
+        return false;
     });
 
+    $(document).on('click', '.work .full-view nav a.prev', function() {
+        slide('r');
+        return false;
+    });
 
-	/* mail validation */
+    $(document).on('click', '.work .full-view nav a.next', function() {
+        slide('l');
+        return false;
+    });
 
-	$("input[type='email']").on({
-     blur : function(){
-         if ($(this).val()){
-             $(this).addClass("filled")
-         } else {
-             $(this).removeClass("filled")
-         }
-     }
- });
+    /* mail validation */
+    $("input[type='email']").on('blur', function() {
+        $(this).toggleClass('filled', !!$(this).val());
+    });
 });
