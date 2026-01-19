@@ -32,7 +32,7 @@ jobs:
         uses: conda-incubator/setup-miniconda@v3
         with:
           environment-file: _scripts/environment.yml
-          activate-environment: cv_pdf
+          activate-environment: cxhernandez.com
           auto-activate-base: false
 
       - name: Fetch publications from Semantic Scholar
