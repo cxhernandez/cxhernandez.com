@@ -379,15 +379,16 @@ section#Photography {
   padding: 10px;
   box-sizing: border-box;
 
+  // For regular image links (if used)
   a {
     display: flex;
     justify-content: center;
     align-items: center;
     width: 100%;
-    transition: transform 0.3s ease;
+    transition: transform 0.2s ease;
 
     &:hover {
-      transform: scale(1.02);
+      transform: translateY(-2px);
     }
   }
 
@@ -401,6 +402,11 @@ section#Photography {
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
     display: block;
     margin: 0 auto;
+    transition: box-shadow 0.2s ease;
+  }
+
+  a:hover img {
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
   }
 
   .instagram-media {
@@ -474,6 +480,12 @@ section#Photography {
   border-radius: 8px;
   overflow: hidden;
   background: #fafafa;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+  }
 
   blockquote.instagram-media {
     margin: 0 !important;
@@ -511,16 +523,90 @@ section#Software {
     h2,
     h4,
     p,
-    a {
+    a:not(.software-card) {
       color: #000 !important;
     }
 
-    a:hover {
+    a:not(.software-card):hover {
       color: red !important;
     }
   }
 }
 
+// Software Grid (matching product card layout)
+.software-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 25px;
+  justify-content: center;
+}
+
+.software-card {
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  width: 100%;
+  max-width: 259px;
+  background: #FFFFFF;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border-radius: 10px;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+
+  &:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+    color: inherit;
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+.software-card-image {
+  width: 100%;
+  height: 259px;
+  object-fit: contain;
+  object-position: center;
+  display: block;
+  background: #f5f5f5;
+  padding: 40px;
+  box-sizing: border-box;
+
+  // Fix Osprey logo vertical alignment (SVG has extra whitespace at top)
+  &[alt*="Osprey"] {
+    object-position: center 60%;
+  }
+}
+
+.software-card-body {
+  padding: 20px;
+  text-align: center;
+  width: 100%;
+}
+
+.software-card-name {
+  font-size: 18px;
+  line-height: 20px;
+  font-weight: 600;
+  margin-bottom: 0;
+  color: #000 !important;
+}
+
+.software-card-description {
+  font-size: 14px;
+  line-height: 18px;
+  color: #666 !important;
+  margin: 10px 0 0 0;
+}
+
+// Legacy icon-box styles (deprecated but kept for compatibility)
 div.span4.icon-box {
   margin-bottom: 4em;
 
@@ -529,6 +615,27 @@ div.span4.icon-box {
     margin-left: auto;
     margin-right: auto;
     width: 200px;
+  }
+}
+
+// Responsive adjustments for software cards
+@media (max-width: 768px) {
+  .software-card {
+    max-width: 100%;
+
+    &:hover {
+      transform: none;
+    }
+
+    &:active {
+      transform: scale(0.98);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    }
+  }
+
+  .software-card-image {
+    height: 200px;
+    padding: 30px;
   }
 }
 
