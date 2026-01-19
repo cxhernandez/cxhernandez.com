@@ -379,15 +379,16 @@ section#Photography {
   padding: 10px;
   box-sizing: border-box;
 
+  // For regular image links (if used)
   a {
     display: flex;
     justify-content: center;
     align-items: center;
     width: 100%;
-    transition: transform 0.3s ease;
+    transition: transform 0.2s ease;
 
     &:hover {
-      transform: scale(1.02);
+      transform: translateY(-2px);
     }
   }
 
@@ -401,6 +402,11 @@ section#Photography {
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
     display: block;
     margin: 0 auto;
+    transition: box-shadow 0.2s ease;
+  }
+
+  a:hover img {
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
   }
 
   .instagram-media {
@@ -474,6 +480,12 @@ section#Photography {
   border-radius: 8px;
   overflow: hidden;
   background: #fafafa;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+  }
 
   blockquote.instagram-media {
     margin: 0 !important;
