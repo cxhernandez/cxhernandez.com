@@ -5,6 +5,7 @@ _notebooks
 *.lock
 .sass-cache
 .DS_Store
+.jekyll-cache
 
 # Node.js
 node_modules/
