@@ -6,6 +6,7 @@ _notebooks
 .sass-cache
 .DS_Store
 .jekyll-cache
+.claude
 
 # Node.js
 node_modules/
