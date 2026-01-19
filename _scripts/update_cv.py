@@ -281,15 +281,15 @@ class CVUpdater:
                 # Check the next line for existing stats
                 if i + 1 < len(lines):
                     next_line = lines[i + 1]
-                    # Pattern: `Language` · ⭐ ### 🍴 ###
-                    stats_pattern = r'^(`[^`]+`\s+)?· ⭐ \d+ 🍴 \d+'
+                    # Pattern: `Language` · ⭐ ### · 🍴 ###
+                    stats_pattern = r'^(`[^`]+`\s+)?· ⭐ \d+\s+· 🍴 \d+'
 
                     if stats:
                         if re.match(stats_pattern, next_line):
                             # Replace existing stats, preserving language tag
                             lang_match = re.match(r'^(`[^`]+`\s+)', next_line)
                             lang_prefix = lang_match.group(1) if lang_match else ''
-                            updated_lines.append(f'{lang_prefix}· ⭐ {stats["stars"]} 🍴 {stats["forks"]}')
+                            updated_lines.append(f'{lang_prefix}· ⭐ {stats["stars"]}  · 🍴 {stats["forks"]}')
                             logger.info(f"Updated stats to ⭐ {stats['stars']} 🍴 {stats['forks']} for {owner}/{repo}")
                             i += 2  # Skip the stats line we just updated
                             continue
@@ -298,13 +298,13 @@ class CVUpdater:
                             # Check if next line starts with language tag
                             if next_line.strip().startswith('`'):
                                 # Next line has language, append stats to it
-                                updated_lines.append(f'{next_line.rstrip()} · ⭐ {stats["stars"]} 🍴 {stats["forks"]}')
+                                updated_lines.append(f'{next_line.rstrip()} · ⭐ {stats["stars"]}  · 🍴 {stats["forks"]}')
                                 logger.info(f"Added stats ⭐ {stats['stars']} 🍴 {stats['forks']} for {owner}/{repo}")
                                 i += 2
                                 continue
                             else:
                                 # No language tag, just add stats
-                                updated_lines.append(f'· ⭐ {stats["stars"]} 🍴 {stats["forks"]}')
+                                updated_lines.append(f'· ⭐ {stats["stars"]}  · 🍴 {stats["forks"]}')
                                 logger.info(f"Added stats ⭐ {stats['stars']} 🍴 {stats['forks']} for {owner}/{repo}")
                                 i += 1
                                 continue
@@ -315,7 +315,7 @@ class CVUpdater:
                 else:
                     # Last line in file
                     if stats:
-                        updated_lines.append(f'· ⭐ {stats["stars"]} 🍴 {stats["forks"]}')
+                        updated_lines.append(f'· ⭐ {stats["stars"]}  · 🍴 {stats["forks"]}')
                         logger.info(f"Added stats ⭐ {stats['stars']} 🍴 {stats['forks']} for {owner}/{repo}")
                     i += 1
                     continue

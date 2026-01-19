@@ -79,23 +79,23 @@ P Kaifosh, TR Reardon, and **CTRL-Labs** · *[Nature](https://doi.org/10.1038/s4
 
 #### MDTraj: A Modern, Open Library for the Analysis of Molecular Dynamics Trajectories
 RT McGibbon, KA Beauchamp, MP Harrigan, C Klein, JM Swails, **CX Hernández**, CR Schwantes, LP Wang, TJ Lane, and VS Pande · [mdtraj/mdtraj](https://github.com/mdtraj/mdtraj) <br>
-`Python`  · ⭐ 687 🍴 290
+`Python`  · ⭐ 687  · 🍴 290
 
 #### VDE: Variational Dynamical Encoder for Complex Dynamics
 **CX Hernández**, HK Wayment-Steele, MM Sultan, BE Husic, and VS Pande · [msmbuilder/vde](https://github.com/msmbuilder/vde)<br>
-`Python` · ⭐ 189 🍴 42
+`Python` · ⭐ 189  · 🍴 42
 
 #### MSMBuilder: Statistical Models for Biomolecular Dynamics
 MP Harrigan, MM Sultan, **CX Hernández**, BE Husic, P Eastman, CR Schwantes, KA Beauchamp, RT McGibbon, and VS Pande · [msmbuilder/vde](https://github.com/msmbuilder/msmbuilder)<br>
-`Python` · ⭐ 161 🍴 94
+`Python` · ⭐ 161  · 🍴 94
 
 #### MolEncoder: Molecular Autoencoder in PyTorch
 **CX Hernández** · [cxhernandez/molencoder](https://github.com/cxhernandez/molencoder)<br>
-`Python` · ⭐ 92 🍴 18
+`Python` · ⭐ 92  · 🍴 18
 
 #### Osprey: Hyperparameter Optimization for Machine Learning
 RT McGibbon, CX Hernández, MP Harrigan, S Kearnes, MM Sultan, S Jastrzebski, BE Husic, and VS Pande · [msmbuilder/osprey](https://github.com/msmbuilder/osprey)<br>
-`Python` · ⭐ 73 🍴 26
+`Python` · ⭐ 73  · 🍴 26
 
 
 ## Posters & Presentations
