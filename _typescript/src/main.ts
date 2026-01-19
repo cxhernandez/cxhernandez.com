@@ -11,8 +11,18 @@ let targets: {
 let scrollPosition: number = 0;
 
 function disable_scroll(): void {
+  // Stop any ongoing smooth scroll animations (both native and jQuery)
+  $('html, body').stop();
+
+  // Force the browser to synchronously complete any pending scroll by reading scrollY
+  // This triggers a layout flush, ensuring we get the actual current position
+  const currentY = window.scrollY;
+
+  // Snap to the current position (cancels any smooth scroll in progress)
+  window.scrollTo(window.scrollX, currentY);
+
   // Save current scroll position
-  scrollPosition = window.scrollY;
+  scrollPosition = currentY;
 
   const body = document.body;
   body.style.position = 'fixed';
@@ -38,112 +48,125 @@ function loadCV(): void {
   // Remove any existing modals manually (bootbox.hideAll() has compatibility issues)
   document.querySelectorAll('.bootbox, .modal-backdrop').forEach((el) => el.remove());
 
+  // Stop any ongoing scroll animations before checking position
+  $('html, body').stop();
+  window.scrollTo(window.scrollX, window.scrollY);
+
   // Check if we need to scroll to About section first
   const aboutEl = document.getElementById('About');
   if (!aboutEl) return;
 
-  const aboutTop = aboutEl.getBoundingClientRect().top + window.scrollY - mainNavHeight;
-  const currentScroll = window.scrollY;
+  // Wait a tick to ensure DOM has settled after stopping animations
+  setTimeout(() => {
+    // NOW read positions after browser has settled
+    const stoppedPosition = window.scrollY;
+    const aboutTop = aboutEl.getBoundingClientRect().top + stoppedPosition - mainNavHeight;
+    const currentScroll = stoppedPosition;
 
-  function openCVModal(): void {
-    disable_scroll();
+    function openCVModal(): void {
+      // Add a small delay to ensure all scroll operations have truly completed
+      // This handles edge cases where browser scroll events are still pending
+      setTimeout(() => {
+        disable_scroll();
 
-    const cvContent = document.getElementById('cv-content');
-    if (!cvContent) return;
+        const cvContent = document.getElementById('cv-content');
+      if (!cvContent) return;
 
-    bootbox.dialog({
-      message: cvContent.innerHTML,
-      onEscape: true,
-      backdrop: true,
-    });
-
-    const bootboxEl = document.querySelector('.bootbox');
-    if (!bootboxEl) return;
-
-    bootboxEl.classList.add('cv-modal');
-
-    // Style the download button positioning within modal
-    const modalBody = document.querySelector<HTMLElement>('.bootbox .modal-body');
-    if (modalBody) modalBody.style.position = 'relative';
-
-    const downloadBtn = document.querySelector<HTMLElement>('.bootbox #cv-download-btn');
-    if (downloadBtn) {
-      Object.assign(downloadBtn.style, {
-        position: 'absolute',
-        top: '45px',
-        right: '50px',
-        zIndex: '100',
+      bootbox.dialog({
+        message: cvContent.innerHTML,
+        onEscape: true,
+        backdrop: true,
       });
+
+      const bootboxEl = document.querySelector('.bootbox');
+      if (!bootboxEl) return;
+
+      bootboxEl.classList.add('cv-modal');
+
+      // Style the download button positioning within modal
+      const modalBody = document.querySelector<HTMLElement>('.bootbox .modal-body');
+      if (modalBody) modalBody.style.position = 'relative';
+
+      const downloadBtn = document.querySelector<HTMLElement>('.bootbox #cv-download-btn');
+      if (downloadBtn) {
+        Object.assign(downloadBtn.style, {
+          position: 'absolute',
+          top: '45px',
+          right: '50px',
+          zIndex: '100',
+        });
+      }
+
+      // Calculate even spacing: 20px from navbar bottom and 20px from viewport bottom
+      const spacing = 20;
+      const topOffset = mainNavHeight + spacing;
+      const availableHeight = window.innerHeight - topOffset - spacing;
+
+      // Style the outer modal container for proper positioning
+      (bootboxEl as HTMLElement).style.overflow = 'hidden';
+
+      // Style the modal dialog with fixed positioning for precise control
+      const modalDialog = document.querySelector<HTMLElement>('.bootbox .modal-dialog');
+      if (modalDialog) {
+        Object.assign(modalDialog.style, {
+          position: 'fixed',
+          top: `${topOffset}px`,
+          left: '50%',
+          transform: 'translateX(-50%)',
+          backgroundColor: '#fff',
+          border: 'none',
+          borderRadius: '8px',
+          boxShadow: '0 10px 40px rgba(0,0,0,0.3)',
+          width: '80%',
+          maxWidth: '900px',
+          height: `${availableHeight}px`,
+          maxHeight: `${availableHeight}px`,
+          overflowY: 'auto',
+          margin: '0',
+        });
+      }
+
+      // Ensure modal content fills the dialog
+      const modalContent = document.querySelector<HTMLElement>('.bootbox .modal-content');
+      if (modalContent) {
+        Object.assign(modalContent.style, {
+          border: 'none',
+          boxShadow: 'none',
+          width: '100%',
+        });
+      }
+
+      // Style the close button
+      const closeBtn = document.querySelector<HTMLElement>('.bootbox .bootbox-close-button');
+      if (closeBtn) {
+        Object.assign(closeBtn.style, {
+          color: '#333',
+          opacity: '0.6',
+          fontSize: '24px',
+          padding: '10px',
+          position: 'absolute',
+          right: '15px',
+          top: '10px',
+          zIndex: '10',
+        });
+      }
+
+      document.querySelector<HTMLButtonElement>('button.bootbox-close-button.close')?.addEventListener('click', enable_scroll);
+      document.querySelector<HTMLDivElement>('div.modal-backdrop')?.addEventListener('click', () => {
+        document.querySelectorAll('.bootbox, .modal-backdrop').forEach((el) => el.remove());
+        enable_scroll();
+      });
+      }, 50); // 50ms delay to let browser settle
     }
 
-    // Calculate even spacing: 20px from navbar bottom and 20px from viewport bottom
-    const spacing = 20;
-    const topOffset = mainNavHeight + spacing;
-    const availableHeight = window.innerHeight - topOffset - spacing;
-
-    // Style the outer modal container for proper positioning
-    (bootboxEl as HTMLElement).style.overflow = 'hidden';
-
-    // Style the modal dialog with fixed positioning for precise control
-    const modalDialog = document.querySelector<HTMLElement>('.bootbox .modal-dialog');
-    if (modalDialog) {
-      Object.assign(modalDialog.style, {
-        position: 'fixed',
-        top: `${topOffset}px`,
-        left: '50%',
-        transform: 'translateX(-50%)',
-        backgroundColor: '#fff',
-        border: 'none',
-        borderRadius: '8px',
-        boxShadow: '0 10px 40px rgba(0,0,0,0.3)',
-        width: '80%',
-        maxWidth: '900px',
-        height: `${availableHeight}px`,
-        maxHeight: `${availableHeight}px`,
-        overflowY: 'auto',
-        margin: '0',
-      });
+    // If not scrolled past the About section, scroll there first
+    if (currentScroll < aboutTop) {
+      smoothScrollTo(aboutTop, 400);
+      setTimeout(openCVModal, 450);
+    } else {
+      openCVModal();
     }
-
-    // Ensure modal content fills the dialog
-    const modalContent = document.querySelector<HTMLElement>('.bootbox .modal-content');
-    if (modalContent) {
-      Object.assign(modalContent.style, {
-        border: 'none',
-        boxShadow: 'none',
-        width: '100%',
-      });
-    }
-
-    // Style the close button
-    const closeBtn = document.querySelector<HTMLElement>('.bootbox .bootbox-close-button');
-    if (closeBtn) {
-      Object.assign(closeBtn.style, {
-        color: '#333',
-        opacity: '0.6',
-        fontSize: '24px',
-        padding: '10px',
-        position: 'absolute',
-        right: '15px',
-        top: '10px',
-        zIndex: '10',
-      });
-    }
-
-    document.querySelector<HTMLButtonElement>('button.bootbox-close-button.close')?.addEventListener('click', enable_scroll);
-    document.querySelector<HTMLDivElement>('div.modal-backdrop')?.addEventListener('click', () => {
-      document.querySelectorAll('.bootbox, .modal-backdrop').forEach((el) => el.remove());
-      enable_scroll();
-    });
-  }
-
-  // If not scrolled past the About section, scroll there first
-  if (currentScroll < aboutTop) {
-    smoothScrollTo(aboutTop, 400);
-    setTimeout(openCVModal, 450);
-  } else {
-    openCVModal();
-  }
+  }, 0); // Execute after stopping animations
 }
 
 /* bootstrap accordion class active */
