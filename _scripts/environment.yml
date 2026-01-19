@@ -9,5 +9,5 @@ dependencies:
   - markdown
   # Google Scholar crawler (gscrawler.py)
   - pandas
-  - beautifulsoup4
-  - html5lib
+  - scholarly
+  - free-proxy  # Required for FreeProxies

@@ -6,10 +6,7 @@ import codecs
 import logging
 import re
 import time
-from contextlib import closing
 from pathlib import Path
-from urllib.error import URLError
-from urllib.request import Request, urlopen
 
 import pandas as pd
 from bs4 import BeautifulSoup
@@ -104,52 +101,157 @@ def clean_journal_name(journal):
     return journal
 
 
-def get_soup(user, max_retries=3, backoff_factor=2):
-    """Fetch Google Scholar page with retry logic.
+def patch_freeproxy_compatibility():
+    """Monkey-patch scholarly to fix FreeProxies compatibility issue.
+
+    Applies the fix from PR #579 to handle both old and new versions
+    of the free-proxy library.
+
+    See: https://github.com/scholarly-python-package/scholarly/pull/579
+    """
+    try:
+        from scholarly import _proxy_generator
+        import time
+
+        # Get the original ProxyGenerator class
+        ProxyGenerator = _proxy_generator.ProxyGenerator
+
+        def patched_freeproxies(self):
+            """Patched FreeProxies with backward compatibility."""
+            from fp.fp import FreeProxy
+
+            class DOTdict(dict):
+                __getattr__ = dict.get
+                __setattr__ = dict.__setitem__
+                __delattr__ = dict.__delitem__
+
+            logger.info("Attempting to setup FreeProxy with compatibility fix")
+
+            self._proxy_gen = DOTdict()
+            freeproxy = FreeProxy(anonym=True, rand=True)
+
+            # Apply PR #579 fix: try new API first, fall back to old API
+            try:
+                all_proxies = freeproxy.get_proxy_list(repeat=False)  # free-proxy >= 1.1.0
+            except TypeError:
+                all_proxies = freeproxy.get_proxy_list()  # free-proxy < 1.1.0
+
+            self._proxy_gen['method'] = "FreeProxies"
+            self._has_proxy = True
+            self._proxy_gen['proxy'] = all_proxies.pop()
+
+            # Setup the proxy refresh coroutine with the same fix
+            def _fp_coroutine(proxies, freeproxy, refresh_interval=60):
+                wait_time = refresh_interval
+                all_proxies = proxies
+                t1 = time.time()
+                while True:
+                    while (time.time() - t1 < wait_time):
+                        proxy = all_proxies.pop() if all_proxies else None
+                        if not all_proxies:
+                            try:
+                                all_proxies = freeproxy.get_proxy_list(repeat=False)
+                            except TypeError:
+                                all_proxies = freeproxy.get_proxy_list()
+                        if proxy:
+                            yield proxy
+                    t1 = time.time()
+                    # Refresh the proxy list
+                    try:
+                        all_proxies = freeproxy.get_proxy_list(repeat=False)
+                    except TypeError:
+                        all_proxies = freeproxy.get_proxy_list()
+
+            self._proxy_gen['_coroutine'] = _fp_coroutine(all_proxies, freeproxy)
+            return self
+
+        # Apply the patch
+        ProxyGenerator.FreeProxies = patched_freeproxies
+        logger.info("Successfully applied FreeProxies compatibility patch")
+
+    except Exception as e:
+        logger.warning(f"Failed to apply FreeProxies patch: {e}")
+        logger.warning("Falling back to default session without proxy")
+
+
+def setup_proxy():
+    """Setup proxy to avoid Google Scholar blocking.
+
+    Uses FreeProxies with a local patch to fix compatibility issues
+    between scholarly 1.7.11 and newer versions of the free-proxy library.
+
+    See: https://github.com/scholarly-python-package/scholarly/pull/579
+    """
+    try:
+        # Apply the compatibility patch first
+        patch_freeproxy_compatibility()
+
+        from scholarly import ProxyGenerator, scholarly
+
+        pg = ProxyGenerator()
+        pg.FreeProxies()
+        scholarly.use_proxy(pg)
+
+        logger.info("Successfully setup FreeProxies for Google Scholar scraping")
+
+    except Exception as e:
+        logger.warning(f"Failed to setup proxy: {e}")
+        logger.warning("Continuing without proxy - may encounter rate limiting")
+
+
+def get_author_publications_html(user_id, max_retries=3, backoff_factor=2):
+    """Fetch author profile HTML using scholarly's session with retry logic.
 
     Args:
-        user: Google Scholar user ID
-        max_retries: Maximum number of retry attempts
-        backoff_factor: Multiplier for exponential backoff
+        user_id: Google Scholar user ID
+        max_retries: Maximum number of retry attempts (default: 3)
+        backoff_factor: Exponential backoff multiplier (default: 2)
 
     Returns:
-        BeautifulSoup object of the page
+        BeautifulSoup object of the author profile page
 
     Raises:
-        URLError: If all retry attempts fail
+        Exception: If fetching publications fails after all retries
     """
-    url = f"https://scholar.google.com/citations?hl=en&user={user}&pagesize=100"
-    user_agent = (
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-        "AppleWebKit/537.36 (KHTML, like Gecko) "
-        "Chrome/91.0.4472.124 Safari/537.36"
-    )
+    # Access the internal Navigator (already configured with proxy via setup_proxy)
+    # Note: This uses scholarly's internal API because the public API doesn't
+    # provide direct access to the raw HTML needed for our parsing approach
+    from scholarly import _navigator
 
     for attempt in range(max_retries):
         try:
-            logger.info(f"Fetching publications for user {user} (attempt {attempt + 1}/{max_retries})")
-            req = Request(url, None, headers={"User-Agent": user_agent})
-            with closing(urlopen(req, timeout=10)) as r:
-                soup = BeautifulSoup(r.read(), "html.parser")
+            logger.info(f"Fetching publications for user {user_id} (attempt {attempt + 1}/{max_retries})")
+
+            # Get the Navigator instance (uses Singleton pattern, so gets the one configured by setup_proxy)
+            nav = _navigator.Navigator()
+
+            # Fetch the author profile page with pagesize=100
+            # _get_soup expects a relative URL (it prepends https://scholar.google.com)
+            url = f"/citations?hl=en&user={user_id}&pagesize=100"
+            soup = nav._get_soup(url)
+
             logger.info("Successfully fetched publication data")
             return soup
-        except URLError as e:
-            logger.warning(f"Attempt {attempt + 1} failed: {e}")
-            if attempt < max_retries - 1:
-                sleep_time = backoff_factor ** attempt
-                logger.info(f"Retrying in {sleep_time} seconds...")
-                time.sleep(sleep_time)
-            else:
-                logger.error("All retry attempts failed")
-                raise
-        except Exception as e:
-            logger.error(f"Unexpected error: {e}")
-            raise
 
-    raise URLError("Failed to fetch data after all retries")
+        except Exception as e:
+            wait_time = backoff_factor ** attempt
+            if attempt < max_retries - 1:
+                logger.warning(f"Attempt {attempt + 1} failed: {e}. Retrying in {wait_time}s...")
+                time.sleep(wait_time)
+            else:
+                logger.error(f"Failed to fetch publications after {max_retries} attempts: {e}")
+                raise
 
 
 def get_table(soup):
+    """Parse BeautifulSoup object and extract publication data.
+
+    Args:
+        soup: BeautifulSoup object of Google Scholar author profile page
+
+    Returns:
+        pandas DataFrame with publication data
+    """
     table_data = soup.find_all("table", {"id": "gsc_a_t"})[0]
 
     links = [
@@ -264,7 +366,11 @@ if __name__ == "__main__":
     output_path.parent.mkdir(parents=True, exist_ok=True)
 
     try:
-        soup = get_soup(options.user)
+        # Setup proxy to avoid being blocked
+        setup_proxy()
+
+        # Fetch publications HTML using scholarly's session
+        soup = get_author_publications_html(options.user)
         table = get_table(soup)
 
         logger.info(f"Writing {len(table)} publications to {output_path}")
