@@ -17,31 +17,9 @@ function enable_scroll() {
 	body.removeEventListener('touchmove', e => e.preventDefault());
 }
 
-function loadPDF(url) {
-	if (document.querySelector('.bootbox')) {
-		bootbox.hideAll();
-	}
-
-	disable_scroll();
-
-	bootbox.dialog({
-		message: `<iframe style="width:inherit;height:inherit;position:absolute" src="${url}"/>`,
-		label: '',
-		class: '',
-		callback: function() {}
-	});
-
-	document.querySelector('button.bootbox-close-button.close')?.addEventListener('click', enable_scroll);
-	document.querySelector('div.modal-backdrop')?.addEventListener('click', () => {
-		bootbox.hideAll();
-		enable_scroll();
-	});
-}
-
 function loadCV() {
-	if (document.querySelector('.bootbox')) {
-		bootbox.hideAll();
-	}
+	// Remove any existing modals manually (bootbox.hideAll() has compatibility issues)
+	document.querySelectorAll('.bootbox, .modal-backdrop').forEach(el => el.remove());
 
 	// Check if we need to scroll to About section first
 	const aboutEl = document.getElementById('About');
@@ -130,59 +108,19 @@ function loadCV() {
 
 		document.querySelector('button.bootbox-close-button.close')?.addEventListener('click', enable_scroll);
 		document.querySelector('div.modal-backdrop')?.addEventListener('click', () => {
-			bootbox.hideAll();
+			document.querySelectorAll('.bootbox, .modal-backdrop').forEach(el => el.remove());
 			enable_scroll();
 		});
 	}
 
 	// If not scrolled past the About section, scroll there first
 	if (currentScroll < aboutTop) {
-		$('html, body').stop().animate({
-			'scrollTop': aboutTop
-		}, 400, 'swing', function () {
-			openCVModal();
-		});
+		smoothScrollTo(aboutTop, 400);
+		setTimeout(openCVModal, 450);
 	} else {
 		openCVModal();
 	}
 }
-
-function showBlurb(thing) {
-	if (document.querySelector('.bootbox')) {
-		bootbox.hideAll();
-	}
-
-	const blurbId = thing.id + '-blurb';
-	const blurbEl = document.getElementById(blurbId);
-
-	disable_scroll();
-
-	bootbox.dialog({
-		message: blurbEl.innerHTML,
-		label: '',
-		class: '',
-		callback: function() {}
-	});
-
-	const bootboxEl = document.querySelector('.bootbox');
-	Object.assign(bootboxEl.style, {
-		backgroundColor: '#f6f6f6',
-		borderWidth: '10px',
-		borderColor: 'white',
-		borderStyle: 'solid'
-	});
-
-	bootboxEl.querySelectorAll('p, h3').forEach(el => el.style.color = 'black');
-	const closeBtnEl = document.querySelector('.bootbox-close-button');
-	if (closeBtnEl) closeBtnEl.style.color = 'black';
-
-	document.querySelector('button.bootbox-close-button.close')?.addEventListener('click', enable_scroll);
-	document.querySelector('div.modal-backdrop')?.addEventListener('click', () => {
-		bootbox.hideAll();
-		enable_scroll();
-	});
-}
-
 
 /* bootstrap accordion class active */
 
@@ -199,9 +137,22 @@ function accordionActive() {
 
 /* helper : scroll function */
 
+function smoothScrollTo(targetTop, duration = 600) {
+    // Try native smooth scroll first
+    try {
+        window.scrollTo({
+            top: targetTop,
+            behavior: 'smooth'
+        });
+    } catch (e) {
+        // Fallback to jQuery animate for older browsers
+        $('html, body').animate({ scrollTop: targetTop }, duration);
+    }
+}
+
 function scrollToAnchor(aid) {
     const targetTop = aid.offset().top - mainNavHeight;
-    $('html,body').animate({ scrollTop: targetTop }, 600, 'swing');
+    smoothScrollTo(targetTop);
 }
 
 /* prevent default browser behaviour when there is # in url */
@@ -295,7 +246,7 @@ window.addEventListener('load', () => {
         } else {
             offset = $target.offset().top - mainNavHeight;
         }
-        $('html, body').stop().animate({ scrollTop: offset }, 600, 'swing');
+        smoothScrollTo(offset);
     });
 
     /* After everything is loaded, scroll to hash */
@@ -314,7 +265,7 @@ window.addEventListener('load', () => {
         const offset = document.documentElement.clientWidth <= 980
             ? $target.offset().top
             : $target.offset().top - mainNavHeight;
-        $('html, body').stop().animate({ scrollTop: offset }, 600, 'swing');
+        smoothScrollTo(offset);
     });
 
     /* works ajax portfolio */

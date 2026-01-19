@@ -253,10 +253,9 @@
         integrity="sha512-c7jR/kCnu09ZrAKsWXsI/x9HCO9kkpHw4Ftqhofqs+I2hNxalK5RGwo/IAhW3iqCHIw55wBSSCFlm8JP0sw2Zw=="
         crossorigin="anonymous" referrerpolicy="no-referrer">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.4/css/lightbox.min.css"
-        integrity="sha512-x+vC0j+HUSNNpnx/YPZbThIb63lqLDMyJ9aPt2fEhQJCwu8Cc9cDC5FgqCPg/+5tHy43NjfnXOOBgw6Y8a9h7Q=="
         crossorigin="anonymous" referrerpolicy="no-referrer">
   <link rel="stylesheet" href="https://cdn.datatables.net/1.10.6/css/jquery.dataTables.css"
-        integrity="sha384-Y1dT0Uuxf1LKAAtjATjgHKnaXjkDtr56b3BqHza7MvRRo+HuooP6gRKN4wIog9CV"
+        integrity="sha512-Ts9gRa45mzzcGVbNsOspFGlAPMUKqXB57gOQuVmAa730p+2slqVKt16ppCGk4s7n13RujHYsYIci+v/3CocFkQ=="
         crossorigin="anonymous">
   {% if page.custom_css %}
     {% for stylesheet in page.custom_css %}
@@ -265,29 +264,28 @@
   {% endif %}
 
   <!-- Core libraries from CDN -->
-  <!-- jQuery 3.7.1 - upgraded from 1.10.2 for TypeScript support and modern compatibility -->
+  <!-- jQuery 3.7.1 - modern version with TypeScript support -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
           integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
           crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/flexslider/2.1/jquery.flexslider-min.js"
-          integrity="sha512-xQHM8hLfp8JA1FT1jU/g6OyT1+wkjILFf2Z2C2LE7n2qSeaEX1pX6OMmMYPcZ0OkSvvVr3IkZgNrGvK6zs6gQ=="
           crossorigin="anonymous" referrerpolicy="no-referrer" defer></script>
   <script src="https://cdn.datatables.net/1.10.6/js/jquery.dataTables.min.js"
-          integrity="sha384-ShqaqoNf8jU7jX5t0rRB92xkhkJ2JmaO+w0CRy8038lVvRk/dkV/V0YlJ6ApAFnX"
+          integrity="sha512-pnWM1cDe9hVIpcIOVa5NknC4YJOR3WkrzW/Scqkpe6IWskQWtfvOszrAUroboUTDKMfRXBJFbmdjQC66hpZXvw=="
           crossorigin="anonymous"></script>
   <!-- Parallax script removed - not used (no background images) -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js"
-          integrity="sha512-ahmSZKApTDNd3gVuqL5TQ3MBTj8tL5p2tYV05Xxzcfu6/ecvt1A0j6tfudSGBVuteSzTA0n6e4HEaZ5qX/t6Bw=="
           crossorigin="anonymous" referrerpolicy="no-referrer" defer></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/easy-pie-chart/2.1.6/jquery.easypiechart.min.js"
-          integrity="sha512-DHNepwZqDa7X1ExtrA7MROS2t6m3cNUBlHmpgXwbu4RlK5TEEPFFfAT4WiKPOkYYy+w8sTuPDHIPwVqZwMxjog=="
           crossorigin="anonymous" referrerpolicy="no-referrer" defer></script>
   <!-- Isotope and BBQ removed - not used on site (no IsotopeContainer elements) -->
-  <!-- Bootstrap 2.3.2 jQuery 3 port - https://github.com/ip-tools/bootstrap-2.3.2 -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap-2.3.2@1.0.1/js/bootstrap.min.js"
-          crossorigin="anonymous" defer></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/4.2.0/bootbox.min.js"
-          integrity="sha512-+pRLTKRzh1LITYecxBpTnShhVXZkWMnH18C4VqFKuBTjt2G21HCNjz64dL0D5fS4xX/dX5BZDYEE+Z/V+v1x7w=="
+  <!-- Bootstrap 3.4.1 - last stable Bootstrap 3.x, compatible with jQuery 3.x -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js"
+          integrity="sha512-oBTprMeNEKCnqfuqKd6sbvFzmFQtlXS3e0C/RGFV0hD6QzhHV+ODfaQbAlmY6/q0ubbwlAM/nCJjkrgA3waLzg=="
+          crossorigin="anonymous" referrerpolicy="no-referrer" defer></script>
+  <!-- Bootbox 5.5.3 - compatible with Bootstrap 3.x -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/5.5.3/bootbox.min.js"
+          integrity="sha512-U3Q2T60uOxOgtAmm9VEtC3SKGt9ucRbvZ+U3ac/wtvNC+K21Id2dNHzRUC7Z4Rs6dzqgXKr+pCRxx5CyOsnUzg=="
           crossorigin="anonymous" referrerpolicy="no-referrer" defer></script>
   <script src="{{ "/static/js/main.js" | prepend: site.baseurl }}" defer></script>
   {% if page.custom_js %}
