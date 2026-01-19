@@ -10,3 +10,4 @@ dependencies:
   # Google Scholar crawler (gscrawler.py)
   - pandas
   - scholarly
+  - free-proxy  # Required for FreeProxies
