@@ -39,12 +39,12 @@ I am a Senior Research Scientist at [Meta Reality Labs](https://about.meta.com/r
 
 ## Education
 
-### Stanford University
+#### Stanford University
 **Ph.D. in Biophysics** · Stanford, CA, USA · 2013 – 2018
 <br>
 *Advisor: [Vijay Pande](https://www.pandelab.org/)*
 
-### Columbia University in the City of New York
+#### Columbia University in the City of New York
 **B.S. in Applied Mathematics** · New York, NY, USA · 2009 – 2013
 
 
@@ -62,40 +62,40 @@ I am a Senior Research Scientist at [Meta Reality Labs](https://about.meta.com/r
 ## Selected Publications
 
 #### A Generic Non-Invasive Neuromotor Interface for Human-Computer Interaction
-P Kaifosh, TR Reardon, and **CTRL-Labs**
-*Nature* · [DOI](https://doi.org/10.1038/s41586-025-09255-w) · 2025
+P Kaifosh, TR Reardon, and **CTRL-Labs** · *[Nature](https://doi.org/10.1038/s41586-025-09255-w)* · 2025<br>
+📚 15
 
 #### Variational Encoding of Complex Dynamics
-**CX Hernández**\*, HK Wayment-Steele\*, MM Sultan\*, BE Husic, and VS Pande
-*Phys. Rev. E* · [DOI](https://doi.org/10.1103/PhysRevE.97.062412) · 2018
+**CX Hernández**\*, HK Wayment-Steele\*, MM Sultan\*, BE Husic, and VS Pande · *[Phys. Rev. E](https://doi.org/10.1103/PhysRevE.97.062412)* · 2018<br>
+ 📚 149
 
 #### Using Deep Learning for Segmentation and Counting within Microscopy Data
-**CX Hernández**, MM Sultan, and VS Pande
-*arXiv* · [arXiv](https://arxiv.org/abs/1802.10548) · 2018
+**CX Hernández**, MM Sultan, and VS Pande · *[arXiv](https://arxiv.org/abs/1802.10548)* · 2018<br>
+ 📚 36
 
 
 
 ## Selected Software
 
 #### MDTraj: A Modern, Open Library for the Analysis of Molecular Dynamics Trajectories
-RT McGibbon, KA Beauchamp, MP Harrigan, C Klein, JM Swails, **CX Hernández**, CR Schwantes, LP Wang, TJ Lane, and VS Pande
-*Biophysical Journal* · [DOI](https://doi.org/10.1016/j.bpj.2015.08.015) · `Python` · ⭐ 683 🍴 290
+RT McGibbon, KA Beauchamp, MP Harrigan, C Klein, JM Swails, **CX Hernández**, CR Schwantes, LP Wang, TJ Lane, and VS Pande · [mdtraj/mdtraj](https://github.com/mdtraj/mdtraj) <br>
+`Python`  · ⭐ 687 🍴 290
 
 #### VDE: Variational Dynamical Encoder for Complex Dynamics
-**CX Hernández**, HK Wayment-Steele, MM Sultan, BE Husic, and VS Pande
-*GitHub* · [msmbuilder/vde](https://github.com/msmbuilder/vde) · `Python` · ⭐ 189 🍴 42
+**CX Hernández**, HK Wayment-Steele, MM Sultan, BE Husic, and VS Pande · [msmbuilder/vde](https://github.com/msmbuilder/vde)<br>
+`Python` · ⭐ 189 🍴 42
 
 #### MSMBuilder: Statistical Models for Biomolecular Dynamics
-MP Harrigan, MM Sultan, **CX Hernández**, BE Husic, P Eastman, CR Schwantes, KA Beauchamp, RT McGibbon, and VS Pande
-*Biophysical Journal* · [DOI](https://doi.org/10.1016/j.bpj.2016.10.042) · `Python` · ⭐ 161 🍴 94
+MP Harrigan, MM Sultan, **CX Hernández**, BE Husic, P Eastman, CR Schwantes, KA Beauchamp, RT McGibbon, and VS Pande · [msmbuilder/vde](https://github.com/msmbuilder/msmbuilder)<br>
+`Python` · ⭐ 161 🍴 94
 
 #### MolEncoder: Molecular Autoencoder in PyTorch
-**CX Hernández**
-*GitHub* · [cxhernandez/molencoder](https://github.com/cxhernandez/molencoder) · `Python` · ⭐ 92 🍴 18
+**CX Hernández** · [cxhernandez/molencoder](https://github.com/cxhernandez/molencoder)<br>
+`Python` · ⭐ 92 🍴 18
 
 #### Osprey: Hyperparameter Optimization for Machine Learning
-RT McGibbon, **CX Hernández**, MP Harrigan, S Kearnes, MM Sultan, S Jastrzebski, BE Husic, and VS Pande
-*JOSS* · [DOI](https://doi.org/10.21105/joss.00034) · `Python` · ⭐ 73 🍴 26
+RT McGibbon, CX Hernández, MP Harrigan, S Kearnes, MM Sultan, S Jastrzebski, BE Husic, and VS Pande · [msmbuilder/osprey](https://github.com/msmbuilder/osprey)<br>
+`Python` · ⭐ 73 🍴 26
 
 
 ## Posters & Presentations

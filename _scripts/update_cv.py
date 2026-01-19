@@ -169,30 +169,33 @@ class CVUpdater:
         """
         Update citation counts for publications in Selected Publications section.
 
-        Looks for DOI links like [DOI](https://doi.org/10.1103/PhysRevE.97.062412)
-        or arXiv links like [arXiv](https://arxiv.org/abs/1802.10548)
-        and adds citation count before the year.
+        New format:
+        #### Title
+        Authors · *[Journal](https://doi.org/...)* · Year<br>
+        📚 COUNT
+
+        Looks for DOI/arXiv links embedded in journal names and updates the
+        citation count on the line after the <br> tag.
         """
         logger.info("Updating publication citation counts...")
 
-        # Pattern to match publication entries in Selected Publications
-        # Format: Title \n Authors \n *Journal* · [DOI](link) · Year
-        # or: Title \n Authors \n *Journal* · [arXiv](link) · Year
+        # Pattern to match DOI/arXiv URLs in markdown links
+        # Format: *[Journal](https://doi.org/10.xxxx/xxxx)* or *[Journal](https://arxiv.org/abs/xxxx)*
+        doi_pattern = r'\*\[[^\]]+\]\(https://doi\.org/([\w\.\-/]+)\)\*'
+        arxiv_pattern = r'\*\[[^\]]+\]\(https://arxiv\.org/abs/([\w\.]+)\)\*'
 
-        # Find all DOI patterns
-        doi_pattern = r'\[DOI\]\(https://doi\.org/([\w\.\-/]+)\)'
-        arxiv_pattern = r'\[arXiv\]\(https://arxiv\.org/abs/([\w\.]+)\)'
-
-        # Find entries and update them
         lines = content.split('\n')
         updated_lines = []
+        i = 0
 
-        for i, line in enumerate(lines):
+        while i < len(lines):
+            line = lines[i]
+
             # Check if this line contains a DOI or arXiv link
             doi_match = re.search(doi_pattern, line)
             arxiv_match = re.search(arxiv_pattern, line)
 
-            if doi_match or arxiv_match:
+            if (doi_match or arxiv_match) and line.endswith('<br>'):
                 # Extract DOI or arXiv ID
                 if doi_match:
                     identifier = doi_match.group(1)
@@ -201,38 +204,42 @@ class CVUpdater:
                     identifier = arxiv_match.group(1)
                     citation_count = self.semantic_scholar.get_citation_count(arxiv_id=identifier)
 
-                if citation_count is not None:
-                    # Check if citation count already exists in the line
-                    # Pattern: · 📚 CITATIONS ·
-                    citation_text_pattern = r' · 📚 \d+ ·'
-
-                    if re.search(citation_text_pattern, line):
-                        # Replace existing citation count
-                        updated_line = re.sub(
-                            citation_text_pattern,
-                            f' · 📚 {citation_count} ·',
-                            line
-                        )
-                    else:
-                        # Add citation count before the year
-                        # Pattern: · Year
-                        year_pattern = r'( · \d{4})$'
-                        if re.search(year_pattern, line):
-                            updated_line = re.sub(
-                                year_pattern,
-                                f' · 📚 {citation_count}\\1',
-                                line
-                            )
-                        else:
-                            # If no year pattern found, append at end
-                            updated_line = line + f' · 📚 {citation_count}'
-
-                    updated_lines.append(updated_line)
-                    logger.info(f"Updated citation count to 📚 {citation_count} for {identifier}")
-                else:
-                    updated_lines.append(line)
-            else:
                 updated_lines.append(line)
+
+                # Check the next line for existing citation count
+                if i + 1 < len(lines):
+                    next_line = lines[i + 1]
+                    citation_pattern = r'^(\s*)📚 \d+$'
+
+                    if citation_count is not None:
+                        if re.match(citation_pattern, next_line):
+                            # Replace existing citation count, preserving whitespace
+                            whitespace_match = re.match(r'^(\s*)', next_line)
+                            whitespace = whitespace_match.group(1) if whitespace_match else ''
+                            updated_lines.append(f'{whitespace}📚 {citation_count}')
+                            logger.info(f"Updated citation count to 📚 {citation_count} for {identifier}")
+                            i += 2  # Skip the citation line we just updated
+                            continue
+                        else:
+                            # Add new citation count line
+                            updated_lines.append(f'📚 {citation_count}')
+                            logger.info(f"Added citation count 📚 {citation_count} for {identifier}")
+                            i += 1
+                            continue
+                    else:
+                        # No citation count found, skip to next line
+                        i += 1
+                        continue
+                else:
+                    # Last line in file
+                    if citation_count is not None:
+                        updated_lines.append(f'📚 {citation_count}')
+                        logger.info(f"Added citation count 📚 {citation_count} for {identifier}")
+                    i += 1
+                    continue
+
+            updated_lines.append(line)
+            i += 1
 
         return '\n'.join(updated_lines)
 
@@ -240,8 +247,12 @@ class CVUpdater:
         """
         Update GitHub repository statistics in Selected Software section.
 
-        Looks for GitHub links like [owner/repo](https://github.com/owner/repo)
-        and updates star/fork counts like ⭐ 683 🍴 290
+        New format:
+        #### Title
+        Authors · [owner/repo](https://github.com/owner/repo)<br>
+        `Language` · ⭐ STARS 🍴 FORKS
+
+        Looks for GitHub repo links and updates stats on the line after <br>.
         """
         logger.info("Updating GitHub repository stats...")
 
@@ -251,39 +262,66 @@ class CVUpdater:
 
         lines = content.split('\n')
         updated_lines = []
+        i = 0
 
-        for line in lines:
+        while i < len(lines):
+            line = lines[i]
+
             # Check if this line contains a GitHub link
             github_match = re.search(github_pattern, line)
 
-            if github_match:
+            if github_match and line.endswith('<br>'):
                 owner = github_match.group(1)
                 repo = github_match.group(2)
 
                 stats = self.github.get_repo_stats(owner, repo)
 
-                if stats:
-                    # Check if stats already exist in the line
-                    # Pattern: ⭐ ### 🍴 ###
-                    stats_pattern = r' · ⭐ \d+ 🍴 \d+'
-
-                    if re.search(stats_pattern, line):
-                        # Replace existing stats
-                        updated_line = re.sub(
-                            stats_pattern,
-                            f' · ⭐ {stats["stars"]} 🍴 {stats["forks"]}',
-                            line
-                        )
-                    else:
-                        # Add stats at the end
-                        updated_line = line + f' · ⭐ {stats["stars"]} 🍴 {stats["forks"]}'
-
-                    updated_lines.append(updated_line)
-                    logger.info(f"Updated stats to ⭐ {stats['stars']} 🍴 {stats['forks']} for {owner}/{repo}")
-                else:
-                    updated_lines.append(line)
-            else:
                 updated_lines.append(line)
+
+                # Check the next line for existing stats
+                if i + 1 < len(lines):
+                    next_line = lines[i + 1]
+                    # Pattern: `Language` · ⭐ ### 🍴 ###
+                    stats_pattern = r'^(`[^`]+`\s+)?· ⭐ \d+ 🍴 \d+'
+
+                    if stats:
+                        if re.match(stats_pattern, next_line):
+                            # Replace existing stats, preserving language tag
+                            lang_match = re.match(r'^(`[^`]+`\s+)', next_line)
+                            lang_prefix = lang_match.group(1) if lang_match else ''
+                            updated_lines.append(f'{lang_prefix}· ⭐ {stats["stars"]} 🍴 {stats["forks"]}')
+                            logger.info(f"Updated stats to ⭐ {stats['stars']} 🍴 {stats['forks']} for {owner}/{repo}")
+                            i += 2  # Skip the stats line we just updated
+                            continue
+                        else:
+                            # Add new stats line (may or may not have language tag already)
+                            # Check if next line starts with language tag
+                            if next_line.strip().startswith('`'):
+                                # Next line has language, append stats to it
+                                updated_lines.append(f'{next_line.rstrip()} · ⭐ {stats["stars"]} 🍴 {stats["forks"]}')
+                                logger.info(f"Added stats ⭐ {stats['stars']} 🍴 {stats['forks']} for {owner}/{repo}")
+                                i += 2
+                                continue
+                            else:
+                                # No language tag, just add stats
+                                updated_lines.append(f'· ⭐ {stats["stars"]} 🍴 {stats["forks"]}')
+                                logger.info(f"Added stats ⭐ {stats['stars']} 🍴 {stats['forks']} for {owner}/{repo}")
+                                i += 1
+                                continue
+                    else:
+                        # No stats found, skip to next line
+                        i += 1
+                        continue
+                else:
+                    # Last line in file
+                    if stats:
+                        updated_lines.append(f'· ⭐ {stats["stars"]} 🍴 {stats["forks"]}')
+                        logger.info(f"Added stats ⭐ {stats['stars']} 🍴 {stats['forks']} for {owner}/{repo}")
+                    i += 1
+                    continue
+
+            updated_lines.append(line)
+            i += 1
 
         return '\n'.join(updated_lines)
 
