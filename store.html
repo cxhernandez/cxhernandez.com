@@ -35,49 +35,10 @@ hide_nav: true
     </div>
 </div>
 
+<!-- Store content is injected dynamically after password verification -->
+<!-- This prevents viewing store content in page source -->
 <div id="store-main" style="display: none;">
-<section id="Store" class="parallax">
-    <div class="container">
-        <div class="row-fluid">
-            <div class="store-content span12">
-                <div class="store-intro">
-                    <p>Purchase prints or book a portrait session.</p>
-                </div>
-
-                <!-- Success Message -->
-                <div id="success-message" class="success-banner" role="status" aria-live="polite" style="display: none;">
-                    <p>Thank you for your purchase! You'll receive a confirmation email shortly.</p>
-                </div>
-
-                <div class="store-sections">
-                    <!-- Prints Section -->
-                    <div class="store-section">
-                        <h3>Prints</h3>
-                        <p class="section-description">High-quality prints of my photography, professionally printed on archival paper.</p>
-
-                        <div class="product-grid" id="prints-grid">
-                            <div class="loading-placeholder">Loading prints...</div>
-                        </div>
-                    </div>
-
-                    <!-- Services Section -->
-                    <div class="store-section">
-                        <h3>Photography Services</h3>
-                        <p class="section-description">Book a portrait session for professional headshots, family photos, or special occasions.</p>
-
-                        <div class="services-grid" id="services-grid">
-                            <div class="loading-placeholder">Loading services...</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="store-outro">
-                    <p><a href="/#Photography" class="back-link">&larr; Back</a></p>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
+    <!-- Content loaded via password-verification.bundle.js -->
 </div>
 
 <script src="/static/js/dist/password-verification.bundle.js"></script>
@@ -309,19 +270,30 @@ hide_nav: true
         }
     }
 
-    // Initialize
-    document.addEventListener('DOMContentLoaded', function() {
-        checkAccess();
+    // Initialize store functionality after content is loaded
+    function initializeStore() {
         checkForSuccess();
         loadInventory();
 
         // Modal close handlers
-        document.querySelector('.checkout-modal-close').addEventListener('click', closeCheckoutModal);
-        document.querySelector('.checkout-modal-backdrop').addEventListener('click', closeCheckoutModal);
+        const closeBtn = document.querySelector('.checkout-modal-close');
+        const backdrop = document.querySelector('.checkout-modal-backdrop');
+
+        if (closeBtn) closeBtn.addEventListener('click', closeCheckoutModal);
+        if (backdrop) backdrop.addEventListener('click', closeCheckoutModal);
+
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') {
                 closeCheckoutModal();
             }
         });
+    }
+
+    // Listen for store content to be injected
+    document.addEventListener('storeContentLoaded', initializeStore);
+
+    // Check access on page load (will inject content if authorized)
+    document.addEventListener('DOMContentLoaded', function() {
+        checkAccess();
     });
 </script>

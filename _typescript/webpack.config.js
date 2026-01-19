@@ -17,6 +17,20 @@ function getPasswordHash() {
   }
 }
 
+// Encode store content to Base64 for obfuscation at build time
+function getEncodedStoreContent() {
+  try {
+    const output = execSync('node _typescript/encode-store-content.js', {
+      encoding: 'utf-8',
+      stdio: ['pipe', 'pipe', 'inherit'],
+    }).trim();
+    return JSON.parse(output); // Returns Base64 encoded string
+  } catch (error) {
+    console.error('Failed to encode store content');
+    throw error;
+  }
+}
+
 module.exports = {
   mode: 'production',
   entry: {
@@ -26,6 +40,7 @@ module.exports = {
   plugins: [
     new webpack.DefinePlugin({
       'process.env.STORE_PASSWORD_HASH': JSON.stringify(getPasswordHash()),
+      'process.env.STORE_CONTENT_ENCODED': JSON.stringify(getEncodedStoreContent()),
     }),
   ],
   module: {
