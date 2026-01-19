@@ -183,25 +183,6 @@ function showBlurb(thing) {
 	});
 }
 
-function lightboxOnResize() {
-    if (window.innerWidth <= 768) {
-        document.querySelectorAll('[data-lightbox]').forEach(el => {
-            const currentData = el.getAttribute('data-lightbox');
-            if (currentData) {
-                el.setAttribute('data-lightbox-off', currentData);
-                el.removeAttribute('data-lightbox');
-            }
-        });
-    } else {
-        document.querySelectorAll('[data-lightbox-off]').forEach(el => {
-            const currentData = el.getAttribute('data-lightbox-off');
-            if (currentData) {
-                el.setAttribute('data-lightbox', currentData);
-                el.removeAttribute('data-lightbox-off');
-            }
-        });
-    }
-}
 
 /* bootstrap accordion class active */
 
@@ -229,8 +210,6 @@ setTimeout(() => {
         window.scrollTo(0, 0);
     }
 }, 1);
-
-window.addEventListener('resize', lightboxOnResize);
 
 window.addEventListener('scroll', () => {
     /* progress bars */
@@ -267,8 +246,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 window.addEventListener('load', () => {
-    lightboxOnResize();
-
     /* ISOTOPE */
     (function() {
         const $container = jQuery('#IsotopeContainer');
@@ -490,8 +467,6 @@ window.addEventListener('load', () => {
                 box.clone().removeClass().addClass('full-view row-fluid left clone').appendTo(container).load(targets.s.p.target);
                 box.clone().removeClass().addClass('full-view row-fluid right clone').appendTo(container).load(targets.s.n.target);
                 box.addClass('original');
-
-                lightboxOnResize();
             });
         }
         scrollToAnchor($work);
@@ -516,7 +491,7 @@ window.addEventListener('load', () => {
             original.toggleClass('clone original left');
             lclone.toggleClass('left right invisible');
             rclone = $('.clone.right', $work);
-            rclone.load(siblings.n.target, lightboxOnResize);
+            rclone.load(siblings.n.target);
         } else if (dir === 'r') {
             $work.data('target', siblings.p.target).data('index', findSiblings($work.data('index'), workThumbnails).p.index);
             siblings = findSiblings($work.data('index'), workThumbnails);
@@ -529,7 +504,7 @@ window.addEventListener('load', () => {
             original.toggleClass('clone original right');
             rclone.toggleClass('right left invisible');
             lclone = $('.clone.left', $work);
-            lclone.load(siblings.p.target, lightboxOnResize);
+            lclone.load(siblings.p.target);
         }
     }
     $(document).on('click', '.work .full-view nav a.all', function() {
