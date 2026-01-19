@@ -2,17 +2,55 @@
 
 This directory contains the TypeScript source code and build configuration for the cxhernandez.com frontend.
 
+## Development Setup
+
+### Prerequisites
+- Node.js 25.x or later
+- npm 11.x or later
+
+### Installation
+```bash
+npm install
+```
+
+## Build Commands
+
+### Production Build
+```bash
+npm run build
+```
+Compiles TypeScript to optimized, minified JavaScript bundles in `static/js/dist/`.
+
+### Development Build
+```bash
+npm run build:dev
+```
+Compiles TypeScript with source maps and no minification for easier debugging.
+
+### Watch Mode
+```bash
+npm run watch
+```
+Automatically rebuilds on file changes during development.
+
 ## Directory Structure
 
 ```
 _typescript/
 ├── src/
-│   ├── main.ts                    # Core site interactivity
-│   └── password-verification.ts   # Store password protection
-├── webpack.config.js              # Webpack build configuration
-├── tsconfig.json                  # TypeScript compiler configuration
-├── generate-password-hash.js      # Password hash generator
-└── package.json                   # Node.js dependencies (in root)
+│   ├── main.ts                      # Core site interactivity
+│   ├── password-verification.ts     # Store password protection
+│   └── types/
+│       └── jquery-plugins.d.ts     # Type definitions for jQuery plugins
+├── tsconfig.json                    # TypeScript compiler configuration
+├── webpack.config.js                # Webpack bundler configuration
+└── generate-password-hash.js        # Password hash generator
+
+static/js/dist/                      # Build output (not in git)
+├── main.bundle.js
+├── main.bundle.js.map
+├── password-verification.bundle.js
+└── password-verification.bundle.js.map
 ```
 
 ## Build System
@@ -28,18 +66,12 @@ Build modes:
 - **Development**: Source maps enabled for debugging
 - **Watch**: Auto-rebuild on file changes
 
-### Build Commands
+### Webpack Plugins
 
-```bash
-# Production build (minified)
-npm run build
-
-# Development build (with source maps)
-npm run build:dev
-
-# Watch mode (auto-rebuild)
-npm run watch
-```
+- **ts-loader**: TypeScript compilation
+- **DefinePlugin**: Inject environment variables (password hash)
+- **TerserPlugin**: Minification for production
+- **SourceMapDevToolPlugin**: Source maps for development
 
 ## Source Files
 
@@ -63,9 +95,9 @@ Core site interactivity module.
 - `initializeDataTables()` - Publications table with search/sort
 
 **Dependencies:**
-- jQuery (CDN)
-- Bootstrap 3 (CDN)
-- DataTables (CDN)
+- jQuery 3.7.1 (CDN)
+- Bootstrap 3.4.1 (CDN)
+- DataTables 1.10.6 (CDN)
 
 ### password-verification.ts
 
@@ -131,11 +163,17 @@ If `STORE_PASSWORD` is not set during build:
 
 ### tsconfig.json
 
+- **Target**: ES2017 (supports modern features like async/await, padStart)
+- **Module System**: ESNext
+- **Type Checking**: Strict mode enabled
+- **Module Resolution**: Node
+- **External Dependencies**: jQuery, Bootstrap, and Bootbox are loaded from CDN and marked as externals
+
 ```json
 {
   "compilerOptions": {
-    "target": "ES2015",
-    "module": "ES2015",
+    "target": "ES2017",
+    "module": "ESNext",
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
@@ -145,36 +183,28 @@ If `STORE_PASSWORD` is not set during build:
 }
 ```
 
-### Webpack Plugins
-
-- **ts-loader**: TypeScript compilation
-- **DefinePlugin**: Inject environment variables (password hash)
-- **TerserPlugin**: Minification for production
-- **SourceMapDevToolPlugin**: Source maps for development
-
 ## Output Files
 
 Built bundles are output to `static/js/dist/`:
 - `main.bundle.js` - Core site functionality
+- `main.bundle.js.map` - Source map for debugging
 - `password-verification.bundle.js` - Store password protection
+- `password-verification.bundle.js.map` - Source map for debugging
 
 These are loaded in Jekyll templates:
 - `main.bundle.js` → `_layouts/default.html`
 - `password-verification.bundle.js` → Store page
 
+**Note:** Build output is excluded from version control (`.gitignore`).
+
 ## Development Workflow
 
-1. **Make changes** to TypeScript files in `src/`
-2. **Run build** (or use watch mode):
-   ```bash
-   npm run watch
-   ```
-3. **Test in browser** (Jekyll must be running):
-   ```bash
-   bundle exec jekyll serve
-   ```
-4. **Check console** for any TypeScript errors
-5. **Commit changes** to both `.ts` and `.bundle.js` files
+1. Edit TypeScript files in `_typescript/src/`
+2. Run `npm run watch` for auto-rebuild
+3. Build Jekyll site: `LANG=en_US.UTF-8 bundle exec jekyll build`
+4. Test in browser at http://localhost:4000
+5. Check console for TypeScript errors
+6. The bundled JavaScript is automatically referenced in the site
 
 ## Build Integration
 
@@ -265,6 +295,7 @@ NODE_ENV=production npm run build
 - jQuery 3.7.1
 - Bootstrap 3.4.1
 - DataTables 1.10.6
+- Bootbox.js (for modals)
 
 ### Build Time (npm)
 - TypeScript ^5.9.3
@@ -301,3 +332,10 @@ While there are no formal unit tests, manual testing checklist:
 - [ ] Store shows after correct password
 - [ ] Wrong password shows error message
 - [ ] Session persists across page refreshes
+
+## Notes
+
+- Source maps are generated for debugging
+- Jekyll must be run with UTF-8 encoding to handle emoji characters: `LANG=en_US.UTF-8`
+- Original JavaScript files in `static/js/` are kept for reference but not used
+- Always rebuild TypeScript before running Jekyll in production
