@@ -9,7 +9,7 @@ Personal Webpage
 This site uses Jekyll for static site generation and TypeScript for client-side JavaScript.
 
 ### JavaScript Development
-- TypeScript source files are in `src/`
+- TypeScript source files are in `_typescript/src/`
 - Build with `npm run build` before running Jekyll
 - See [TYPESCRIPT.md](TYPESCRIPT.md) for detailed build documentation
 

@@ -36,13 +36,16 @@ Automatically rebuilds on file changes during development.
 ## Project Structure
 
 ```
-src/
-├── main.ts                          # Main site JavaScript
-├── password-verification.ts         # Password protection for store
-└── types/
-    └── jquery-plugins.d.ts         # Type definitions for jQuery plugins
+_typescript/
+├── src/
+│   ├── main.ts                      # Main site JavaScript
+│   ├── password-verification.ts     # Password protection for store
+│   └── types/
+│       └── jquery-plugins.d.ts     # Type definitions for jQuery plugins
+├── tsconfig.json                    # TypeScript compiler configuration
+└── webpack.config.js                # Webpack bundler configuration
 
-static/js/dist/                      # Build output (gitignored)
+static/js/dist/                      # Build output (not in git)
 ├── main.bundle.js
 ├── main.bundle.js.map
 ├── password-verification.bundle.js
@@ -58,7 +61,7 @@ static/js/dist/                      # Build output (gitignored)
 
 ## Workflow
 
-1. Edit TypeScript files in `src/`
+1. Edit TypeScript files in `_typescript/src/`
 2. Run `npm run build` to compile
 3. Build Jekyll site: `LANG=en_US.UTF-8 bundle exec jekyll build`
 4. The bundled JavaScript is automatically referenced in the site

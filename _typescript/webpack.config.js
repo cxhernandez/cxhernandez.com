@@ -3,8 +3,8 @@ const path = require('path');
 module.exports = {
   mode: 'production',
   entry: {
-    main: './src/main.ts',
-    'password-verification': './src/password-verification.ts'
+    main: './_typescript/src/main.ts',
+    'password-verification': './_typescript/src/password-verification.ts'
   },
   module: {
     rules: [
@@ -20,7 +20,7 @@ module.exports = {
   },
   output: {
     filename: '[name].bundle.js',
-    path: path.resolve(__dirname, 'static/js/dist'),
+    path: path.resolve(__dirname, '../static/js/dist'),
     clean: true,
   },
   externals: {
