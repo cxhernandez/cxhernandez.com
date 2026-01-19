@@ -40,6 +40,7 @@ cxhernandez.com/
 ├── _sass/             # SCSS stylesheets
 ├── _scripts/          # Python automation scripts
 │   ├── semantic_scholar_scraper.py
+│   ├── update_cv.py
 │   ├── generate_cv_pdf.py
 │   └── enrich_inventory.py
 ├── _plugins/          # Jekyll custom plugins (markdown processor)
@@ -69,6 +70,10 @@ GitHub Actions (daily schedule)
 
 ```
 _includes/cv.md (markdown source)
+  → update_cv.py (updates citations and GitHub stats)
+    → Fetches citation counts from Semantic Scholar API
+    → Fetches repository stats from GitHub API
+    → Updates cv.md with latest data
   → generate_cv_pdf.py (Python + WeasyPrint)
     → Converts markdown → HTML → PDF
       → static/files/CXHernandez_CV.pdf
@@ -113,6 +118,9 @@ This site uses Jekyll for static site generation and TypeScript for client-side 
    ```bash
    # Update publications from Semantic Scholar
    python _scripts/semantic_scholar_scraper.py -a 39400763 -o _includes/publications.md
+
+   # Update CV with latest citations and GitHub stats
+   python _scripts/update_cv.py -c _includes/cv.md
 
    # Generate CV PDF
    python _scripts/generate_cv_pdf.py
@@ -171,10 +179,13 @@ The site uses automated CI/CD via [.github/workflows/jekyll-docker.yml](.github/
 
 **Build Steps**:
 1. Setup Conda environment
-2. Run Python automation scripts (publications, CV, inventory)
-3. Install npm dependencies and build TypeScript
-4. Build Jekyll site with UTF-8 support
-5. Deploy to GitHub Pages (on master push only)
+2. Fetch publications from Semantic Scholar API
+3. Update CV with citation counts and GitHub repository stats
+4. Generate CV PDF from markdown
+5. Enrich store inventory (optional)
+6. Install npm dependencies and build TypeScript
+7. Build Jekyll site with UTF-8 support
+8. Deploy to GitHub Pages (on master push only)
 
 **Deployment URL**: https://cxhernandez.com
 
@@ -228,6 +239,26 @@ Fetches publications from Semantic Scholar API for author ID 39400763.
 **Usage**:
 ```bash
 python _scripts/semantic_scholar_scraper.py -a 39400763 -o _includes/publications.md
+```
+
+### update_cv.py
+
+Automatically updates CV with latest citation counts and GitHub repository statistics.
+
+**Features**:
+- Fetches citation counts from Semantic Scholar API (DOI and arXiv papers)
+- Fetches repository stats (stars, forks) from GitHub API
+- Updates [_includes/cv.md](_includes/cv.md) in-place
+- Preserves formatting and whitespace
+- Runs nightly via GitHub Actions
+
+**Format**:
+- Publications: `📚 [count]` on line after paper info
+- Software: `` `Python` · ⭐ [stars]  · 🍴 [forks] `` on line after repo link
+
+**Usage**:
+```bash
+python _scripts/update_cv.py -c _includes/cv.md
 ```
 
 ### generate_cv_pdf.py
