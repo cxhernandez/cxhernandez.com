@@ -8,9 +8,16 @@ let targets: {
   c: { target: string; index: number };
   s: { p: { index: number; target: string }; n: { index: number; target: string } } | null;
 } | null;
+let scrollPosition: number = 0;
 
 function disable_scroll(): void {
+  // Save current scroll position
+  scrollPosition = window.scrollY;
+
   const body = document.body;
+  body.style.position = 'fixed';
+  body.style.top = `-${scrollPosition}px`;
+  body.style.width = '100%';
   body.classList.add('stop-scrolling');
   body.addEventListener('touchmove', (e) => e.preventDefault(), { passive: false });
 }
@@ -18,7 +25,13 @@ function disable_scroll(): void {
 function enable_scroll(): void {
   const body = document.body;
   body.classList.remove('stop-scrolling');
+  body.style.position = '';
+  body.style.top = '';
+  body.style.width = '';
   body.removeEventListener('touchmove', (e) => e.preventDefault());
+
+  // Restore scroll position
+  window.scrollTo(0, scrollPosition);
 }
 
 function loadCV(): void {
