@@ -211,19 +211,7 @@ setTimeout(() => {
     }
 }, 1);
 
-window.addEventListener('scroll', () => {
-    /* progress bars */
-    /* uses jquery viewport plugin */
-    jQuery('.progress:in-viewport').each(function() {
-        const $barEl = jQuery(this).find('.bar');
-
-        if ($barEl.width() === 5) {
-            $barEl.delay(700).stop().animate({
-                width: jQuery(this).attr('data-percentage') + '%'
-            }, 1000, 'swing');
-        }
-    });
-});
+// Progress bars removed - not used on site
 
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -246,76 +234,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 window.addEventListener('load', () => {
-    /* ISOTOPE */
-    (function() {
-        const $container = jQuery('#IsotopeContainer');
-        let isotopeOptions = {};
-        const defaultOptions = {
-            filter: '*',
-            sortBy: 'original-order',
-            sortAscending: true,
-            layoutMode: 'masonry'
-        };
+    /* Isotope removed - not used on site (no IsotopeContainer elements) */
 
-        const setupOptions = jQuery.extend({}, defaultOptions, {
-            itemSelector: '.isotope-item',
-            masonry: {}
-        });
-
-        // set up Isotope
-        $container.isotope(setupOptions);
-
-        const $optionSets = jQuery('#IsotopeOptions').find('.isotope-options');
-        let isOptionLinkClicked = false;
-
-        // switches selected class on buttons
-        function changeSelectedLink($elem) {
-            $elem.parents('.isotope-options').find('.selected').removeClass('selected');
-            $elem.addClass('selected');
-        }
-
-        $optionSets.find('a').click(function() {
-            const $this = jQuery(this);
-            if ($this.hasClass('selected')) {
-                return;
-            }
-            changeSelectedLink($this);
-            const href = $this.attr('href').replace(/^#/, '');
-            const option = jQuery.deparam(href, true);
-            jQuery.extend(isotopeOptions, option);
-            jQuery.bbq.pushState(isotopeOptions);
-            isOptionLinkClicked = true;
-            return false;
-        });
-
-        let hashChanged = false;
-
-        jQuery(window).on('hashchange', function() {
-            const hashOptions = window.location.hash ? jQuery.deparam.fragment(window.location.hash, true) : {};
-            const aniEngine = hashChanged ? 'best-available' : 'none';
-            const options = jQuery.extend({}, defaultOptions, hashOptions, { animationEngine: aniEngine });
-            $container.isotope(options);
-            isotopeOptions = hashOptions;
-
-            if (!isOptionLinkClicked) {
-                for (const key in options) {
-                    const hrefObj = { [key]: options[key] };
-                    const hrefValue = jQuery.param(hrefObj);
-                    const $selectedLink = $optionSets.find('a[href="#' + hrefValue + '"]');
-                    changeSelectedLink($selectedLink);
-                }
-            }
-
-            isOptionLinkClicked = false;
-            hashChanged = true;
-        }).trigger('hashchange');
-    })();
-    /* ISOTOPE */
-
-    /* parallax */
-    $('.parallax').each(function() {
-        $(this).parallax('20%', 0.2);
-    });
+    /* parallax - REMOVED: No background images to parallax, all sections use solid colors */
 
     /* easy pie chart */
     jQuery('.pie-chart').each(function() {

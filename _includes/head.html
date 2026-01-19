@@ -265,8 +265,9 @@
   {% endif %}
 
   <!-- Core libraries from CDN -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.10.2/jquery.min.js"
-          integrity="sha512-YH+W9Bct4y75HQBQM82a3raHY/MZzZgdPM3MnX7UoJHipavTJdw7gGmZqkZr7oNfU/6V1gXCl31SQ4HoirVYHQ=="
+  <!-- jQuery 3.7.1 - upgraded from 1.10.2 for TypeScript support and modern compatibility -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+          integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
           crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/flexslider/2.1/jquery.flexslider-min.js"
           integrity="sha512-xQHM8hLfp8JA1FT1jU/g6OyT1+wkjILFf2Z2C2LE7n2qSeaEX1pX6OMmMYPcZ0OkSvvVr3IkZgNrGvK6zs6gQ=="
@@ -274,23 +275,17 @@
   <script src="https://cdn.datatables.net/1.10.6/js/jquery.dataTables.min.js"
           integrity="sha384-ShqaqoNf8jU7jX5t0rRB92xkhkJ2JmaO+w0CRy8038lVvRk/dkV/V0YlJ6ApAFnX"
           crossorigin="anonymous"></script>
-  <script src="{{ "/static/js/jquery.parallax-1.1.3.js" | prepend: site.baseurl }}" defer></script>
+  <!-- Parallax script removed - not used (no background images) -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js"
           integrity="sha512-ahmSZKApTDNd3gVuqL5TQ3MBTj8tL5p2tYV05Xxzcfu6/ecvt1A0j6tfudSGBVuteSzTA0n6e4HEaZ5qX/t6Bw=="
           crossorigin="anonymous" referrerpolicy="no-referrer" defer></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/easy-pie-chart/2.1.6/jquery.easypiechart.min.js"
           integrity="sha512-DHNepwZqDa7X1ExtrA7MROS2t6m3cNUBlHmpgXwbu4RlK5TEEPFFfAT4WiKPOkYYy+w8sTuPDHIPwVqZwMxjog=="
           crossorigin="anonymous" referrerpolicy="no-referrer" defer></script>
-  <script src="{{ "/static/js/jquery.viewport.min.js" | prepend: site.baseurl }}" defer></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/1.5.26/jquery.isotope.min.js"
-          integrity="sha512-DaV0LVb1GfbErcVmVGjVvnBfqBbd4dgg4bNotXxl9u1s4joYqrEjNqBNlZDugOLTuzZw4jgmMylVbQOKQyULpg=="
-          crossorigin="anonymous" referrerpolicy="no-referrer" defer></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-bbq/1.2.1/jquery.ba-bbq.min.js"
-          integrity="sha512-GFCE97TdHbXFuFT3MDpDrFF6VdWWkvU7Yeo4r5CPezMxAKxYmT0tMNhWNqKxU+7kN5BZjYKZMI/QvdqoM9lnkA=="
-          crossorigin="anonymous" referrerpolicy="no-referrer" defer></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.2/js/bootstrap.min.js"
-          integrity="sha512-28e27hL89a99BmzVDzuL59APJjkMozM2mWK7OGUAJ+BdTtN21HodMiT5DZ3DVF1jLNrpF+fjZ+hlK9MvGcdZOA=="
-          crossorigin="anonymous" referrerpolicy="no-referrer" defer></script>
+  <!-- Isotope and BBQ removed - not used on site (no IsotopeContainer elements) -->
+  <!-- Bootstrap 2.3.2 jQuery 3 port - https://github.com/ip-tools/bootstrap-2.3.2 -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap-2.3.2@1.0.1/js/bootstrap.min.js"
+          crossorigin="anonymous" defer></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/4.2.0/bootbox.min.js"
           integrity="sha512-+pRLTKRzh1LITYecxBpTnShhVXZkWMnH18C4VqFKuBTjt2G21HCNjz64dL0D5fS4xX/dX5BZDYEE+Z/V+v1x7w=="
           crossorigin="anonymous" referrerpolicy="no-referrer" defer></script>
