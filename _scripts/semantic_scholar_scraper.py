@@ -38,12 +38,37 @@ def title_case(text):
     return ' '.join(result)
 
 
-def clean_journal_name(venue):
-    """Clean and format venue/journal names."""
+def clean_journal_name(venue, external_ids=None, doi=None):
+    """Clean and format venue/journal names.
+
+    Args:
+        venue: Venue name from Semantic Scholar
+        external_ids: Dictionary of external IDs (ArXiv, DOI, etc.)
+        doi: DOI string if available
+
+    Returns:
+        Cleaned venue/journal name
+    """
+    # Check external IDs for better venue detection
+    if external_ids:
+        # Check for arXiv
+        if 'ArXiv' in external_ids:
+            return 'arXiv'
+
+        # Check for Zenodo (software releases)
+        if doi and 'zenodo' in doi.lower():
+            return 'Zenodo'
+
+    # Check DOI patterns for conference abstracts
+    if doi:
+        # Biophysical Journal abstracts have pattern like "10.1016/j.bpj.YYYY.MM.XXXX"
+        if 'j.bpj.' in doi.lower() and len(doi.split('.')) >= 5:
+            return 'Biophysical Journal (Abstract)'
+
     if not venue:
         return ""
 
-    # Special case for arXiv
+    # Special case for arXiv in venue name
     if venue.lower().startswith('arxiv'):
         return 'arXiv'
 
@@ -70,7 +95,8 @@ def get_author_publications(author_id, max_retries=3, backoff_factor=2):
 
     params = {
         "fields": "authorId,name,papers.title,papers.paperId,papers.year,"
-                 "papers.citationCount,papers.authors,papers.venue"
+                 "papers.citationCount,papers.authors,papers.venue,"
+                 "papers.externalIds"
     }
 
     for attempt in range(max_retries):
@@ -121,6 +147,18 @@ def get_table(author_data):
         if not paper.get('title') or not paper.get('paperId'):
             continue
 
+        # Filter out conference abstracts and Zenodo releases
+        external_ids = paper.get('externalIds', {})
+        doi = external_ids.get('DOI') if external_ids else None
+
+        # Skip Zenodo software releases
+        if doi and 'zenodo' in doi.lower():
+            continue
+
+        # Skip Biophysical Journal conference abstracts
+        if doi and 'j.bpj.' in doi.lower() and len(doi.split('.')) >= 5:
+            continue
+
         titles.append(paper['title'])
         links.append(f"https://www.semanticscholar.org/paper/{paper['paperId']}")
 
@@ -136,9 +174,11 @@ def get_table(author_data):
             authors_str = ""
         authors_list.append(authors_str)
 
-        # Journal/Venue
+        # Journal/Venue - use external IDs to improve venue detection
         venue = paper.get('venue', '')
-        journals.append(clean_journal_name(venue))
+        external_ids = paper.get('externalIds', {})
+        doi = external_ids.get('DOI') if external_ids else None
+        journals.append(clean_journal_name(venue, external_ids, doi))
 
         # Citations
         cite_count = paper.get('citationCount', 0)
