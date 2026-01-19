@@ -5,3 +5,16 @@ _notebooks
 *.lock
 .sass-cache
 .DS_Store
+.jekyll-cache
+.claude
+
+# Node.js
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# TypeScript
+*.tsbuildinfo
+
+# Build artifacts
+static/js/dist/

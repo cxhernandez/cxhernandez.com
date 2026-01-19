@@ -80,9 +80,17 @@ hide_nav: true
 </section>
 </div>
 
-<script src="/static/js/password-verification.js"></script>
+<script src="/static/js/dist/password-verification.bundle.js"></script>
 
 <script>
+
+    // HTML escaping to prevent XSS
+    function escapeHtml(str) {
+        if (!str) return '';
+        const div = document.createElement('div');
+        div.textContent = str;
+        return div.innerHTML;
+    }
 
     // Allowed domains for checkout iframe
     const ALLOWED_CHECKOUT_DOMAINS = ['square.link'];

@@ -1,0 +1,33 @@
+{
+  "name": "cxhernandez.com",
+  "version": "1.0.0",
+  "description": "cxhernandez.com === [![Build Status](https://github.com/cxhernandez/cxhernandez.com/actions/workflows/jekyll-docker.yml/badge.svg)](https://github.com/cxhernandez/cxhernandez.com/actions/workflows/jekyll-docker.yml)",
+  "main": "index.js",
+  "scripts": {
+    "build": "webpack --config _typescript/webpack.config.js --mode production",
+    "build:dev": "webpack --config _typescript/webpack.config.js --mode development",
+    "watch": "webpack --config _typescript/webpack.config.js --mode development --watch",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cxhernandez/cxhernandez.com.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/cxhernandez/cxhernandez.com/issues"
+  },
+  "homepage": "https://github.com/cxhernandez/cxhernandez.com#readme",
+  "devDependencies": {
+    "@types/bootbox": "^5.2.9",
+    "@types/bootstrap": "^5.2.10",
+    "@types/jquery": "^3.5.33",
+    "ts-loader": "^9.5.4",
+    "typescript": "^5.9.3",
+    "webpack": "^5.104.1",
+    "webpack-cli": "^6.0.1"
+  }
+}

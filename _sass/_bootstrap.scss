@@ -8697,11 +8697,9 @@ footer.widget {
   filter: alpha(opacity=30);
   background: #2d91ff;
 }
-html {
-  height: 100%;
-}
+/* html/body height: 100% removed - breaks jQuery 3.x animate scrollTop
+   See: https://github.com/jquery/jquery/issues/4581 */
 body {
-  height: 100%;
   overflow-x: hidden;
 }
 /* ======== SECTIONS ====== */
@@ -8745,7 +8743,8 @@ section section {
  * ======== HEADER ========= */
 .main-header {
   background-color: #999999;
-  height: 100%;
+  height: 100vh;
+  min-height: 500px;
 }
 .main-header img {
   display: block;

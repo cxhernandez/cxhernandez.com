@@ -53,6 +53,18 @@ jobs:
         run: python ./_scripts/enrich_inventory.py static/files/store/inventory.json
         continue-on-error: true
 
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '25'
+          cache: 'npm'
+
+      - name: Install Node.js dependencies
+        run: npm ci
+
+      - name: Build TypeScript bundles
+        run: npm run build
+
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
@@ -61,6 +73,9 @@ jobs:
 
       - name: Build Jekyll site
         run: bundle exec jekyll build --future
+        env:
+          LANG: en_US.UTF-8
+          LC_ALL: en_US.UTF-8
 
       - name: Setup Pages
         if: env.SHOULD_DEPLOY == 'true'
