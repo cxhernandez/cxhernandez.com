@@ -1,4 +1,4 @@
-name: cv_pdf
+name: cxhernandez.com
 channels:
   - conda-forge
   - defaults
