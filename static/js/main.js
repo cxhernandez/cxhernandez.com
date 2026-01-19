@@ -245,14 +245,6 @@ $(document).ready(function(){
         $navCollapse.toggleClass('in');
         $(this).toggleClass('collapsed');
     });
-
-    /* twitter */
-    $('.tweets').tweet({
-        count: 3, //how many tweets?
-        template: "{text} {time}",
-        li_class: "span4 tweet",
-        twitter_api_url: 'twitter/proxy/twitter_proxy.php'
-    });
 });
 
 
