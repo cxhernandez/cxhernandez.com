@@ -39,10 +39,9 @@ cxhernandez.com/
 │   └── src/           # main.ts, password-verification.ts
 ├── _sass/             # SCSS stylesheets
 ├── _scripts/          # Python automation scripts
-│   ├── semantic_scholar_scraper.py
-│   ├── update_cv.py
-│   ├── generate_cv_pdf.py
-│   └── enrich_inventory.py
+│   ├── cli.py          # Consolidated CLI tool
+│   ├── environment.yml # Conda environment config
+│   └── README.md       # Scripts documentation
 ├── _plugins/          # Jekyll custom plugins (markdown processor)
 ├── static/
 │   ├── css/           # Compiled CSS output
@@ -59,7 +58,7 @@ cxhernandez.com/
 
 ```
 GitHub Actions (daily schedule)
-  → semantic_scholar_scraper.py (fetches from Semantic Scholar API)
+  → cli.py scrape-pubs (fetches from Semantic Scholar API)
     → Filters and sorts by citations and year
     → Outputs to _includes/publications.md
       → Rendered in Publications section via custom markdown tag
@@ -70,11 +69,11 @@ GitHub Actions (daily schedule)
 
 ```
 _includes/cv.md (markdown source)
-  → update_cv.py (updates citations and GitHub stats)
+  → cli.py update-cv (updates citations and GitHub stats)
     → Fetches citation counts from Semantic Scholar API
     → Fetches repository stats from GitHub API
     → Updates cv.md with latest data
-  → generate_cv_pdf.py (Python + WeasyPrint)
+  → cli.py generate-pdf (Python + WeasyPrint)
     → Converts markdown → HTML → PDF
       → static/files/CXHernandez_CV.pdf
         → Accessible via modal in navigation
@@ -84,7 +83,7 @@ _includes/cv.md (markdown source)
 
 ```
 inventory.json
-  → enrich_inventory.py (optional: fetches from Square API)
+  → cli.py enrich-inventory (optional: fetches from Square API)
     → store.html JavaScript renders product cards
       → Square iframe checkout on product click
 ```
@@ -117,17 +116,19 @@ This site uses Jekyll for static site generation and TypeScript for client-side 
 2. **Run automation scripts** (optional):
    ```bash
    # Update publications from Semantic Scholar
-   python _scripts/semantic_scholar_scraper.py -a 39400763 -o _includes/publications.md
+   python _scripts/cli.py scrape-pubs -a 39400763 -o _includes/publications.md
 
    # Update CV with latest citations and GitHub stats
-   python _scripts/update_cv.py -c _includes/cv.md
+   python _scripts/cli.py update-cv -c _includes/cv.md
 
    # Generate CV PDF
-   python _scripts/generate_cv_pdf.py
+   python _scripts/cli.py generate-pdf
 
    # Enrich store inventory (requires Square credentials)
-   python _scripts/enrich_inventory.py static/files/store/inventory.json
+   python _scripts/cli.py enrich-inventory static/files/store/inventory.json
    ```
+
+   See [_scripts/README.md](_scripts/README.md) for detailed documentation on all CLI commands.
 
 3. **Build TypeScript**:
    ```bash
@@ -225,70 +226,45 @@ LANG=en_US.UTF-8 bundle exec jekyll build --future
 
 ## Automation Scripts
 
-### semantic_scholar_scraper.py
+All automation is handled through a unified CLI tool: [_scripts/cli.py](_scripts/cli.py)
 
-Fetches publications from Semantic Scholar API for author ID 39400763.
+See [_scripts/README.md](_scripts/README.md) for complete documentation.
 
-**Features**:
-- Automatic venue detection
-- Filters out conference abstracts and Zenodo releases
-- Sorts by citation count and year
-- Title case conversion
-- Generates HTML table in markdown format
+### Quick Reference
 
-**Usage**:
 ```bash
-python _scripts/semantic_scholar_scraper.py -a 39400763 -o _includes/publications.md
+# Fetch publications from Semantic Scholar
+python _scripts/cli.py scrape-pubs -a 39400763 -o _includes/publications.md
+
+# Update CV with citations and GitHub stats
+python _scripts/cli.py update-cv -c _includes/cv.md
+
+# Generate CV PDF
+python _scripts/cli.py generate-pdf
+
+# Enrich store inventory
+python _scripts/cli.py enrich-inventory static/files/store/inventory.json
 ```
 
-### update_cv.py
-
-Automatically updates CV with latest citation counts and GitHub repository statistics.
-
 **Features**:
-- Fetches citation counts from Semantic Scholar API (DOI and arXiv papers)
-- Fetches repository stats (stars, forks) from GitHub API
-- Updates [_includes/cv.md](_includes/cv.md) in-place
-- Preserves formatting and whitespace
-- Runs nightly via GitHub Actions
+- **scrape-pubs**: Fetches publications from Semantic Scholar API
+  - Automatic venue detection and filtering
+  - Sorts by citation count and year
+  - Multiple output formats (HTML, JSON, LaTeX, tab-separated)
 
-**Format**:
-- Publications: `📚 [count]` on line after paper info
-- Software: `` `Python` · ⭐ [stars]  · 🍴 [forks] `` on line after repo link
+- **update-cv**: Updates CV with latest metrics
+  - Fetches citation counts from Semantic Scholar API
+  - Fetches repository stats (stars, forks) from GitHub API
+  - Updates in-place while preserving formatting
 
-**Usage**:
-```bash
-python _scripts/update_cv.py -c _includes/cv.md
-```
+- **generate-pdf**: Converts CV to PDF
+  - Markdown → HTML → PDF pipeline via WeasyPrint
+  - Professional styling with page break optimization
 
-### generate_cv_pdf.py
-
-Converts CV from markdown to professionally styled PDF.
-
-**Features**:
-- Markdown → HTML → PDF pipeline
-- WeasyPrint rendering with custom styling
-- Single source of truth in [_includes/cv.md](_includes/cv.md)
-
-**Usage**:
-```bash
-python _scripts/generate_cv_pdf.py
-```
-
-### enrich_inventory.py
-
-Enriches store inventory with data from Square API.
-
-**Features**:
-- Queries Square Checkout links
-- Scrapes pricing and product details
-- Updates [inventory.json](static/files/store/inventory.json)
-- Graceful error handling
-
-**Usage**:
-```bash
-python _scripts/enrich_inventory.py static/files/store/inventory.json
-```
+- **enrich-inventory**: Enriches store inventory
+  - Queries Square Checkout links or scrapes checkout pages
+  - Updates pricing and product details
+  - Graceful error handling
 
 ## Configuration
 

@@ -38,19 +38,19 @@ jobs:
       - name: Fetch publications from Semantic Scholar
         id: fetch-publications
         shell: bash -el {0}
-        run: python ./_scripts/semantic_scholar_scraper.py -a 39400763 -o ./_includes/publications.md
+        run: python ./_scripts/cli.py scrape-pubs -a 39400763 -o ./_includes/publications.md
 
       - name: Update CV with citations and GitHub stats
         shell: bash -el {0}
-        run: python ./_scripts/update_cv.py -c ./_includes/cv.md
+        run: python ./_scripts/cli.py update-cv -c ./_includes/cv.md
 
       - name: Generate CV PDF
         shell: bash -el {0}
-        run: python ./_scripts/generate_cv_pdf.py
+        run: python ./_scripts/cli.py generate-pdf
 
       - name: Enrich store inventory
         shell: bash -el {0}
-        run: python ./_scripts/enrich_inventory.py static/files/store/inventory.json
+        run: python ./_scripts/cli.py enrich-inventory static/files/store/inventory.json
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
