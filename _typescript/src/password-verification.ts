@@ -2,13 +2,17 @@
 // This hash is injected at build time from the STORE_PASSWORD environment variable
 // via webpack DefinePlugin. See webpack.config.js and generate-password-hash.js
 // If null, the password gate is automatically bypassed (open access mode)
+//
+// Store content is Base64 encoded and injected at build time for obfuscation
 declare const process: {
   env: {
     STORE_PASSWORD_HASH: string | null;
+    STORE_CONTENT_ENCODED: string;
   };
 };
 
 const STORE_PASSWORD_HASH = process.env.STORE_PASSWORD_HASH;
+const STORE_CONTENT_ENCODED = process.env.STORE_CONTENT_ENCODED;
 
 // HTML escaping to prevent XSS
 function escapeHtml(str: string | null | undefined): string {
@@ -26,6 +30,26 @@ async function hashPassword(password: string): Promise<string> {
   return hashArray.map((b) => b.toString(16).padStart(2, '0')).join('');
 }
 
+// Decode and inject store content from Base64
+function injectStoreContent(): void {
+  const store = document.getElementById('store-main');
+  if (!store) return;
+
+  try {
+    // Decode Base64 content
+    const decoded = atob(STORE_CONTENT_ENCODED);
+    store.innerHTML = decoded;
+
+    // Initialize store functionality after content is injected
+    // Trigger custom event that store.html script can listen for
+    const event = new CustomEvent('storeContentLoaded');
+    document.dispatchEvent(event);
+  } catch (error) {
+    console.error('Failed to load store content:', error);
+    store.innerHTML = '<div style="padding: 2rem; text-align: center;">Failed to load store content. Please refresh the page.</div>';
+  }
+}
+
 // Animate transition from password gate to store
 function unlockStore(): void {
   const gate = document.getElementById('password-gate');
@@ -34,6 +58,9 @@ function unlockStore(): void {
   const gateBack = gate?.querySelector<HTMLElement>('.password-gate-back');
 
   if (!gate || !store) return;
+
+  // Inject store content before showing
+  injectStoreContent();
 
   // Show welcome message
   if (gateContent) {
@@ -114,6 +141,7 @@ function checkAccess(): void {
   // If no password is set at build time, grant immediate access (open mode)
   if (STORE_PASSWORD_HASH === null) {
     console.warn('Store is running in OPEN ACCESS mode (no password protection)');
+    injectStoreContent();
     gate.style.display = 'none';
     store.style.display = 'block';
     return;
@@ -121,6 +149,7 @@ function checkAccess(): void {
 
   // Check if user has already been granted access in this session
   if (sessionStorage.getItem('store_access') === 'granted') {
+    injectStoreContent();
     gate.style.display = 'none';
     store.style.display = 'block';
   }
