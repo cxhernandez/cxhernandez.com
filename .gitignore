@@ -14,3 +14,6 @@ yarn-error.log
 
 # TypeScript
 *.tsbuildinfo
+
+# Build artifacts
+static/js/dist/
