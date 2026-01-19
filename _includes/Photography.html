@@ -33,10 +33,28 @@
 
   let currentSlide = 0;
   let totalSlides = 0;
+  let autoAdvanceInterval = null;
+
+  function startAutoAdvance() {
+    // Clear any existing interval
+    if (autoAdvanceInterval) {
+      clearInterval(autoAdvanceInterval);
+    }
+    // Start new interval
+    autoAdvanceInterval = setInterval(() => moveCarousel(1), 8000);
+  }
+
+  function stopAutoAdvance() {
+    if (autoAdvanceInterval) {
+      clearInterval(autoAdvanceInterval);
+      autoAdvanceInterval = null;
+    }
+  }
 
   async function initCarousel() {
     const track = document.getElementById('carouselTrack');
     const dotsContainer = document.getElementById('carouselDots');
+    const carousel = document.querySelector('.photo-carousel');
 
     try {
       const response = await fetch(PHOTOS_JSON);
@@ -87,8 +105,14 @@
 
       // Start auto-advance after embeds load
       setTimeout(() => {
-        setInterval(() => moveCarousel(1), 8000);
+        startAutoAdvance();
       }, 2000);
+
+      // Pause auto-advance on hover, resume on mouse leave
+      if (carousel) {
+        carousel.addEventListener('mouseenter', stopAutoAdvance);
+        carousel.addEventListener('mouseleave', startAutoAdvance);
+      }
 
     } catch (error) {
       console.error('Error loading photos:', error);
