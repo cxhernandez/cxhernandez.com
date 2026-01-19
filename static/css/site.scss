@@ -3,16 +3,16 @@
 ---
 @charset "utf-8";
 
-// Import font
+// External font import (must use @import for URLs)
 @import url(https://fonts.googleapis.com/css?family=Lato:900|Bitter);
 
-// Import partials from `_sass` directory
-// Jekyll automatically looks in _sass/ for @import statements
+// Bootstrap is plain CSS converted to SCSS, must use @import
 @import "bootstrap";
-@import "variables";
-@import "base";
-@import "layout";
-@import "syntax-highlighting";
+
+// Modern SCSS partials use @import to avoid deprecation warnings
+// Note: @use would be preferred but causes issues with Jekyll's Sass compiler
+// when mixing with @import. Using @import for all modules is the most compatible
+// approach until Jekyll fully supports the module system.
 @import "pygments";
 @import "custom";
 @import "skins";
