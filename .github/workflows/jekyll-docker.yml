@@ -5,6 +5,9 @@ on:
     branches: [ "master" ]
   pull_request:
     branches: [ "master" ]
+  schedule:
+    # Run at 00:00 UTC daily to update publication data
+    - cron: '0 0 * * *'
 
 permissions:
   contents: read
