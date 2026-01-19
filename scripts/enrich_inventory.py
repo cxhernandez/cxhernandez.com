@@ -220,54 +220,61 @@ def scrape_checkout_page(url):
 
 
 def enrich_entry(entry, links, index, entry_type='print'):
-    """Enrich a single entry using API matching or scraping."""
+    """Enrich a single entry using API matching or scraping.
+
+    Preserves all existing fields in the entry and only updates fields
+    that are successfully fetched from the API or scraped.
+    """
     url = entry.get('url')
     if not url:
         return entry
+
+    # Start with a copy of the original entry to preserve all fields
+    enriched_entry = dict(entry)
 
     # First try API matching if we have links
     if links:
         pl = match_payment_link(links, url)
         if pl:
             qp = pl.get('quick_pay') or {}
-            name = qp.get('name') or entry.get('name') or pl.get('description')
+            name = qp.get('name') or pl.get('description')
             price_money = qp.get('price_money') or {}
             amount = price_money.get('amount')
 
             # API only gives us single price, so min=max
             price_dollars = amount / 100 if isinstance(amount, int) else None
 
-            enriched_entry = {
-                'url': url,  # Keep original short URL
-                'name': name,
-                'price_min': price_dollars,
-                'price_max': price_dollars,
-                'price_display': f"${price_dollars:.2f}" if price_dollars else None,
-                'description': pl.get('description') or entry.get('description'),
-            }
-            if entry.get('image'):
-                enriched_entry['image'] = entry.get('image')
-            if entry.get('icon'):
-                enriched_entry['icon'] = entry.get('icon')
+            # Only update fields if we got values from the API
+            if name:
+                enriched_entry['name'] = name
+            if price_dollars is not None:
+                enriched_entry['price_min'] = price_dollars
+                enriched_entry['price_max'] = price_dollars
+                enriched_entry['price_display'] = f"${price_dollars:.2f}"
+            if pl.get('description'):
+                enriched_entry['description'] = pl.get('description')
 
-            print(f'[{entry_type} {index+1}] API matched: {name}')
+            print(f'[{entry_type} {index+1}] API matched: {enriched_entry.get("name")}')
             return enriched_entry
 
     # Fallback: scrape the checkout page
     print(f'[{entry_type} {index+1}] Scraping {url}...')
     scraped = scrape_checkout_page(url)
     if scraped:
-        enriched_entry = {
-            'url': url,
-            'name': scraped.get('name') or entry.get('name'),
-            'price_min': scraped.get('price_min'),
-            'price_max': scraped.get('price_max'),
-            'price_display': scraped.get('price_display') or entry.get('price_display'),
-            'description': scraped.get('description') or entry.get('description'),
-            'image': entry.get('image') or scraped.get('image'),
-        }
-        if entry.get('icon'):
-            enriched_entry['icon'] = entry.get('icon')
+        # Only update fields if we got values from scraping
+        if scraped.get('name'):
+            enriched_entry['name'] = scraped['name']
+        if scraped.get('price_min') is not None:
+            enriched_entry['price_min'] = scraped['price_min']
+        if scraped.get('price_max') is not None:
+            enriched_entry['price_max'] = scraped['price_max']
+        if scraped.get('price_display'):
+            enriched_entry['price_display'] = scraped['price_display']
+        if scraped.get('description'):
+            enriched_entry['description'] = scraped['description']
+        # Only update image if entry doesn't already have one
+        if scraped.get('image') and not entry.get('image'):
+            enriched_entry['image'] = scraped['image']
 
         print(f'[{entry_type} {index+1}] Scraped: {enriched_entry.get("name")}')
         return enriched_entry
