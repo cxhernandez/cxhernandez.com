@@ -67,6 +67,8 @@ jobs:
 
       - name: Build TypeScript bundles
         run: npm run build
+        env:
+          STORE_PASSWORD: ${{ secrets.STORE_PASSWORD }}
 
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1

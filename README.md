@@ -123,6 +123,9 @@ This site uses Jekyll for static site generation and TypeScript for client-side 
 
 3. **Build TypeScript**:
    ```bash
+   # Set store password (optional - if not set, store will have open access)
+   export STORE_PASSWORD="your_password_here"
+
    # Production build
    npm run build
 
@@ -132,6 +135,11 @@ This site uses Jekyll for static site generation and TypeScript for client-side 
    # Watch mode for development
    npm run watch
    ```
+
+   **Notes**:
+   - The `STORE_PASSWORD` environment variable is hashed at build time and injected into the bundle
+   - If `STORE_PASSWORD` is not set, the build will succeed with a warning and the store will be accessible without password protection (useful for local development)
+   - Never commit the plain password to the repository
 
 4. **Run Jekyll development server**:
    ```bash
@@ -253,6 +261,23 @@ python _scripts/enrich_inventory.py static/files/store/inventory.json
 
 ## Configuration
 
+### GitHub Secrets
+
+The following secrets should be configured in your GitHub repository for production deployment:
+
+**Optional Secrets:**
+- `STORE_PASSWORD`: The plain-text password for the photography store. This is hashed at build time and injected into the password-verification bundle.
+
+**How to add secrets:**
+1. Go to your repository on GitHub
+2. Navigate to Settings → Secrets and variables → Actions
+3. Click "New repository secret"
+4. Add `STORE_PASSWORD` with your chosen password value
+
+The secret is automatically used in the GitHub Actions workflow during the TypeScript build step.
+
+**⚠️ Important**: If `STORE_PASSWORD` is not set, the build will succeed with a warning, but the store will be accessible **without password protection**. This is useful for local development but should be avoided in production.
+
 ### Jekyll Configuration ([_config.yml](_config.yml))
 
 - Site metadata (title, description, author)
@@ -295,11 +320,14 @@ python _scripts/enrich_inventory.py static/files/store/inventory.json
 
 ## Security Features
 
-- Password-protected store with SHA-256 hashing
-- XSS prevention via HTML escaping
-- Square Checkout iframe sandboxing
-- SessionStorage (not localStorage) for temporary access
-- Input validation and sanitization
+- **Password-protected store** with SHA-256 hashing
+  - Plain password stored in GitHub Secrets (never committed to repository)
+  - Hashed at build time and injected into bundle via webpack DefinePlugin
+  - Zero plain-text passwords in source code or version control
+- **XSS prevention** via HTML escaping
+- **Square Checkout iframe sandboxing** with CSP-style domain whitelisting
+- **SessionStorage** (not localStorage) for temporary access tokens
+- **Input validation and sanitization** throughout forms
 
 ## Performance Optimizations
 
@@ -327,7 +355,21 @@ npm run build
 The workflow continues on error if Semantic Scholar API is unavailable. Check logs in GitHub Actions for warnings.
 
 ### Store Password Issues
-Password is hashed with SHA-256. Update the expected hash in [password-verification.ts](_typescript/src/password-verification.ts) if changing the password.
+
+The store password is managed securely through environment variables:
+
+1. **For GitHub Actions**: Set the `STORE_PASSWORD` secret in your repository settings (Settings → Secrets and variables → Actions → New repository secret)
+2. **For local development**: Set `export STORE_PASSWORD="your_password"` before building TypeScript
+3. The password is SHA-256 hashed at build time by [generate-password-hash.js](_typescript/generate-password-hash.js)
+4. The hash is injected into the bundle via webpack's DefinePlugin (see [webpack.config.js](_typescript/webpack.config.js))
+
+**Never commit the plain password or hash to the repository.** The password is injected at build time from the environment.
+
+**Missing Password Behavior:**
+- If `STORE_PASSWORD` is not set during build, you'll see a warning: `⚠️ WARNING: STORE_PASSWORD environment variable is not set`
+- The build will succeed, but the store will be in **OPEN ACCESS mode** (no password protection)
+- The browser console will show: `Store is running in OPEN ACCESS mode (no password protection)`
+- This is useful for local development but should be avoided in production deployments
 
 ## License
 

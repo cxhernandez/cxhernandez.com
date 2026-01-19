@@ -1,5 +1,14 @@
 // Password protection (SHA-256 hash)
-const STORE_PASSWORD_HASH = '83006a438f94daf3a7dd9c7b27f70c15e443c0ca55d58fcdfa76899ae466b455';
+// This hash is injected at build time from the STORE_PASSWORD environment variable
+// via webpack DefinePlugin. See webpack.config.js and generate-password-hash.js
+// If null, the password gate is automatically bypassed (open access mode)
+declare const process: {
+  env: {
+    STORE_PASSWORD_HASH: string | null;
+  };
+};
+
+const STORE_PASSWORD_HASH = process.env.STORE_PASSWORD_HASH;
 
 // HTML escaping to prevent XSS
 function escapeHtml(str: string | null | undefined): string {
@@ -100,7 +109,18 @@ function checkAccess(): void {
   const gate = document.getElementById('password-gate');
   const store = document.getElementById('store-main');
 
-  if (sessionStorage.getItem('store_access') === 'granted' && gate && store) {
+  if (!gate || !store) return;
+
+  // If no password is set at build time, grant immediate access (open mode)
+  if (STORE_PASSWORD_HASH === null) {
+    console.warn('Store is running in OPEN ACCESS mode (no password protection)');
+    gate.style.display = 'none';
+    store.style.display = 'block';
+    return;
+  }
+
+  // Check if user has already been granted access in this session
+  if (sessionStorage.getItem('store_access') === 'granted') {
     gate.style.display = 'none';
     store.style.display = 'block';
   }
