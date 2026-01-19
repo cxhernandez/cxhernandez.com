@@ -5,13 +5,10 @@ import argparse
 import codecs
 import logging
 import re
-import time
-from contextlib import closing
 from pathlib import Path
-from urllib.error import URLError
-from urllib.request import Request, urlopen
 
 import pandas as pd
+from scholarly import scholarly, ProxyGenerator
 from bs4 import BeautifulSoup
 
 # Configure logging
@@ -104,52 +101,69 @@ def clean_journal_name(journal):
     return journal
 
 
-def get_soup(user, max_retries=3, backoff_factor=2):
-    """Fetch Google Scholar page with retry logic.
+def setup_proxy():
+    """Setup free proxy to avoid Google Scholar blocking.
+
+    Uses FreeProxies from the scholarly package to rotate through
+    free proxy servers and avoid 403 errors.
+    """
+    try:
+        logger.info("Setting up free proxy to avoid blocking...")
+        pg = ProxyGenerator()
+        success = pg.FreeProxies()
+        if success:
+            scholarly.use_proxy(pg)
+            logger.info("Proxy setup successful")
+        else:
+            logger.warning("Free proxy setup returned False, continuing without proxy...")
+    except Exception as e:
+        logger.warning(f"Proxy setup failed: {e}. Continuing without proxy...")
+        # Continue without proxy - scholarly will use direct connection
+
+
+def get_author_publications_html(user_id):
+    """Fetch author profile HTML using scholarly's session (with proxy support).
 
     Args:
-        user: Google Scholar user ID
-        max_retries: Maximum number of retry attempts
-        backoff_factor: Multiplier for exponential backoff
+        user_id: Google Scholar user ID
 
     Returns:
-        BeautifulSoup object of the page
+        BeautifulSoup object of the author profile page
 
     Raises:
-        URLError: If all retry attempts fail
+        Exception: If fetching publications fails
     """
-    url = f"https://scholar.google.com/citations?hl=en&user={user}&pagesize=100"
-    user_agent = (
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-        "AppleWebKit/537.36 (KHTML, like Gecko) "
-        "Chrome/91.0.4472.124 Safari/537.36"
-    )
+    try:
+        logger.info(f"Fetching publications for user {user_id}")
 
-    for attempt in range(max_retries):
-        try:
-            logger.info(f"Fetching publications for user {user} (attempt {attempt + 1}/{max_retries})")
-            req = Request(url, None, headers={"User-Agent": user_agent})
-            with closing(urlopen(req, timeout=10)) as r:
-                soup = BeautifulSoup(r.read(), "html.parser")
-            logger.info("Successfully fetched publication data")
-            return soup
-        except URLError as e:
-            logger.warning(f"Attempt {attempt + 1} failed: {e}")
-            if attempt < max_retries - 1:
-                sleep_time = backoff_factor ** attempt
-                logger.info(f"Retrying in {sleep_time} seconds...")
-                time.sleep(sleep_time)
-            else:
-                logger.error("All retry attempts failed")
-                raise
-        except Exception as e:
-            logger.error(f"Unexpected error: {e}")
-            raise
+        # Import the navigation module which handles HTTP requests with proxy support
+        from scholarly import _navigator
 
-    raise URLError("Failed to fetch data after all retries")
+        # Create a navigator instance
+        nav = _navigator.Navigator()
+
+        # Fetch the author profile page with pagesize=100
+        # _get_soup expects a relative URL (it prepends https://scholar.google.com)
+        url = f"/citations?hl=en&user={user_id}&pagesize=100"
+        soup = nav._get_soup(url)
+
+        logger.info("Successfully fetched publication data via scholarly session")
+        return soup
+
+    except Exception as e:
+        logger.error(f"Failed to fetch publications: {e}")
+        raise
 
 
 def get_table(soup):
+    """Parse BeautifulSoup object and extract publication data.
+
+    Args:
+        soup: BeautifulSoup object of Google Scholar author profile page
+
+    Returns:
+        pandas DataFrame with publication data
+    """
     table_data = soup.find_all("table", {"id": "gsc_a_t"})[0]
 
     links = [
@@ -264,7 +278,11 @@ if __name__ == "__main__":
     output_path.parent.mkdir(parents=True, exist_ok=True)
 
     try:
-        soup = get_soup(options.user)
+        # Setup proxy to avoid being blocked
+        setup_proxy()
+
+        # Fetch publications HTML using scholarly's session
+        soup = get_author_publications_html(options.user)
         table = get_table(soup)
 
         logger.info(f"Writing {len(table)} publications to {output_path}")
