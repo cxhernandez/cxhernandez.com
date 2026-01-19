@@ -9,7 +9,6 @@ from pathlib import Path
 
 import pandas as pd
 from bs4 import BeautifulSoup
-from scholarly import ProxyGenerator
 
 # Configure logging
 logging.basicConfig(
@@ -102,26 +101,16 @@ def clean_journal_name(journal):
 
 
 def setup_proxy():
-    """Setup free proxy to avoid Google Scholar blocking.
+    """Setup proxy to avoid Google Scholar blocking.
 
-    Uses FreeProxies from the scholarly package to rotate through
-    free proxy servers and avoid 403 errors.
+    Note: Free proxy setup is disabled due to unmerged compatibility fix.
+    The scholarly package's built-in session management and user-agent
+    handling is sufficient to avoid most blocking.
 
-    Requires scholarly>=1.7.12 which includes the proxy fix from PR #579.
+    See: https://github.com/scholarly-python-package/scholarly/pull/579
     """
-    try:
-        logger.info("Setting up free proxy to avoid blocking...")
-        from scholarly import scholarly
-        pg = ProxyGenerator()
-        success = pg.FreeProxies()
-        if success:
-            scholarly.use_proxy(pg)
-            logger.info("Proxy setup successful")
-        else:
-            logger.warning("Free proxy setup returned False, continuing without proxy...")
-    except Exception as e:
-        logger.warning(f"Proxy setup failed: {e}. Continuing without proxy...")
-        # Continue without proxy - scholarly will use direct connection
+    # Proxy setup disabled - PR #579 not yet merged
+    logger.info("Using scholarly's default session (proxy disabled - waiting for PR #579)")
 
 
 def get_author_publications_html(user_id):
