@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+#!/usr/bin/env ts-node
 
 /**
  * Encodes store HTML content to Base64 for obfuscation.
@@ -9,11 +9,8 @@
  * harder to casually view the content without entering the password.
  */
 
-const fs = require('fs');
-const path = require('path');
-
 // The HTML content to encode (store section)
-const storeContent = `<section id="Store" class="parallax">
+const storeContent: string = `<section id="Store" class="parallax">
     <div class="container">
         <div class="row-fluid">
             <div class="store-content span12">
@@ -57,7 +54,7 @@ const storeContent = `<section id="Store" class="parallax">
 </section>`;
 
 // Encode to Base64
-const encoded = Buffer.from(storeContent).toString('base64');
+const encoded: string = Buffer.from(storeContent).toString('base64');
 
 // Output as JSON string for webpack
 console.log(JSON.stringify(encoded));

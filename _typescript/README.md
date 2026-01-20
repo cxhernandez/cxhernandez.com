@@ -42,9 +42,11 @@ _typescript/
 │   ├── password-verification.ts     # Store password protection
 │   └── types/
 │       └── jquery-plugins.d.ts     # Type definitions for jQuery plugins
-├── tsconfig.json                    # TypeScript compiler configuration
+├── tsconfig.json                    # TypeScript compiler configuration (for src/)
+├── tsconfig.scripts.json            # TypeScript config for build scripts
 ├── webpack.config.js                # Webpack bundler configuration
-└── generate-password-hash.js        # Password hash generator
+├── generate-password-hash.ts        # Password hash generator (TypeScript)
+└── encode-store-content.ts          # Store content encoder (TypeScript)
 
 static/js/dist/                      # Build output (not in git)
 ├── main.bundle.js
@@ -130,10 +132,11 @@ The store password is managed securely through environment variables:
    export STORE_PASSWORD="your_password_here"
    ```
 
-2. **Password is hashed** by `generate-password-hash.js`:
+2. **Password is hashed** by `generate-password-hash.ts`:
    - Reads `STORE_PASSWORD` from environment
    - Generates SHA-256 hash
    - Returns hash or null if not set
+   - Executed via `ts-node` during webpack build
 
 3. **Hash injected into bundle** via webpack DefinePlugin:
    ```javascript

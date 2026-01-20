@@ -1,19 +1,19 @@
-#!/usr/bin/env node
+#!/usr/bin/env ts-node
 
 /**
  * Generates a SHA-256 hash from the STORE_PASSWORD environment variable.
  * This hash is injected into the webpack build at compile time.
  *
  * Usage:
- *   STORE_PASSWORD="mypassword" node generate-password-hash.js
+ *   STORE_PASSWORD="mypassword" ts-node generate-password-hash.ts
  *
  * Returns the hash as a JSON string for use in webpack DefinePlugin.
  */
 
-const crypto = require('crypto');
+import * as crypto from 'crypto';
 
-function generatePasswordHash() {
-  const password = process.env.STORE_PASSWORD;
+function generatePasswordHash(): string | null {
+  const password: string | undefined = process.env.STORE_PASSWORD;
 
   if (!password) {
     console.warn('');
@@ -25,7 +25,7 @@ function generatePasswordHash() {
   }
 
   // Generate SHA-256 hash
-  const hash = crypto
+  const hash: string = crypto
     .createHash('sha256')
     .update(password)
     .digest('hex');
@@ -34,5 +34,5 @@ function generatePasswordHash() {
 }
 
 // Generate hash and output as JSON string for webpack
-const hash = generatePasswordHash();
+const hash: string | null = generatePasswordHash();
 console.log(JSON.stringify(hash));

@@ -6,7 +6,7 @@ const webpack = require('webpack');
 // Returns null if no password is set (allows open access to store)
 function getPasswordHash() {
   try {
-    const output = execSync('node _typescript/generate-password-hash.js', {
+    const output = execSync('npx ts-node --project _typescript/tsconfig.scripts.json _typescript/generate-password-hash.ts', {
       encoding: 'utf-8',
       stdio: ['pipe', 'pipe', 'inherit'], // Only capture stdout, show stderr (warnings)
     }).trim();
@@ -20,7 +20,7 @@ function getPasswordHash() {
 // Encode store content to Base64 for obfuscation at build time
 function getEncodedStoreContent() {
   try {
-    const output = execSync('node _typescript/encode-store-content.js', {
+    const output = execSync('npx ts-node --project _typescript/tsconfig.scripts.json _typescript/encode-store-content.ts', {
       encoding: 'utf-8',
       stdio: ['pipe', 'pipe', 'inherit'],
     }).trim();
