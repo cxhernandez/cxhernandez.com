@@ -16,5 +16,11 @@
     "types": ["jquery", "bootstrap", "bootbox"]
   },
   "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist", "_site"]
+  "exclude": [
+    "node_modules",
+    "dist",
+    "_site",
+    "src/generate-password-hash.ts",
+    "src/encode-store-content.ts"
+  ]
 }

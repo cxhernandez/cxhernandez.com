@@ -40,13 +40,13 @@ _typescript/
 ├── src/
 │   ├── main.ts                      # Core site interactivity
 │   ├── password-verification.ts     # Store password protection
+│   ├── generate-password-hash.ts    # Password hash generator (build script)
+│   ├── encode-store-content.ts      # Store content encoder (build script)
 │   └── types/
 │       └── jquery-plugins.d.ts     # Type definitions for jQuery plugins
 ├── tsconfig.json                    # TypeScript compiler configuration (for src/)
 ├── tsconfig.scripts.json            # TypeScript config for build scripts
-├── webpack.config.js                # Webpack bundler configuration
-├── generate-password-hash.ts        # Password hash generator (TypeScript)
-└── encode-store-content.ts          # Store content encoder (TypeScript)
+└── webpack.config.js                # Webpack bundler configuration
 
 static/js/dist/                      # Build output (not in git)
 ├── main.bundle.js
