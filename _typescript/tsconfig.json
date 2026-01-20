@@ -21,6 +21,7 @@
     "dist",
     "_site",
     "src/generate-password-hash.ts",
-    "src/encode-store-content.ts"
+    "src/encode-store-content.ts",
+    "src/webpack.config.ts"
   ]
 }

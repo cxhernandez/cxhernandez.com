@@ -4,9 +4,9 @@
   "description": "cxhernandez.com === [![Build Status](https://github.com/cxhernandez/cxhernandez.com/actions/workflows/jekyll-docker.yml/badge.svg)](https://github.com/cxhernandez/cxhernandez.com/actions/workflows/jekyll-docker.yml)",
   "main": "index.js",
   "scripts": {
-    "build": "TS_NODE_PROJECT=_typescript/tsconfig.webpack.json webpack --config _typescript/webpack.config.ts --mode production",
-    "build:dev": "TS_NODE_PROJECT=_typescript/tsconfig.webpack.json webpack --config _typescript/webpack.config.ts --mode development",
-    "watch": "TS_NODE_PROJECT=_typescript/tsconfig.webpack.json webpack --config _typescript/webpack.config.ts --mode development --watch",
+    "build": "TS_NODE_PROJECT=_typescript/tsconfig.webpack.json webpack --config _typescript/src/webpack.config.ts --mode production",
+    "build:dev": "TS_NODE_PROJECT=_typescript/tsconfig.webpack.json webpack --config _typescript/src/webpack.config.ts --mode development",
+    "watch": "TS_NODE_PROJECT=_typescript/tsconfig.webpack.json webpack --config _typescript/src/webpack.config.ts --mode development --watch",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

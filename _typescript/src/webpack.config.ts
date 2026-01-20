@@ -53,6 +53,7 @@ const config: Configuration = {
           /node_modules/,
           /generate-password-hash\.ts$/,
           /encode-store-content\.ts$/,
+          /webpack\.config\.ts$/,
         ],
       },
     ],
@@ -62,7 +63,7 @@ const config: Configuration = {
   },
   output: {
     filename: '[name].bundle.js',
-    path: path.resolve(__dirname, '../static/js/dist'),
+    path: path.resolve(__dirname, '../../static/js/dist'),
     clean: true,
   },
   externals: {
