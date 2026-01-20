@@ -1,10 +1,11 @@
-const path = require('path');
-const { execSync } = require('child_process');
-const webpack = require('webpack');
+import * as path from 'path';
+import { execSync } from 'child_process';
+import * as webpack from 'webpack';
+import type { Configuration } from 'webpack';
 
 // Generate password hash from environment variable at build time
 // Returns null if no password is set (allows open access to store)
-function getPasswordHash() {
+function getPasswordHash(): string | null {
   try {
     const output = execSync('npx ts-node --project _typescript/tsconfig.scripts.json _typescript/src/generate-password-hash.ts', {
       encoding: 'utf-8',
@@ -18,7 +19,7 @@ function getPasswordHash() {
 }
 
 // Encode store content to Base64 for obfuscation at build time
-function getEncodedStoreContent() {
+function getEncodedStoreContent(): string {
   try {
     const output = execSync('npx ts-node --project _typescript/tsconfig.scripts.json _typescript/src/encode-store-content.ts', {
       encoding: 'utf-8',
@@ -31,7 +32,7 @@ function getEncodedStoreContent() {
   }
 }
 
-module.exports = {
+const config: Configuration = {
   mode: 'production',
   entry: {
     main: './_typescript/src/main.ts',
@@ -77,3 +78,5 @@ module.exports = {
     minimize: true,
   },
 };
+
+export default config;

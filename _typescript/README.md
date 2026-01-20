@@ -46,7 +46,8 @@ _typescript/
 │       └── jquery-plugins.d.ts     # Type definitions for jQuery plugins
 ├── tsconfig.json                    # TypeScript compiler configuration (for src/)
 ├── tsconfig.scripts.json            # TypeScript config for build scripts
-└── webpack.config.js                # Webpack bundler configuration
+├── tsconfig.webpack.json            # TypeScript config for webpack config
+└── webpack.config.ts                # Webpack bundler configuration (TypeScript)
 
 static/js/dist/                      # Build output (not in git)
 ├── main.bundle.js
