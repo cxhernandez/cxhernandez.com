@@ -42,12 +42,14 @@ _typescript/
 │   ├── password-verification.ts     # Store password protection
 │   ├── generate-password-hash.ts    # Password hash generator (build script)
 │   ├── encode-store-content.ts      # Store content encoder (build script)
-│   ├── webpack.config.ts            # Webpack bundler configuration (TypeScript)
+│   ├── webpack.config.ts            # Webpack bundler configuration
 │   └── types/
-│       └── jquery-plugins.d.ts     # Type definitions for jQuery plugins
-├── tsconfig.json                    # TypeScript compiler configuration (for src/)
+│       └── jquery-plugins.d.ts      # Type definitions for jQuery plugins
+├── tsconfig.json                    # TypeScript config for browser code
 ├── tsconfig.scripts.json            # TypeScript config for build scripts
-└── tsconfig.webpack.json            # TypeScript config for webpack config
+├── tsconfig.webpack.json            # TypeScript config for webpack config
+├── package.json                     # npm dependencies and build scripts
+└── README.md                        # This file
 
 static/js/dist/                      # Build output (not in git)
 ├── main.bundle.js
@@ -58,9 +60,9 @@ static/js/dist/                      # Build output (not in git)
 
 ## Build System
 
-### Webpack Configuration (TypeScript)
+### Webpack Configuration
 
-The webpack configuration is now written in TypeScript (`src/webpack.config.ts`) with full type safety using `@types/webpack`.
+The webpack configuration is written in TypeScript ([src/webpack.config.ts](_typescript/src/webpack.config.ts)) with full type safety.
 
 Entry points:
 - `main.ts` → `static/js/dist/main.bundle.js`
@@ -71,7 +73,7 @@ Build modes:
 - **Development**: Source maps enabled for debugging
 - **Watch**: Auto-rebuild on file changes
 
-The webpack config uses `ts-node` for execution, configured via the `TS_NODE_PROJECT` environment variable pointing to `tsconfig.webpack.json`.
+The webpack config is executed via `ts-node` using the `TS_NODE_PROJECT` environment variable.
 
 ### Webpack Plugins
 
@@ -138,11 +140,10 @@ The store password is managed securely through environment variables:
    ```
 
 2. **Password is hashed** by `generate-password-hash.ts`:
-   - TypeScript build script executed via `ts-node`
+   - Build script executed via `ts-node`
    - Reads `STORE_PASSWORD` from environment
    - Generates SHA-256 hash
    - Returns hash or null if not set
-   - Uses `tsconfig.scripts.json` for compilation
 
 3. **Hash injected into bundle** via webpack DefinePlugin:
    ```typescript
@@ -373,24 +374,8 @@ While there are no formal unit tests, manual testing checklist:
 
 ## Notes
 
-- **All build configuration is TypeScript**: webpack.config, build scripts, and application code
 - Source maps are generated for debugging
 - Jekyll must be run with UTF-8 encoding to handle emoji characters: `LANG=en_US.UTF-8`
 - Original JavaScript files in `static/js/` are kept for reference but not used
 - Always rebuild TypeScript before running Jekyll in production
 - Three separate tsconfig files ensure proper compilation for browser, Node.js, and webpack contexts
-
-## TypeScript Migration
-
-All build scripts and configuration files have been converted to TypeScript:
-
-### Converted Files
-- ✅ `webpack.config.js` → `webpack.config.ts` (with `@types/webpack`)
-- ✅ `generate-password-hash.js` → `generate-password-hash.ts`
-- ✅ `encode-store-content.js` → `encode-store-content.ts`
-
-### Benefits
-- **Type Safety**: Compile-time checking for all build scripts and configuration
-- **IDE Support**: Full IntelliSense and autocomplete for webpack configuration
-- **Maintainability**: Self-documenting code with TypeScript type annotations
-- **Consistency**: Entire codebase (app + build) uses TypeScript
