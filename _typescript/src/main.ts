@@ -72,7 +72,7 @@ function loadCV(): void {
         const cvContent = document.getElementById('cv-content');
       if (!cvContent) return;
 
-      bootbox.dialog({
+      const dialog = bootbox.dialog({
         message: cvContent.innerHTML,
         onEscape: true,
         backdrop: true,
@@ -82,6 +82,28 @@ function loadCV(): void {
       if (!bootboxEl) return;
 
       bootboxEl.classList.add('cv-modal');
+
+      // Use capturing phase to catch Escape before Bootstrap handles it
+      const escapeHandler = function(e: KeyboardEvent) {
+        if (e.key === 'Escape') {
+          // Don't prevent default - let modal close naturally
+          // Just schedule enable_scroll after modal closes
+          setTimeout(() => {
+            enable_scroll();
+            document.removeEventListener('keydown', escapeHandler, true);
+          }, 200);
+        }
+      };
+
+      // Use capture: true to intercept the event before Bootstrap
+      document.addEventListener('keydown', escapeHandler, true);
+
+      // Listen for when modal is completely hidden
+      $(bootboxEl).on('hidden.bs.modal', function() {
+        enable_scroll();
+        // Clean up the keyboard listener
+        document.removeEventListener('keydown', escapeHandler, true);
+      });
 
       // Style the download button positioning within modal
       const modalBody = document.querySelector<HTMLElement>('.bootbox .modal-body');
@@ -151,11 +173,6 @@ function loadCV(): void {
         });
       }
 
-      document.querySelector<HTMLButtonElement>('button.bootbox-close-button.close')?.addEventListener('click', enable_scroll);
-      document.querySelector<HTMLDivElement>('div.modal-backdrop')?.addEventListener('click', () => {
-        document.querySelectorAll('.bootbox, .modal-backdrop').forEach((el) => el.remove());
-        enable_scroll();
-      });
       }, 50); // 50ms delay to let browser settle
     }
 

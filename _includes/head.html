@@ -290,7 +290,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/5.5.3/bootbox.min.js"
           integrity="sha512-U3Q2T60uOxOgtAmm9VEtC3SKGt9ucRbvZ+U3ac/wtvNC+K21Id2dNHzRUC7Z4Rs6dzqgXKr+pCRxx5CyOsnUzg=="
           crossorigin="anonymous" referrerpolicy="no-referrer" defer></script>
-  <script src="{{ "/static/js/dist/main.bundle.js" | prepend: site.baseurl }}" defer></script>
+  <script src="{{ "/static/js/dist/main.bundle.js" | prepend: site.baseurl }}?v={{ site.time | date: '%s' }}" defer></script>
   {% if page.custom_js %}
     {% for js_file in page.custom_js %}
   <script src='{{ js_file }}' defer></script>
