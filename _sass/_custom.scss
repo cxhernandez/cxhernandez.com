@@ -355,7 +355,7 @@ section#Photography {
   display: flex;
   align-items: center;
   justify-content: center;
-  max-width: 600px;
+  max-width: 400px;
   margin: 0 auto;
   padding: 0 50px;
 }
@@ -364,20 +364,26 @@ section#Photography {
   overflow: hidden;
   width: 100%;
   border-radius: 8px;
+  // Maintain 5:4 aspect ratio (5 height : 4 width)
+  aspect-ratio: 4 / 5;
+  position: relative;
 }
 
 .carousel-track {
   display: flex;
   transition: transform 0.5s ease-in-out;
+  height: 100%;
 }
 
 .carousel-slide {
   min-width: 100%;
+  height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
   padding: 10px;
   box-sizing: border-box;
+  position: relative;
 
   // For regular image links (if used)
   a {
@@ -394,7 +400,7 @@ section#Photography {
 
   img {
     max-width: 100%;
-    max-height: 500px;
+    max-height: 100%;
     width: auto;
     height: auto;
     object-fit: contain;
@@ -473,9 +479,11 @@ section#Photography {
 
 /* Instagram embed wrapper */
 .instagram-embed-wrapper {
-  position: relative;
-  max-width: 500px;
-  height: 400px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   margin: 0 auto;
   border-radius: 8px;
   overflow: hidden;
@@ -491,19 +499,19 @@ section#Photography {
     margin: 0 !important;
     min-width: 100% !important;
     opacity: 0;
-    height: 400px;
+    height: 100%;
   }
 
   iframe {
     border: none !important;
     box-shadow: none !important;
     margin: 0 !important;
-    position: relative !important;
-    top: -58px !important;
+    position: absolute !important;
+    top: -10% !important;
     left: 0 !important;
     width: 100% !important;
-    height: 1000px !important;
-    min-height: 1000px !important;
+    height: 130% !important;
+    min-height: 130% !important;
   }
 
   .instagram-media-rendered {
@@ -1148,11 +1156,6 @@ section#Publications {
     max-width: 250px;
   }
 
-  .instagram-embed-wrapper {
-    max-width: 400px;
-    height: 350px;
-  }
-
   .photo-carousel {
     padding: 0 40px;
   }
@@ -1272,37 +1275,12 @@ section#Publications {
   .photo-carousel {
     max-width: 100%;
     padding: 0 35px;
-    transform: scale(0.9);
-    transform-origin: top center;
   }
 
   .carousel-btn {
     width: 32px;
     height: 32px;
     font-size: 14px;
-  }
-
-  .instagram-embed-wrapper {
-    max-width: 100%;
-    width: 100%;
-    height: 420px;
-    padding-bottom: 0;
-
-    iframe {
-      height: 900px !important;
-      min-height: 900px !important;
-    }
-
-    blockquote.instagram-media {
-      position: relative;
-      width: 100%;
-      height: 420px;
-      min-height: 0;
-    }
-  }
-
-  .carousel-slide {
-    overflow: hidden;
   }
 
   section#Publications {
@@ -1345,6 +1323,19 @@ section#Publications {
   }
 }
 
+/* Small mobile devices (max-width: 480px) */
+@media screen and (max-width: 480px) {
+  .photo-carousel {
+    padding: 0 28px;
+  }
+
+  .carousel-btn {
+    width: 30px;
+    height: 30px;
+    font-size: 13px;
+  }
+}
+
 /* Extra small devices (max-width: 400px) */
 @media screen and (max-width: 400px) {
   div.profile-image {
@@ -1356,22 +1347,8 @@ section#Publications {
     max-width: 160px;
   }
 
-  .instagram-embed-wrapper {
-    height: 260px;
-
-    iframe {
-      top: -40px !important;
-      height: 600px !important;
-      min-height: 600px !important;
-    }
-
-    blockquote.instagram-media {
-      height: 260px;
-    }
-  }
-
   .photo-carousel {
-    padding: 0 30px;
+    padding: 0 26px;
   }
 
   .carousel-btn {
@@ -1390,6 +1367,23 @@ section#Publications {
     .dataTables_filter input {
       width: 100px;
     }
+  }
+}
+
+/* iPhone SE and smaller (max-width: 375px) */
+@media screen and (max-width: 375px) {
+  .photo-carousel {
+    padding: 0 24px;
+  }
+
+  .carousel-btn {
+    width: 26px;
+    height: 26px;
+    font-size: 11px;
+  }
+
+  .instagram-embed-wrapper iframe {
+    top: -20% !important;
   }
 }
 
