@@ -11,7 +11,7 @@ baseurl: "" # empty for custom domain at root
 url: "https://cxhernandez.com" # your custom domain
 threads_username: cxhrndz
 github_username:  cxhernandez
-linkedin_username: carlos-xavier-hernández
+linkedin_username: cxhernandez
 
 # Build settings
 markdown: kramdown
