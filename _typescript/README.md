@@ -58,7 +58,9 @@ static/js/dist/                      # Build output (not in git)
 
 ## Build System
 
-### Webpack Configuration
+### Webpack Configuration (TypeScript)
+
+The webpack configuration is now written in TypeScript (`src/webpack.config.ts`) with full type safety using `@types/webpack`.
 
 Entry points:
 - `main.ts` → `static/js/dist/main.bundle.js`
@@ -69,10 +71,12 @@ Build modes:
 - **Development**: Source maps enabled for debugging
 - **Watch**: Auto-rebuild on file changes
 
+The webpack config uses `ts-node` for execution, configured via the `TS_NODE_PROJECT` environment variable pointing to `tsconfig.webpack.json`.
+
 ### Webpack Plugins
 
 - **ts-loader**: TypeScript compilation
-- **DefinePlugin**: Inject environment variables (password hash)
+- **DefinePlugin**: Inject environment variables (password hash, store content)
 - **TerserPlugin**: Minification for production
 - **SourceMapDevToolPlugin**: Source maps for development
 
@@ -134,16 +138,17 @@ The store password is managed securely through environment variables:
    ```
 
 2. **Password is hashed** by `generate-password-hash.ts`:
+   - TypeScript build script executed via `ts-node`
    - Reads `STORE_PASSWORD` from environment
    - Generates SHA-256 hash
    - Returns hash or null if not set
-   - Executed via `ts-node` during webpack build
+   - Uses `tsconfig.scripts.json` for compilation
 
 3. **Hash injected into bundle** via webpack DefinePlugin:
-   ```javascript
-   // webpack.config.js
+   ```typescript
+   // webpack.config.ts
    new webpack.DefinePlugin({
-     PASSWORD_HASH: JSON.stringify(passwordHash)
+     'process.env.STORE_PASSWORD_HASH': JSON.stringify(passwordHash)
    })
    ```
 
@@ -165,13 +170,18 @@ If `STORE_PASSWORD` is not set during build:
 
 ## TypeScript Configuration
 
-### tsconfig.json
+The project uses three separate TypeScript configurations for different compilation contexts:
+
+### tsconfig.json (Main Application)
+
+For browser-based TypeScript files (`main.ts`, `password-verification.ts`):
 
 - **Target**: ES2017 (supports modern features like async/await, padStart)
 - **Module System**: ESNext
 - **Type Checking**: Strict mode enabled
 - **Module Resolution**: Node
-- **External Dependencies**: jQuery, Bootstrap, and Bootbox are loaded from CDN and marked as externals
+- **Types**: jQuery, Bootstrap, Bootbox (from CDN)
+- **Excludes**: Build scripts and webpack config
 
 ```json
 {
@@ -180,12 +190,33 @@ If `STORE_PASSWORD` is not set during build:
     "module": "ESNext",
     "strict": true,
     "esModuleInterop": true,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
-    "moduleResolution": "node"
-  }
+    "types": ["jquery", "bootstrap", "bootbox"]
+  },
+  "exclude": [
+    "src/generate-password-hash.ts",
+    "src/encode-store-content.ts",
+    "src/webpack.config.ts"
+  ]
 }
 ```
+
+### tsconfig.scripts.json (Build Scripts)
+
+For Node.js build scripts (`generate-password-hash.ts`, `encode-store-content.ts`):
+
+- **Target**: ES2020
+- **Module System**: CommonJS
+- **Types**: Node.js
+- **Executed via**: `ts-node` during webpack build
+
+### tsconfig.webpack.json (Webpack Config)
+
+For the webpack configuration file (`webpack.config.ts`):
+
+- **Target**: ES2020
+- **Module System**: CommonJS
+- **Types**: Node.js, Webpack
+- **Executed via**: `ts-node` with `TS_NODE_PROJECT` environment variable
 
 ## Output Files
 
@@ -305,6 +336,9 @@ NODE_ENV=production npm run build
 - TypeScript ^5.9.3
 - Webpack ^5.104.1
 - ts-loader ^9.5.4
+- ts-node ^10.9.2
+- @types/webpack ^5.28.5
+- @types/node ^25.0.9
 - terser-webpack-plugin ^5.3.11
 
 ## Performance Optimizations
@@ -339,7 +373,24 @@ While there are no formal unit tests, manual testing checklist:
 
 ## Notes
 
+- **All build configuration is TypeScript**: webpack.config, build scripts, and application code
 - Source maps are generated for debugging
 - Jekyll must be run with UTF-8 encoding to handle emoji characters: `LANG=en_US.UTF-8`
 - Original JavaScript files in `static/js/` are kept for reference but not used
 - Always rebuild TypeScript before running Jekyll in production
+- Three separate tsconfig files ensure proper compilation for browser, Node.js, and webpack contexts
+
+## TypeScript Migration
+
+All build scripts and configuration files have been converted to TypeScript:
+
+### Converted Files
+- ✅ `webpack.config.js` → `webpack.config.ts` (with `@types/webpack`)
+- ✅ `generate-password-hash.js` → `generate-password-hash.ts`
+- ✅ `encode-store-content.js` → `encode-store-content.ts`
+
+### Benefits
+- **Type Safety**: Compile-time checking for all build scripts and configuration
+- **IDE Support**: Full IntelliSense and autocomplete for webpack configuration
+- **Maintainability**: Self-documenting code with TypeScript type annotations
+- **Consistency**: Entire codebase (app + build) uses TypeScript
