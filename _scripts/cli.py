@@ -462,8 +462,13 @@ def is_preprint(external_ids, venue):
     return False
 
 
-def get_table(author_data):
-    """Parse author data and create publication table."""
+def get_table(author_data, bold_author_name=None):
+    """Parse author data and create publication table.
+
+    Args:
+        author_data: Author data from Semantic Scholar API
+        bold_author_name: Optional author name to bold in the output (for HTML/markdown)
+    """
     if not PANDAS_AVAILABLE:
         logger.error("pandas library is required for this command. Install with: pip install pandas")
         sys.exit(1)
@@ -560,6 +565,14 @@ def get_table(author_data):
         paper_authors = paper.get('authors', [])
         if paper_authors:
             author_names = [a.get('name', '') for a in paper_authors if a.get('name')]
+
+            # Bold the specified author name if provided
+            if bold_author_name:
+                author_names = [
+                    f'**{name}**' if name == bold_author_name else name
+                    for name in author_names
+                ]
+
             if len(author_names) > 3:
                 authors_str = ', '.join(author_names[:3]) + ', ...'
             else:
@@ -613,6 +626,14 @@ def get_html(table):
     """Convert table to HTML format."""
     links = dict(zip(table.Title, table.Link))
     table = table.drop("Link", axis=1)
+
+    # Create copy to avoid modifying original
+    table = table.copy()
+
+    # Convert markdown bold to HTML bold in Author(s) column
+    if 'Author(s)' in table.columns:
+        table['Author(s)'] = table['Author(s)'].str.replace(r'\*\*([^*]+)\*\*', r'<strong>\1</strong>', regex=True)
+
     return table.to_html(
         formatters={"Title": lambda x: '<a href="%s">%s</a>' % (links[x], x)},
         escape=False,
@@ -650,7 +671,13 @@ def cmd_scrape_pubs(args):
     try:
         # Fetch publications from Semantic Scholar
         author_data = get_author_publications(args.author)
-        table = get_table(author_data)
+
+        # Extract author name from the data
+        author_name = author_data.get('name')
+        logger.info(f"Fetched publications for author: {author_name}")
+
+        # Generate table with author name bolded
+        table = get_table(author_data, bold_author_name=author_name)
 
         output_formats = {"html": get_html, "json": get_json, "latex": get_latex, "tab": get_tab}
 
