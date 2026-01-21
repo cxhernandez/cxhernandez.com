@@ -566,17 +566,32 @@ def get_table(author_data, bold_author_name=None):
         if paper_authors:
             author_names = [a.get('name', '') for a in paper_authors if a.get('name')]
 
+            # Convert to initials + last name format
+            formatted_names = []
+            for name in author_names:
+                parts = name.split()
+                if len(parts) > 1:
+                    # Get initials from all parts except last
+                    initials = ''.join([p[0].upper() for p in parts[:-1]])
+                    # Get last name
+                    last_name = parts[-1]
+                    formatted = f"{initials} {last_name}"
+                else:
+                    # Single name, keep as is
+                    formatted = name
+                formatted_names.append(formatted)
+
             # Bold the specified author name if provided
             if bold_author_name:
-                author_names = [
-                    f'**{name}**' if name == bold_author_name else name
-                    for name in author_names
+                formatted_names = [
+                    f'**{name}**' if any(part in bold_author_name.split() for part in name.split()) else name
+                    for name in formatted_names
                 ]
 
-            if len(author_names) > 3:
-                authors_str = ', '.join(author_names[:3]) + ', ...'
+            if len(formatted_names) > 3:
+                authors_str = ', '.join(formatted_names[:3]) + ', ...'
             else:
-                authors_str = ', '.join(author_names)
+                authors_str = ', '.join(formatted_names)
         else:
             authors_str = ""
         authors_list.append(authors_str)
