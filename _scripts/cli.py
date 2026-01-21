@@ -12,7 +12,7 @@ Usage:
   python cli.py <command> [options]
   python cli.py enrich-inventory path/to/inventory.json
   python cli.py scrape-pubs -a <author-id> -o publications.txt
-  python cli.py update-cv -c _includes/cv.md
+  python cli.py update-cv -c _includes/cv.md -a <author-id>
   python cli.py generate-pdf
 """
 
@@ -432,8 +432,43 @@ def get_author_publications(author_id, max_retries=3, backoff_factor=2):
                 raise
 
 
-def get_table(author_data):
-    """Parse author data and create publication table."""
+def normalize_title(title):
+    """Normalize title for comparison (lowercase, no punctuation)."""
+    import string
+    # Remove punctuation and convert to lowercase
+    normalized = title.lower()
+    normalized = normalized.translate(str.maketrans('', '', string.punctuation))
+    # Remove extra whitespace
+    normalized = ' '.join(normalized.split())
+    return normalized
+
+
+def is_preprint(external_ids, venue):
+    """Check if a paper is a preprint."""
+    if not external_ids:
+        return False
+
+    # Check for preprint identifiers in external IDs
+    preprint_ids = ['ArXiv', 'bioRxiv', 'medRxiv', 'ChemRxiv']
+    if any(pid in external_ids for pid in preprint_ids):
+        return True
+
+    # Check venue name for preprint indicators
+    if venue:
+        venue_lower = venue.lower()
+        if any(preprint in venue_lower for preprint in ['arxiv', 'biorxiv', 'medrxiv', 'chemrxiv']):
+            return True
+
+    return False
+
+
+def get_table(author_data, bold_author_name=None):
+    """Parse author data and create publication table.
+
+    Args:
+        author_data: Author data from Semantic Scholar API
+        bold_author_name: Optional author name to bold in the output (for HTML/markdown)
+    """
     if not PANDAS_AVAILABLE:
         logger.error("pandas library is required for this command. Install with: pip install pandas")
         sys.exit(1)
@@ -444,13 +479,8 @@ def get_table(author_data):
         logger.warning("No papers found for this author")
         return pd.DataFrame()
 
-    # Build lists for DataFrame
-    titles = []
-    links = []
-    authors_list = []
-    journals = []
-    citations = []
-    years = []
+    # Group papers by normalized title to detect duplicates (preprint + published)
+    papers_by_title = {}
 
     for paper in papers:
         # Skip papers without basic info
@@ -469,6 +499,65 @@ def get_table(author_data):
         if doi and 'j.bpj.' in doi.lower() and len(doi.split('.')) >= 5:
             continue
 
+        normalized_title = normalize_title(paper['title'])
+
+        if normalized_title not in papers_by_title:
+            papers_by_title[normalized_title] = []
+
+        papers_by_title[normalized_title].append(paper)
+
+    # Process grouped papers: consolidate preprints with published versions
+    consolidated_papers = []
+
+    for normalized_title, paper_group in papers_by_title.items():
+        if len(paper_group) == 1:
+            # Single paper, use as-is
+            consolidated_papers.append(paper_group[0])
+        else:
+            # Multiple papers with same title - likely preprint + published
+            preprints = []
+            published = []
+
+            for paper in paper_group:
+                external_ids = paper.get('externalIds', {})
+                venue = paper.get('venue', '')
+
+                if is_preprint(external_ids, venue):
+                    preprints.append(paper)
+                else:
+                    published.append(paper)
+
+            # Prefer published version for metadata, sum citations
+            if published:
+                # Use the first published version as base
+                base_paper = published[0]
+            else:
+                # All are preprints, use the first one
+                base_paper = paper_group[0]
+
+            # Sum citations from all versions
+            total_citations = sum(p.get('citationCount', 0) for p in paper_group)
+
+            # Create consolidated paper with summed citations
+            consolidated = dict(base_paper)
+            consolidated['citationCount'] = total_citations
+
+            consolidated_papers.append(consolidated)
+
+            # Log consolidation
+            if len(paper_group) > 1:
+                logger.info(f"Consolidated {len(paper_group)} versions of '{base_paper.get('title', '')[:50]}...' "
+                           f"(total citations: {total_citations})")
+
+    # Build lists for DataFrame
+    titles = []
+    links = []
+    authors_list = []
+    journals = []
+    citations = []
+    years = []
+
+    for paper in consolidated_papers:
         titles.append(paper['title'])
         links.append(f"https://www.semanticscholar.org/paper/{paper['paperId']}")
 
@@ -476,10 +565,33 @@ def get_table(author_data):
         paper_authors = paper.get('authors', [])
         if paper_authors:
             author_names = [a.get('name', '') for a in paper_authors if a.get('name')]
-            if len(author_names) > 3:
-                authors_str = ', '.join(author_names[:3]) + ', ...'
+
+            # Convert to initials + last name format
+            formatted_names = []
+            for name in author_names:
+                parts = name.split()
+                if len(parts) > 1:
+                    # Get initials from all parts except last
+                    initials = ''.join([p[0].upper() for p in parts[:-1]])
+                    # Get last name
+                    last_name = parts[-1]
+                    formatted = f"{initials} {last_name}"
+                else:
+                    # Single name, keep as is
+                    formatted = name
+                formatted_names.append(formatted)
+
+            # Bold the specified author name if provided
+            if bold_author_name:
+                formatted_names = [
+                    f'**{name}**' if any(part in bold_author_name.split() for part in name.split()) else name
+                    for name in formatted_names
+                ]
+
+            if len(formatted_names) > 3:
+                authors_str = ', '.join(formatted_names[:3]) + ', ...'
             else:
-                authors_str = ', '.join(author_names)
+                authors_str = ', '.join(formatted_names)
         else:
             authors_str = ""
         authors_list.append(authors_str)
@@ -490,7 +602,7 @@ def get_table(author_data):
         doi = external_ids.get('DOI') if external_ids else None
         journals.append(clean_journal_name(venue, external_ids, doi))
 
-        # Citations
+        # Citations (now potentially summed from multiple versions)
         cite_count = paper.get('citationCount', 0)
         citations.append(str(cite_count) if cite_count else "-")
 
@@ -529,6 +641,14 @@ def get_html(table):
     """Convert table to HTML format."""
     links = dict(zip(table.Title, table.Link))
     table = table.drop("Link", axis=1)
+
+    # Create copy to avoid modifying original
+    table = table.copy()
+
+    # Convert markdown bold to HTML bold in Author(s) column
+    if 'Author(s)' in table.columns:
+        table['Author(s)'] = table['Author(s)'].str.replace(r'\*\*([^*]+)\*\*', r'<strong>\1</strong>', regex=True)
+
     return table.to_html(
         formatters={"Title": lambda x: '<a href="%s">%s</a>' % (links[x], x)},
         escape=False,
@@ -566,7 +686,13 @@ def cmd_scrape_pubs(args):
     try:
         # Fetch publications from Semantic Scholar
         author_data = get_author_publications(args.author)
-        table = get_table(author_data)
+
+        # Extract author name from the data
+        author_name = author_data.get('name')
+        logger.info(f"Fetched publications for author: {author_name}")
+
+        # Generate table with author name bolded
+        table = get_table(author_data, bold_author_name=author_name)
 
         output_formats = {"html": get_html, "json": get_json, "latex": get_latex, "tab": get_tab}
 
@@ -589,15 +715,81 @@ class SemanticScholarAPI:
 
     BASE_URL = "https://api.semanticscholar.org/graph/v1/paper"
 
-    def __init__(self, max_retries=3, backoff_factor=2):
+    def __init__(self, max_retries=3, backoff_factor=2, author_id=None):
         if not REQUESTS_AVAILABLE:
             logger.error("requests library is required for this command. Install with: pip install requests")
             sys.exit(1)
         self.max_retries = max_retries
         self.backoff_factor = backoff_factor
+        self.author_id = author_id
+        self._citation_cache = {}  # Cache for consolidated citation counts
+
+    def _build_citation_cache(self):
+        """Build a cache of consolidated citation counts from author's publications."""
+        if not self.author_id:
+            logger.warning("No author_id provided, citation consolidation will use search fallback")
+            return
+
+        logger.info(f"Building citation cache from author publications for {self.author_id}...")
+
+        try:
+            # Fetch all author publications with consolidation
+            author_data = get_author_publications(self.author_id, self.max_retries, self.backoff_factor)
+            papers = author_data.get('papers', [])
+
+            # Group papers by normalized title (same logic as get_table)
+            papers_by_title = {}
+
+            for paper in papers:
+                if not paper.get('title') or not paper.get('paperId'):
+                    continue
+
+                # Skip abstracts and Zenodo releases
+                external_ids = paper.get('externalIds', {})
+                doi = external_ids.get('DOI') if external_ids else None
+
+                if doi and 'zenodo' in doi.lower():
+                    continue
+                if doi and 'j.bpj.' in doi.lower() and len(doi.split('.')) >= 5:
+                    continue
+
+                normalized_title = normalize_title(paper['title'])
+
+                if normalized_title not in papers_by_title:
+                    papers_by_title[normalized_title] = []
+
+                papers_by_title[normalized_title].append(paper)
+
+            # Build cache: map each paper ID to its consolidated citation count
+            for normalized_title, paper_group in papers_by_title.items():
+                # Sum citations from all versions
+                total_citations = sum(p.get('citationCount', 0) for p in paper_group)
+
+                # Store the consolidated count for each paper ID in the group
+                for paper in paper_group:
+                    paper_id = paper.get('paperId')
+                    if paper_id:
+                        self._citation_cache[paper_id] = total_citations
+
+                    # Also cache by DOI and ArXiv ID for easy lookup
+                    ext_ids = paper.get('externalIds', {})
+                    if ext_ids:
+                        if ext_ids.get('DOI'):
+                            self._citation_cache[f"DOI:{ext_ids['DOI']}"] = total_citations
+                        if ext_ids.get('ArXiv'):
+                            self._citation_cache[f"ARXIV:{ext_ids['ArXiv']}"] = total_citations
+
+                if len(paper_group) > 1:
+                    logger.info(f"Cached {len(paper_group)} versions of '{paper_group[0].get('title', '')[:50]}...' "
+                               f"with total citations: {total_citations}")
+
+            logger.info(f"Citation cache built with {len(self._citation_cache)} entries")
+
+        except Exception as e:
+            logger.warning(f"Failed to build citation cache: {e}. Will use direct lookup fallback.")
 
     def get_citation_count(self, doi=None, arxiv_id=None):
-        """Get citation count for a paper."""
+        """Get consolidated citation count for a paper, including preprint versions."""
         if doi:
             paper_id = f"DOI:{doi}"
         elif arxiv_id:
@@ -606,12 +798,23 @@ class SemanticScholarAPI:
             logger.warning("No DOI or ArXiv ID provided")
             return None
 
+        # Build cache on first use
+        if not self._citation_cache and self.author_id:
+            self._build_citation_cache()
+
+        # Check cache first
+        if paper_id in self._citation_cache:
+            citation_count = self._citation_cache[paper_id]
+            logger.info(f"Found {citation_count} citations for {paper_id} (from cache)")
+            return citation_count
+
+        # Fallback: direct API lookup (without consolidation)
+        logger.info(f"Fetching citation count for {paper_id} (not in cache)")
         url = f"{self.BASE_URL}/{paper_id}"
         params = {"fields": "citationCount"}
 
         for attempt in range(self.max_retries):
             try:
-                logger.info(f"Fetching citation count for {paper_id} (attempt {attempt + 1}/{self.max_retries})")
                 response = requests.get(url, params=params, timeout=10)
                 response.raise_for_status()
 
@@ -693,9 +896,9 @@ class GitHubAPI:
 class CVUpdater:
     """Update CV markdown file with latest citation and GitHub stats."""
 
-    def __init__(self, cv_path):
+    def __init__(self, cv_path, author_id=None):
         self.cv_path = Path(cv_path)
-        self.semantic_scholar = SemanticScholarAPI()
+        self.semantic_scholar = SemanticScholarAPI(author_id=author_id)
         self.github = GitHubAPI()
 
     def read_cv(self):
@@ -876,7 +1079,7 @@ class CVUpdater:
 def cmd_update_cv(args):
     """Update CV with latest citation counts and GitHub repository stats."""
     try:
-        updater = CVUpdater(args.cv_path)
+        updater = CVUpdater(args.cv_path, author_id=args.author_id)
         updater.update()
     except Exception as e:
         logger.error(f"Failed to update CV: {e}")
@@ -1118,6 +1321,10 @@ def main():
         '-c', '--cv-path',
         default='_includes/cv.md',
         help='Path to CV markdown file (default: _includes/cv.md)'
+    )
+    update_parser.add_argument(
+        '-a', '--author-id',
+        help='Semantic Scholar Author ID for citation consolidation (recommended)'
     )
 
     # Generate PDF command

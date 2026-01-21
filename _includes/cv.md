@@ -63,7 +63,7 @@ I am a Senior Research Scientist at [Meta Reality Labs](https://about.meta.com/r
 
 #### A Generic Non-Invasive Neuromotor Interface for Human-Computer Interaction
 P Kaifosh, TR Reardon, and **CTRL-Labs** · *[Nature](https://doi.org/10.1038/s41586-025-09255-w)* · 2025<br>
-📚 15
+📚 62
 
 #### Variational Encoding of Complex Dynamics
 **CX Hernández**\*, HK Wayment-Steele\*, MM Sultan\*, BE Husic, and VS Pande · *[Phys. Rev. E](https://doi.org/10.1103/PhysRevE.97.062412)* · 2018<br>
@@ -79,7 +79,7 @@ P Kaifosh, TR Reardon, and **CTRL-Labs** · *[Nature](https://doi.org/10.1038/s4
 
 #### MDTraj: A Modern, Open Library for the Analysis of Molecular Dynamics Trajectories
 RT McGibbon, KA Beauchamp, MP Harrigan, C Klein, JM Swails, **CX Hernández**, CR Schwantes, LP Wang, TJ Lane, and VS Pande · [mdtraj/mdtraj](https://github.com/mdtraj/mdtraj) <br>
-`Python`  · ⭐ 687  · 🍴 290
+`Python`  · ⭐ 689  · 🍴 290
 
 #### VDE: Variational Dynamical Encoder for Complex Dynamics
 **CX Hernández**, HK Wayment-Steele, MM Sultan, BE Husic, and VS Pande · [msmbuilder/vde](https://github.com/msmbuilder/vde)<br>
