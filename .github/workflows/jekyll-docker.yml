@@ -42,7 +42,7 @@ jobs:
 
       - name: Update CV with citations and GitHub stats
         shell: bash -el {0}
-        run: python ./_scripts/cli.py update-cv -c ./_includes/cv.md
+        run: python ./_scripts/cli.py update-cv -a 39400763 -c ./_includes/cv.md
 
       - name: Generate CV PDF
         shell: bash -el {0}
