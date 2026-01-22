@@ -485,6 +485,108 @@ window.addEventListener('load', () => {
   });
 });
 
+// Scroll Progress Indicator
+function initScrollProgress(): void {
+  // Create progress bar element
+  const progressBar = document.createElement('div');
+  progressBar.id = 'scroll-progress';
+  progressBar.style.cssText = `
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 0%;
+    height: 3px;
+    background: linear-gradient(90deg, var(--accent-primary) 0%, var(--accent-warm) 100%);
+    z-index: 9999;
+    transition: width 0.1s ease-out;
+  `;
+  document.body.appendChild(progressBar);
+
+  // Update progress on scroll
+  function updateScrollProgress(): void {
+    const windowHeight = window.innerHeight;
+    const documentHeight = document.documentElement.scrollHeight;
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    const scrollPercent = (scrollTop / (documentHeight - windowHeight)) * 100;
+
+    progressBar.style.width = `${Math.min(scrollPercent, 100)}%`;
+  }
+
+  window.addEventListener('scroll', updateScrollProgress, { passive: true });
+  updateScrollProgress(); // Initial call
+}
+
+// Section Scroll Animations
+function initScrollAnimations(): void {
+  // Check for reduced motion preference
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (prefersReducedMotion) return;
+
+  const sections = document.querySelectorAll('section.parallax');
+
+  const observerOptions: IntersectionObserverInit = {
+    root: null,
+    rootMargin: '0px',
+    threshold: 0.1,
+  };
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('section-visible');
+      }
+    });
+  }, observerOptions);
+
+  sections.forEach((section) => {
+    section.classList.add('section-animated');
+    observer.observe(section);
+  });
+}
+
+// Active Navigation Tracking
+function initActiveNavTracking(): void {
+  const navLinks = document.querySelectorAll('#MainNav .nav-pills a');
+  const sections = document.querySelectorAll('section[id]');
+
+  function updateActiveNav(): void {
+    const scrollPos = window.pageYOffset + 100; // Offset for fixed nav
+
+    sections.forEach((section) => {
+      const sectionTop = (section as HTMLElement).offsetTop;
+      const sectionHeight = (section as HTMLElement).offsetHeight;
+      const sectionId = section.getAttribute('id');
+
+      if (scrollPos >= sectionTop && scrollPos < sectionTop + sectionHeight) {
+        navLinks.forEach((link) => {
+          const parent = link.parentElement;
+          if (parent) {
+            parent.classList.remove('active', 'dropdown');
+            if (link.getAttribute('href') === `#${sectionId}`) {
+              parent.classList.add('active', 'dropdown');
+            }
+          }
+        });
+      }
+    });
+  }
+
+  window.addEventListener('scroll', updateActiveNav, { passive: true });
+  updateActiveNav(); // Initial call
+}
+
+// Initialize all micro-interactions
+function initMicroInteractions(): void {
+  initScrollProgress();
+  initScrollAnimations();
+  initActiveNavTracking();
+}
+
+// Initialize on DOM ready
+$(document).ready(() => {
+  initMicroInteractions();
+});
+
 // Export loadCV to global scope so it can be called from HTML onclick
 (window as any).loadCV = loadCV;
 
