@@ -201,7 +201,7 @@ header#MainHeader {
     display: inline-block;
     background: var(--ink);
     color: var(--paper) !important;
-    padding: 0.1em 0.15em;
+    padding: 0.05em 0.15em;
     margin-right: 0.05em;
     font-weight: 700;
     line-height: 1;
@@ -369,7 +369,7 @@ html {
   color: var(--paper);
   font-weight: 700;
   letter-spacing: 3px;
-  padding: 4px 6px;
+  padding: 4px 10px;
   border: 2px solid var(--ink);
   display: block;
   text-align: center;
