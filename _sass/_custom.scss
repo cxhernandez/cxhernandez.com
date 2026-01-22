@@ -838,7 +838,7 @@ section#Software {
   justify-content: flex-end;
   align-items: center;
   width: 100%;
-  max-width: 320px;
+  max-width: 280px;
   background: var(--surface-raised);
   border: 2px solid rgba(10, 10, 10, 0.06);
   box-shadow: 0 4px 16px var(--shadow-subtle);
@@ -894,7 +894,7 @@ section#Software {
 
 .software-card-image {
   width: 100%;
-  height: 280px;
+  height: 240px;
   object-fit: contain;
   object-position: center;
   display: block;
@@ -903,7 +903,7 @@ section#Software {
     rgba(250, 250, 248, 1) 0%,
     rgba(245, 245, 245, 1) 100%
   );
-  padding: 50px;
+  padding: 45px;
   box-sizing: border-box;
   transition: transform var(--duration-slow) var(--ease-out-expo);
   position: relative;
@@ -916,7 +916,7 @@ section#Software {
 }
 
 .software-card-body {
-  padding: 24px;
+  padding: 20px;
   text-align: center;
   width: 100%;
   background: var(--surface-raised);
@@ -926,8 +926,8 @@ section#Software {
 
 .software-card-name {
   font-family: var(--font-display);
-  font-size: 20px;
-  line-height: 24px;
+  font-size: 18px;
+  line-height: 22px;
   font-weight: 700;
   margin-bottom: 0;
   color: var(--ink) !important;
@@ -937,10 +937,10 @@ section#Software {
 
 .software-card-description {
   font-family: var(--font-body);
-  font-size: 14px;
-  line-height: 20px;
+  font-size: 13px;
+  line-height: 18px;
   color: rgba(10, 10, 10, 0.6) !important;
-  margin: 10px 0 0 0;
+  margin: 8px 0 0 0;
   font-weight: 400;
 }
 
@@ -1794,7 +1794,7 @@ section#Publications {
 
 section#Store {
   &.parallax {
-    background-color: #fafafa;
+    background-color: var(--paper);
     background-image: none;
     min-height: 100vh;
     padding-top: 0;
@@ -1804,11 +1804,11 @@ section#Store {
     a:not(.product-card),
     h3,
     h4 {
-      color: #000 !important;
+      color: var(--ink) !important;
     }
 
     a:not(.product-card):hover {
-      color: red !important;
+      color: var(--accent-primary) !important;
     }
   }
 
@@ -1828,10 +1828,12 @@ section#Store {
 
   .back-link {
     font-size: 0.9em;
-    color: #666 !important;
+    font-family: var(--font-display);
+    color: rgba(10, 10, 10, 0.6) !important;
+    transition: color var(--duration-fast) ease;
 
     &:hover {
-      color: #000 !important;
+      color: var(--accent-primary) !important;
     }
   }
 
@@ -1839,16 +1841,20 @@ section#Store {
     margin-bottom: 60px;
 
     h3 {
+      font-family: var(--font-display);
       font-size: 1.5em;
+      font-weight: 700;
       text-align: left !important;
       margin-bottom: 10px;
       padding-bottom: 10px;
-      border-bottom: 2px solid #000;
+      border-bottom: 2px solid var(--accent-primary);
+      letter-spacing: -0.01em;
     }
   }
 
   .section-description {
-    color: #666 !important;
+    font-family: var(--font-body);
+    color: rgba(10, 10, 10, 0.7) !important;
     margin-bottom: 30px;
   }
 
@@ -1860,34 +1866,41 @@ section#Store {
   }
 
   .service-card {
-    background: #fff;
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
+    background: var(--surface-raised);
+    border: 2px solid rgba(10, 10, 10, 0.06);
+    border-radius: 12px;
     padding: 30px;
     text-align: center;
-    transition: box-shadow 0.2s ease, transform 0.2s ease;
+    box-shadow: 0 4px 16px var(--shadow-subtle);
+    transition: all var(--duration-base) var(--ease-out-expo);
 
     &:hover {
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-      transform: translateY(-2px);
+      box-shadow: 0 12px 40px var(--shadow-medium);
+      transform: translateY(-4px);
+      border-color: var(--accent-primary);
     }
 
     h4 {
+      font-family: var(--font-display);
       font-size: 1.2em;
       margin-bottom: 15px;
-      font-weight: 600;
+      font-weight: 700;
+      color: var(--ink) !important;
+      letter-spacing: -0.01em;
     }
 
     p {
+      font-family: var(--font-body);
       font-size: 0.95em;
       line-height: 1.6;
-      color: #555 !important;
+      color: rgba(10, 10, 10, 0.7) !important;
     }
 
     .price {
+      font-family: var(--font-display);
       font-size: 1.3em;
       font-weight: bold;
-      color: #000 !important;
+      color: var(--accent-primary) !important;
       margin: 20px 0;
     }
   }
@@ -1898,17 +1911,28 @@ section#Store {
   }
 
   .btn-book {
-    background: #000;
-    color: #fff !important;
-    border: none;
+    font-family: var(--font-display);
+    background: var(--accent-primary);
+    color: var(--paper) !important;
+    border: 2px solid var(--accent-primary);
     padding: 12px 30px;
     font-size: 1em;
+    font-weight: 600;
     cursor: pointer;
-    border-radius: 4px;
-    transition: background 0.2s ease;
+    border-radius: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    transition: all var(--duration-base) var(--ease-out-expo);
 
     &:hover {
-      background: #333;
+      background: transparent;
+      color: var(--accent-primary) !important;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(43, 75, 255, 0.3);
+    }
+
+    &:active {
+      transform: translateY(0);
     }
   }
 
@@ -1922,18 +1946,14 @@ section#Store {
   }
 
   .loading-placeholder {
+    font-family: var(--font-display);
     text-align: center;
     padding: 40px;
-    color: #666;
+    color: rgba(10, 10, 10, 0.5);
   }
 }
 
-// Skeleton Loading Cards
-@keyframes skeleton-shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
-}
-
+// Skeleton Loading Cards - updated to match new design
 .skeleton-grid {
   display: flex;
   flex-wrap: wrap;
@@ -1944,17 +1964,22 @@ section#Store {
 .skeleton-card {
   width: 100%;
   max-width: 259px;
-  background: #fff;
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-  border-radius: 10px;
+  background: var(--surface-raised);
+  border: 2px solid rgba(10, 10, 10, 0.06);
+  box-shadow: 0 4px 16px var(--shadow-subtle);
+  border-radius: 12px;
   overflow: hidden;
 }
 
 .skeleton-image {
   width: 100%;
   height: 259px;
-  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background: linear-gradient(
+    90deg,
+    rgba(10, 10, 10, 0.03) 25%,
+    rgba(10, 10, 10, 0.06) 50%,
+    rgba(10, 10, 10, 0.03) 75%
+  );
   background-size: 200% 100%;
   animation: skeleton-shimmer 1.5s ease-in-out infinite;
 }
@@ -1968,10 +1993,15 @@ section#Store {
 }
 
 .skeleton-text {
-  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background: linear-gradient(
+    90deg,
+    rgba(10, 10, 10, 0.03) 25%,
+    rgba(10, 10, 10, 0.06) 50%,
+    rgba(10, 10, 10, 0.03) 75%
+  );
   background-size: 200% 100%;
   animation: skeleton-shimmer 1.5s ease-in-out infinite;
-  border-radius: 4px;
+  border-radius: 6px;
 }
 
 .skeleton-title {
@@ -1991,7 +2021,7 @@ section#Store {
   border-radius: 6px;
 }
 
-// Product Cards
+// Product Cards - updated to match design system
 .product-card {
   overflow: hidden;
   display: flex;
@@ -2000,23 +2030,24 @@ section#Store {
   align-items: center;
   width: 100%;
   max-width: 259px;
-  background: #FFFFFF;
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-  border-radius: 10px;
-  font-family: SQ Market, Helvetica, Arial, sans-serif;
+  background: var(--surface-raised);
+  border: 2px solid rgba(10, 10, 10, 0.06);
+  box-shadow: 0 4px 16px var(--shadow-subtle);
+  border-radius: 12px;
+  font-family: var(--font-body);
   text-decoration: none;
   color: inherit;
   cursor: pointer;
-  transition: box-shadow 0.2s ease, transform 0.2s ease;
+  transition: all var(--duration-base) var(--ease-out-expo);
 
   &:hover {
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
-    transform: translateY(-2px);
+    box-shadow: 0 12px 40px var(--shadow-medium);
+    transform: translateY(-4px);
+    border-color: var(--accent-primary);
   }
 
   &:active {
-    transform: translateY(0);
+    transform: translateY(-2px);
   }
 }
 
@@ -2026,6 +2057,11 @@ section#Store {
   object-fit: cover;
   object-position: center;
   display: block;
+  transition: transform var(--duration-slow) var(--ease-out-expo);
+
+  .product-card:hover & {
+    transform: scale(1.05);
+  }
 }
 
 .product-card-body {
@@ -2039,49 +2075,64 @@ section#Store {
 }
 
 .product-card-name {
+  font-family: var(--font-display);
   font-size: 18px;
   line-height: 20px;
-  font-weight: 600;
+  font-weight: 700;
   margin-bottom: 0;
+  color: var(--ink) !important;
+  letter-spacing: -0.01em;
+  transition: color var(--duration-fast) ease;
+
+  .product-card:hover & {
+    color: var(--accent-primary) !important;
+  }
 }
 
 .product-card-description {
+  font-family: var(--font-body);
   font-size: 14px;
   line-height: 18px;
-  color: #666;
+  color: rgba(10, 10, 10, 0.6) !important;
   margin: 10px 0;
 }
 
 .product-card-price {
+  font-family: var(--font-display);
   font-size: 16px !important;
   line-height: 18px;
-  font-weight: 500;
-  color: #666;
+  font-weight: 600;
+  color: var(--accent-primary) !important;
   margin: 5px 0 0 0;
 }
 
 .product-card-size-hint {
   display: block;
+  font-family: var(--font-body);
   font-size: 12px;
   font-weight: 400;
-  color: #888;
+  color: rgba(10, 10, 10, 0.5);
   margin-top: 4px;
 }
 
 .product-card-image-placeholder {
   width: 100%;
   height: 259px;
-  background: #f5f5f5;
+  background: linear-gradient(
+    135deg,
+    rgba(250, 250, 248, 1) 0%,
+    rgba(245, 245, 245, 1) 100%
+  );
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #999;
+  color: rgba(10, 10, 10, 0.3);
   font-size: 14px;
 
   svg {
     width: 48px;
     height: 48px;
-    opacity: 0.5;
+    opacity: 0.3;
   }
 }
 
@@ -2092,7 +2143,11 @@ section#Store {
   align-items: center;
   justify-content: center;
   font-size: 96px;
-  background: #64748b;
+  background: linear-gradient(
+    135deg,
+    rgba(100, 116, 139, 1) 0%,
+    rgba(71, 85, 105, 1) 100%
+  );
   user-select: none;
 }
 
@@ -2115,7 +2170,9 @@ section#Store {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.7);
+  background: rgba(10, 10, 10, 0.8);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
 }
 
 .checkout-modal-content {
@@ -2123,30 +2180,41 @@ section#Store {
   width: 80%;
   height: 80%;
   max-height: 700px;
-  background: #fff;
-  border-radius: 12px;
+  background: var(--surface-raised);
+  border-radius: 16px;
   overflow: hidden;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 20px 60px rgba(10, 10, 10, 0.4);
+  border: 2px solid rgba(10, 10, 10, 0.1);
 }
 
 .checkout-modal-close {
   position: absolute;
   top: 10px;
   right: 10px;
-  width: 36px;
-  height: 36px;
-  border: none;
-  background: rgba(0, 0, 0, 0.1);
+  width: 40px;
+  height: 40px;
+  border: 2px solid rgba(10, 10, 10, 0.1);
+  background: var(--surface-raised);
   border-radius: 50%;
   font-size: 24px;
   line-height: 1;
   cursor: pointer;
   z-index: 10;
-  color: #333;
-  transition: background 0.2s;
+  color: var(--ink);
+  transition: all var(--duration-base) var(--ease-out-expo);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   &:hover {
-    background: rgba(0, 0, 0, 0.2);
+    background: var(--accent-warm);
+    color: var(--paper);
+    border-color: var(--accent-warm);
+    transform: scale(1.1);
+  }
+
+  &:active {
+    transform: scale(0.95);
   }
 }
 
@@ -2166,16 +2234,17 @@ section#Store {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: #fff;
-  color: #666;
+  background: var(--surface-raised);
+  color: rgba(10, 10, 10, 0.6);
+  font-family: var(--font-display);
   z-index: 5;
 }
 
 .checkout-spinner {
   width: 48px;
   height: 48px;
-  border: 4px solid #e0e0e0;
-  border-top-color: #000;
+  border: 4px solid rgba(10, 10, 10, 0.1);
+  border-top-color: var(--accent-primary);
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
   margin-bottom: 16px;
@@ -2197,13 +2266,13 @@ section#Store {
   border: 0;
 }
 
-// Password Gate
+// Password Gate - updated to match design system
 .password-gate {
   display: flex;
   align-items: center;
   justify-content: center;
   min-height: 80vh;
-  background-color: #fafafa;
+  background-color: var(--paper);
 }
 
 .password-gate-wrapper {
@@ -2212,18 +2281,23 @@ section#Store {
 
 .password-gate-content {
   padding: 40px;
-  background: #fff;
-  border-radius: 10px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  background: var(--surface-raised);
+  border-radius: 16px;
+  border: 2px solid rgba(10, 10, 10, 0.06);
+  box-shadow: 0 8px 32px var(--shadow-medium);
   max-width: 400px;
 
   h2 {
+    font-family: var(--font-display);
+    font-weight: 700;
     margin-bottom: 10px;
-    color: #000;
+    color: var(--ink);
+    letter-spacing: -0.01em;
   }
 
   p {
-    color: #666;
+    font-family: var(--font-body);
+    color: rgba(10, 10, 10, 0.7);
     margin-bottom: 20px;
   }
 
@@ -2234,38 +2308,52 @@ section#Store {
   }
 
   input[type="password"] {
+    font-family: var(--font-body);
     padding: 12px 16px;
     font-size: 16px;
-    border: 1px solid #ddd;
-    border-radius: 6px;
+    border: 2px solid rgba(10, 10, 10, 0.1);
+    border-radius: 8px;
     width: 200px;
+    transition: all var(--duration-fast) ease;
 
     &:focus {
       outline: none;
-      border-color: #000;
+      border-color: var(--accent-primary);
+      box-shadow: 0 0 0 3px rgba(43, 75, 255, 0.1);
     }
   }
 
   button {
+    font-family: var(--font-display);
     padding: 12px 24px;
     font-size: 16px;
-    background: #000;
-    color: #fff;
-    border: none;
-    border-radius: 6px;
+    font-weight: 600;
+    background: var(--accent-primary);
+    color: var(--paper);
+    border: 2px solid var(--accent-primary);
+    border-radius: 8px;
     cursor: pointer;
-    transition: background 0.2s;
+    transition: all var(--duration-base) var(--ease-out-expo);
 
     &:hover {
-      background: #333;
+      background: transparent;
+      color: var(--accent-primary);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(43, 75, 255, 0.3);
+    }
+
+    &:active {
+      transform: translateY(0);
     }
   }
 }
 
 .password-error {
-  color: #c00;
+  font-family: var(--font-body);
+  color: var(--accent-warm);
   margin-top: 15px;
   font-size: 14px;
+  font-weight: 500;
 }
 
 .password-gate-back {
@@ -2273,10 +2361,12 @@ section#Store {
   margin-bottom: 0;
 
   a {
-    color: #666;
+    font-family: var(--font-body);
+    color: rgba(10, 10, 10, 0.6);
+    transition: color var(--duration-fast) ease;
 
     &:hover {
-      color: red;
+      color: var(--accent-primary);
     }
   }
 }
@@ -2285,29 +2375,41 @@ section#Store {
 .store-error {
   text-align: center;
   padding: 60px 20px;
-  background: #fafafa;
-  border-radius: 10px;
+  background: var(--surface-raised);
+  border-radius: 16px;
+  border: 2px solid rgba(10, 10, 10, 0.06);
   margin: 40px 0;
+  box-shadow: 0 4px 16px var(--shadow-subtle);
 
   p {
+    font-family: var(--font-body);
     font-size: 1.1em;
-    color: #666;
+    color: rgba(10, 10, 10, 0.7);
     margin-bottom: 20px;
   }
 }
 
 .retry-button {
-  background: #000;
-  color: #fff;
-  border: none;
+  font-family: var(--font-display);
+  background: var(--accent-primary);
+  color: var(--paper);
+  border: 2px solid var(--accent-primary);
   padding: 12px 30px;
   font-size: 1em;
-  border-radius: 6px;
+  font-weight: 600;
+  border-radius: 8px;
   cursor: pointer;
-  transition: background 0.2s ease;
+  transition: all var(--duration-base) var(--ease-out-expo);
 
   &:hover {
-    background: #333;
+    background: transparent;
+    color: var(--accent-primary);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(43, 75, 255, 0.3);
+  }
+
+  &:active {
+    transform: translateY(0);
   }
 }
 
@@ -2316,29 +2418,42 @@ section#Store {
   font-size: 0.9em;
 
   a {
-    color: #666 !important;
+    font-family: var(--font-body);
+    color: rgba(10, 10, 10, 0.6) !important;
+    transition: color var(--duration-fast) ease;
 
     &:hover {
-      color: #000 !important;
+      color: var(--accent-primary) !important;
     }
   }
 }
 
 section#Store {
   .btn-submit-payment {
+    font-family: var(--font-display);
     width: 100%;
-    background: #000;
-    color: #fff !important;
-    border: none;
+    background: var(--accent-primary);
+    color: var(--paper) !important;
+    border: 2px solid var(--accent-primary);
     padding: 15px;
     font-size: 1.1em;
+    font-weight: 600;
     cursor: pointer;
-    border-radius: 4px;
+    border-radius: 8px;
     margin-top: 20px;
-    transition: background 0.2s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    transition: all var(--duration-base) var(--ease-out-expo);
 
     &:hover {
-      background: #333;
+      background: transparent;
+      color: var(--accent-primary) !important;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(43, 75, 255, 0.3);
+    }
+
+    &:active {
+      transform: translateY(0);
     }
   }
 
