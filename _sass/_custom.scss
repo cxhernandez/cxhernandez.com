@@ -788,11 +788,11 @@ section#Photography {
     box-shadow: none !important;
     margin: 0 !important;
     position: absolute !important;
-    top: -10% !important;
+    top: 0 !important;
     left: 0 !important;
     width: 100% !important;
-    height: 130% !important;
-    min-height: 130% !important;
+    height: 100% !important;
+    min-height: 100% !important;
   }
 
   .instagram-media-rendered {
@@ -909,9 +909,10 @@ section#Software {
   position: relative;
   z-index: 2;
 
-  // Fix Osprey logo vertical alignment (SVG has extra whitespace at top)
+  // Fix MSMBuilder and Osprey logos (SVGs have extra whitespace at top)
+  &[alt*="MSMBuilder"],
   &[alt*="Osprey"] {
-    object-position: center 60%;
+    object-position: center 55%;
   }
 }
 
@@ -1218,39 +1219,42 @@ section#Publications {
   }
 
   .modal-body {
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-family: var(--font-body);
     font-size: 1rem;
     line-height: 1.6;
     padding: 40px 50px;
-    color: #333;
+    color: var(--ink);
     overflow: visible;
     height: auto;
   }
 
   h1 {
+    font-family: var(--font-display);
     font-size: 1.75rem;
     font-weight: 600;
     margin-bottom: 0.25rem;
-    color: #000;
+    color: var(--ink);
     text-align: left;
     border-bottom: none;
     line-height: 1.2;
 
     + p {
+      font-family: var(--font-body);
       font-size: 1rem;
       font-weight: 500;
-      color: #555;
+      color: rgba(10, 10, 10, 0.7);
       margin-bottom: 0.5rem;
     }
   }
 
   h2 {
+    font-family: var(--font-display);
     font-size: 1.25rem;
     font-weight: 600;
-    color: #000;
+    color: var(--ink);
     text-transform: uppercase;
     letter-spacing: 0.08em;
-    border-bottom: 2px solid #000;
+    border-bottom: 2px solid var(--ink);
     padding-bottom: 0.375rem;
     margin-top: 1.75rem;
     margin-bottom: 1rem;
@@ -1259,9 +1263,10 @@ section#Publications {
   }
 
   h3 {
+    font-family: var(--font-body);
     font-size: 1.125rem;
     font-weight: 600;
-    color: #222;
+    color: var(--ink);
     margin-top: 1rem;
     margin-bottom: 0.25rem;
     text-align: left;
@@ -1269,15 +1274,16 @@ section#Publications {
 
     + p {
       font-size: 0.9375rem;
-      color: #444;
+      color: rgba(10, 10, 10, 0.7);
       margin-bottom: 0.375rem;
     }
   }
 
   h4 {
+    font-family: var(--font-body);
     font-size: .9rem;
     font-weight: 600;
-    color: #333;
+    color: var(--ink);
     margin-top: 0.875rem;
     margin-bottom: 0.125rem;
     text-align: left;
@@ -1285,7 +1291,7 @@ section#Publications {
 
     + p {
       font-size: 0.9375rem;
-      color: #444;
+      color: rgba(10, 10, 10, 0.7);
       margin-bottom: 0.375rem;
     }
   }
@@ -1293,7 +1299,7 @@ section#Publications {
   p {
     font-size: 1rem;
     margin-bottom: 0.5rem;
-    color: #333;
+    color: var(--ink);
     text-align: left;
     line-height: 1.6;
   }
@@ -1304,22 +1310,42 @@ section#Publications {
 
   em {
     font-style: italic;
-    color: #555;
+    color: rgba(10, 10, 10, 0.7);
   }
 
   a {
-    color: #2a7ae2;
+    color: var(--accent-primary);
     text-decoration: none;
+    position: relative;
+    transition: color var(--duration-fast) ease;
+
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 100%;
+      height: 1px;
+      background: var(--accent-primary);
+      transform: scaleX(0);
+      transform-origin: right;
+      transition: transform var(--duration-base) var(--ease-out-expo);
+    }
 
     &:hover {
-      color: red;
-      text-decoration: underline;
+      color: var(--accent-warm);
+
+      &::after {
+        transform: scaleX(1);
+        transform-origin: left;
+        background: var(--accent-warm);
+      }
     }
   }
 
   hr {
     border: none;
-    border-top: 1px solid #ddd;
+    border-top: 1px solid rgba(10, 10, 10, 0.1);
     margin: 1.5rem 0;
   }
 
@@ -1331,18 +1357,18 @@ section#Publications {
   li {
     font-size: 0.9375rem;
     margin-bottom: 0.375rem;
-    color: #333;
+    color: var(--ink);
     text-align: left;
     line-height: 1.5;
   }
 
   code {
-    background-color: #f4f4f4;
+    background-color: rgba(10, 10, 10, 0.05);
     padding: 0.125rem 0.375rem;
     border-radius: 3px;
     font-size: 0.8125rem;
-    color: #555;
-    font-family: 'SF Mono', Menlo, Monaco, monospace;
+    color: rgba(10, 10, 10, 0.7);
+    font-family: var(--font-display);
   }
 }
 
@@ -1781,10 +1807,6 @@ section#Publications {
     width: 26px;
     height: 26px;
     font-size: 11px;
-  }
-
-  .instagram-embed-wrapper iframe {
-    top: -20% !important;
   }
 }
 
