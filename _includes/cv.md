@@ -2,10 +2,10 @@
 
 **Senior Research Scientist**
 <br>
-🐙 [github](https://github.com/cxhernandez) |
-💼 [linkedin](https://linkedin.com/in/cxhernandez) |
-🌐 [website](https://www.cxhernandez.com) |
-✉️ [email](mailto:cxh@meta.com)
+[🐙 github](https://github.com/cxhernandez) |
+[💼 linkedin](https://linkedin.com/in/cxhernandez) |
+[🌐 website](https://www.cxhernandez.com) |
+[✉️ email](mailto:cxh@meta.com)
 
 
 

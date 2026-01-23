@@ -1370,6 +1370,21 @@ section#Publications {
     color: rgba(10, 10, 10, 0.7);
     font-family: var(--font-display);
   }
+
+  // Animate emojis on hover (similar to brand logo initial-box)
+  // Use ::first-letter to target emoji at start of links
+  p a::first-letter {
+    display: inline-block;
+    transition: transform var(--duration-base) var(--ease-out-expo);
+  }
+
+  p a:hover::first-letter {
+    transform: translateY(-2px) rotate(-2deg);
+  }
+
+  p a:active::first-letter {
+    transform: translateY(0) rotate(0);
+  }
 }
 
 /* ===========================================
