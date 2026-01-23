@@ -63,7 +63,8 @@ a.contact {
   transition: all var(--duration-fast) ease;
   position: relative;
 
-  &::after {
+  // Only show underline for text links, not icon-only links
+  &:not(:has(i))::after {
     content: '';
     position: absolute;
     bottom: -2px;
@@ -76,13 +77,13 @@ a.contact {
     transition: transform var(--duration-base) var(--ease-out-expo);
   }
 
+  &:not(:has(i)):hover::after {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
+
   &:hover {
     color: var(--accent-primary);
-
-    &::after {
-      transform: scaleX(1);
-      transform-origin: left;
-    }
   }
 }
 
@@ -527,7 +528,7 @@ section#About {
       flex: 1;
 
       p {
-        margin-top: 0;
+        margin-top: -10px;
       }
     }
   }
@@ -908,12 +909,6 @@ section#Software {
   transition: transform var(--duration-slow) var(--ease-out-expo);
   position: relative;
   z-index: 2;
-
-  // Fix MSMBuilder and Osprey logos (SVGs have extra whitespace at top)
-  &[alt*="MSMBuilder"],
-  &[alt*="Osprey"] {
-    object-position: center 55%;
-  }
 }
 
 .software-card-body {
@@ -1369,21 +1364,6 @@ section#Publications {
     font-size: 0.8125rem;
     color: rgba(10, 10, 10, 0.7);
     font-family: var(--font-display);
-  }
-
-  // Animate emojis on hover (similar to brand logo initial-box)
-  // Use ::first-letter to target emoji at start of links
-  p a::first-letter {
-    display: inline-block;
-    transition: transform var(--duration-base) var(--ease-out-expo);
-  }
-
-  p a:hover::first-letter {
-    transform: translateY(-2px) rotate(-2deg);
-  }
-
-  p a:active::first-letter {
-    transform: translateY(0) rotate(0);
   }
 }
 
