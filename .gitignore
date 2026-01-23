@@ -18,3 +18,4 @@ yarn-error.log
 
 # Build artifacts
 static/js/dist/
+.grepai/
