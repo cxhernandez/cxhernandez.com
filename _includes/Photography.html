@@ -9,15 +9,21 @@
                 {% markdown photography.md %}
             </div>
             <div class="photo-carousel">
-                <button class="carousel-btn carousel-prev" onclick="moveCarousel(-1)">&#10094;</button>
+                <button class="carousel-btn carousel-prev" onclick="moveCarousel(-1)" aria-label="Previous photo">&#10094;</button>
 
                 <div class="carousel-container">
                     <div class="carousel-track" id="carouselTrack">
-                        <!-- Instagram embeds loaded from photos.json -->
+                        <!-- Loading skeleton -->
+                        <div class="carousel-loading">
+                            <div class="carousel-skeleton"></div>
+                            <p>Loading photos...</p>
+                        </div>
                     </div>
+                    <!-- Progress bar for auto-advance -->
+                    <div class="carousel-progress" id="carouselProgress"></div>
                 </div>
 
-                <button class="carousel-btn carousel-next" onclick="moveCarousel(1)">&#10095;</button>
+                <button class="carousel-btn carousel-next" onclick="moveCarousel(1)" aria-label="Next photo">&#10095;</button>
             </div>
 
             <div class="carousel-dots" id="carouselDots"></div>
@@ -34,14 +40,37 @@
   let currentSlide = 0;
   let totalSlides = 0;
   let autoAdvanceInterval = null;
+  let progressInterval = null;
+  let touchStartX = 0;
+  let touchEndX = 0;
+  const AUTO_ADVANCE_DURATION = 8000; // 8 seconds
 
   function startAutoAdvance() {
-    // Clear any existing interval
+    // Clear any existing intervals
     if (autoAdvanceInterval) {
       clearInterval(autoAdvanceInterval);
     }
+    if (progressInterval) {
+      clearInterval(progressInterval);
+    }
+
+    // Reset and animate progress bar
+    const progressBar = document.getElementById('carouselProgress');
+    if (progressBar) {
+      progressBar.style.transition = 'none';
+      progressBar.style.width = '0%';
+
+      // Force reflow
+      progressBar.offsetHeight;
+
+      progressBar.style.transition = `width ${AUTO_ADVANCE_DURATION}ms linear`;
+      progressBar.style.width = '100%';
+    }
+
     // Start new interval
-    autoAdvanceInterval = setInterval(() => moveCarousel(1), 8000);
+    autoAdvanceInterval = setInterval(() => {
+      moveCarousel(1);
+    }, AUTO_ADVANCE_DURATION);
   }
 
   function stopAutoAdvance() {
@@ -49,12 +78,47 @@
       clearInterval(autoAdvanceInterval);
       autoAdvanceInterval = null;
     }
+    if (progressInterval) {
+      clearInterval(progressInterval);
+      progressInterval = null;
+    }
+
+    const progressBar = document.getElementById('carouselProgress');
+    if (progressBar) {
+      progressBar.style.transition = 'none';
+      progressBar.style.width = '0%';
+    }
+  }
+
+  function handleTouchStart(e) {
+    touchStartX = e.changedTouches[0].screenX;
+  }
+
+  function handleTouchEnd(e) {
+    touchEndX = e.changedTouches[0].screenX;
+    handleSwipe();
+  }
+
+  function handleSwipe() {
+    const swipeThreshold = 50;
+    const diff = touchStartX - touchEndX;
+
+    if (Math.abs(diff) > swipeThreshold) {
+      if (diff > 0) {
+        // Swipe left - next
+        moveCarousel(1);
+      } else {
+        // Swipe right - previous
+        moveCarousel(-1);
+      }
+    }
   }
 
   async function initCarousel() {
     const track = document.getElementById('carouselTrack');
     const dotsContainer = document.getElementById('carouselDots');
     const carousel = document.querySelector('.photo-carousel');
+    const carouselContainer = document.querySelector('.carousel-container');
 
     try {
       const response = await fetch(PHOTOS_JSON);
@@ -69,6 +133,9 @@
         track.innerHTML = '<div class="carousel-slide"><p style="text-align:center;">No photos yet. <a href="https://www.instagram.com/cxhrndz/" style="color:#E1306C;">Visit Instagram →</a></p></div>';
         return;
       }
+
+      // Clear loading skeleton
+      track.innerHTML = '';
 
       // Create slides with Instagram embeds
       photos.forEach((url, index) => {
@@ -114,6 +181,12 @@
         carousel.addEventListener('mouseleave', startAutoAdvance);
       }
 
+      // Touch/swipe support
+      if (carouselContainer) {
+        carouselContainer.addEventListener('touchstart', handleTouchStart, false);
+        carouselContainer.addEventListener('touchend', handleTouchEnd, false);
+      }
+
     } catch (error) {
       console.error('Error loading photos:', error);
       track.innerHTML = '<div class="carousel-slide"><p style="text-align:center;">Unable to load photos. <a href="https://www.instagram.com/cxhrndz/" style="color:#E1306C;">Visit Instagram →</a></p></div>';
@@ -126,6 +199,11 @@
     document.querySelectorAll('.carousel-dot').forEach((dot, i) => {
       dot.className = 'carousel-dot' + (i === currentSlide ? ' active' : '');
     });
+
+    // Restart auto-advance and progress bar
+    if (autoAdvanceInterval) {
+      startAutoAdvance();
+    }
   }
 
   function moveCarousel(direction) {
@@ -135,6 +213,7 @@
   }
 
   function goToSlide(index) {
+    if (index === currentSlide) return;
     currentSlide = index;
     updateCarousel();
   }

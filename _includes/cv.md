@@ -63,7 +63,7 @@ I am a Senior Research Scientist at [Meta Reality Labs](https://about.meta.com/r
 
 #### A Generic Non-Invasive Neuromotor Interface for Human-Computer Interaction
 P Kaifosh, TR Reardon, and **CTRL-Labs** · *[Nature](https://doi.org/10.1038/s41586-025-09255-w)* · 2025<br>
-📚 62
+📚 63
 
 #### Variational Encoding of Complex Dynamics
 **CX Hernández**\*, HK Wayment-Steele\*, MM Sultan\*, BE Husic, and VS Pande · *[Phys. Rev. E](https://doi.org/10.1103/PhysRevE.97.062412)* · 2018<br>
