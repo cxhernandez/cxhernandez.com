@@ -1086,106 +1086,6 @@ section#Publications {
     margin-right: 0;
   }
 
-  .dataTables_wrapper {
-    display: none !important; // Hide DataTables entirely, use carousel instead
-    width: 100% !important;
-    max-width: 100% !important;
-    overflow-x: auto;
-    box-sizing: border-box;
-
-    &::before,
-    &::after {
-      display: table;
-      content: '';
-      clear: both;
-    }
-
-    .dataTables_filter,
-    .dataTables_length {
-      display: inline-block;
-      vertical-align: middle;
-      margin-bottom: 15px;
-      margin-top: 0;
-      padding-top: 0;
-    }
-
-    .dataTables_length {
-      float: left;
-      margin-left: 0;
-      padding-left: 0;
-    }
-
-    .dataTables_filter {
-      float: right;
-      margin-right: 0;
-      padding-right: 0;
-      margin-top: 10px;
-
-      input {
-        width: 180px;
-        margin-left: 8px;
-      }
-    }
-  }
-
-  .dataTables_filter,
-  .dataTables_length,
-  .dataTables_info,
-  .dataTables_paginate {
-    max-width: 100%;
-    overflow: hidden;
-    box-sizing: border-box;
-  }
-
-  .dataTables_filter input,
-  .dataTables_length select {
-    height: 40px;
-    padding: 8px 16px;
-    font-size: 14px;
-    font-family: var(--font-body);
-    border: 2px solid rgba(10, 10, 10, 0.1);
-    border-radius: 8px;
-    background-color: var(--surface-raised);
-    box-sizing: border-box;
-    transition: all var(--duration-fast) ease;
-
-    &:focus {
-      outline: none;
-      border-color: var(--accent-primary);
-      box-shadow: 0 0 0 3px rgba(43, 75, 255, 0.1);
-    }
-  }
-
-  .dataTables_filter input {
-    &::placeholder {
-      color: rgba(10, 10, 10, 0.4);
-    }
-  }
-
-  .dataTables_length select {
-    width: auto;
-    min-width: 70px;
-    margin: 0 8px;
-    cursor: pointer;
-
-    &:hover {
-      border-color: rgba(10, 10, 10, 0.2);
-    }
-  }
-
-  .dataTables_filter label,
-  .dataTables_length label {
-    display: flex;
-    align-items: center;
-    font-size: 14px;
-    font-family: var(--font-display);
-    font-weight: 600;
-    color: var(--ink);
-    line-height: 40px;
-    margin: 0;
-    padding: 0;
-  }
-
   table td,
   table th {
     white-space: normal !important;
@@ -2089,21 +1989,7 @@ section#Publications {
   }
 
   section#Publications {
-    .dataTables_wrapper {
-      display: none !important; // Hide DataTable on mobile too
-      overflow-x: scroll;
-      -webkit-overflow-scrolling: touch;
-    }
-
-    table td,
-    table th {
-      max-width: 150px;
-      font-size: 14px;
-    }
-
-    .dataTables_filter input {
-      width: 140px;
-    }
+    // DataTable removed - using carousel only
   }
 
   div.span4.icon-box {

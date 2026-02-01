@@ -4,22 +4,6 @@ layout: main
 
 {% assign nav = site.nav | split: "|" %}
 
-{%- comment -%}
-Check if Publications section has content
-If publications.md is empty, we'll skip rendering the Publications section
-{%- endcomment -%}
-{% capture publications_content %}{% include publications.md %}{% endcapture %}
-{% assign publications_trimmed = publications_content | strip %}
-{% if publications_trimmed != "" %}
-    {% assign has_publications = true %}
-{% else %}
-    {% assign has_publications = false %}
-{% endif %}
-
 {% for item in nav %}
-    {% if item == "Publications" and has_publications == false %}
-        {%- comment -%}Skip Publications section - no content{%- endcomment -%}
-    {% else %}
-        {% include {{ item }}.html %}
-    {% endif %}
+    {% include {{ item }}.html %}
 {% endfor%}

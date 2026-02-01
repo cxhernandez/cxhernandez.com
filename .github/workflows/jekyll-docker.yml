@@ -39,10 +39,10 @@ jobs:
         id: fetch-publications
         shell: bash -el {0}
         run: |
-          # Generate markdown + JSON with figures in one command
+          # Generate JSON with figures (markdown output discarded)
           python ./_scripts/cli.py scrape-pubs \
             -a 39400763 \
-            -o ./_includes/publications.md \
+            -o /dev/null \
             --also-json ./static/files/publications.json \
             --cache-file ./static/files/figure_cache.json
 

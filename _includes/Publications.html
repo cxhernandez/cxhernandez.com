@@ -7,8 +7,6 @@
             <div class="blog-big-list">
                 <ul class="latest-posts span12">
 		    <li class="row-fluid">
-                    {% markdown publications.md %}
-
                     <!-- Publications Carousel -->
                     <div class="publications-carousel">
                       <div class="publications-carousel-container">
@@ -41,18 +39,6 @@
                     </div>
 
                     <script>
-                        $(document).ready(function(){
-                                $('.dataframe').DataTable({
-                                    pageLength: 5,
-                                    lengthChange: false,
-                                    dom: 'rtfip',
-                                    language: {
-                                        search: "",
-                                        searchPlaceholder: "Search"
-                                    }
-                                });
-                            });
-
                         // Publications Carousel Implementation
                         const publisherGradients = {
                           'Nature': 'linear-gradient(135deg, #0d47a1, #1976d2)',
@@ -226,63 +212,14 @@
 
                           } catch (error) {
                             console.error('Error loading publications JSON:', error);
-                            console.log('Falling back to DataTable parsing...');
-
-                            setTimeout(function() {
-                              fallbackParseDataTable();
-                            }, 500);
+                            // Display error message to user
+                            $('.publications-carousel-track').html(
+                              '<div style="padding: 40px; text-align: center; color: rgba(10, 10, 10, 0.6);">' +
+                              'Unable to load publications. Please try again later.' +
+                              '</div>'
+                            );
                           }
                         });
-
-                        // Fallback function for local development without pre-built JSON
-                        function fallbackParseDataTable() {
-                          const publications = [];
-
-                          const table = $('.dataframe').DataTable();
-                          const allRows = table.rows().nodes().toArray();
-
-                          console.log('Fallback: Total rows found:', allRows.length);
-
-                          allRows.forEach(function(row) {
-                            const cells = $(row).find('td');
-                            const titleHtml = cells.eq(1).html();
-                            const semanticScholarUrl = $(titleHtml).attr('href');
-                            const paperId = semanticScholarUrl ? semanticScholarUrl.match(/\/paper\/([a-f0-9]+)/)?.[1] : null;
-                            const journal = cells.eq(3).text();
-
-                            publications.push({
-                              paperId: paperId,
-                              title: $(titleHtml).text(),
-                              titleHtml: titleHtml,
-                              semanticScholarUrl: semanticScholarUrl,
-                              authors: cells.eq(2).text(),
-                              journal: journal,
-                              citations: parseInt(cells.eq(4).text()) || 0,
-                              year: parseInt(cells.eq(5).text()) || null,
-                              figureUrl: null,
-                              fallbackGradient: publisherGradients[journal] || publisherGradients.default
-                            });
-                          });
-
-                          console.log('Fallback: Total publications found:', publications.length);
-
-                          // Add cards
-                          publications.forEach((pub, index) => {
-                            const card = createPublicationCard(pub, index);
-                            $('.publications-carousel-track').append(card);
-                            applyFigureOrFallback(pub, index);
-                          });
-
-                          // Add dots - one per PAGE (not per card)
-                          const cardsPerView = getCardsPerView();
-                          const numPages = Math.ceil(publications.length / cardsPerView);
-                          for (let i = 0; i < numPages; i++) {
-                            const dot = `<div class="carousel-dot ${i === 0 ? 'active' : ''}" data-index="${i}"></div>`;
-                            $('.publications-carousel-dots').append(dot);
-                          }
-
-                          initCarouselNavigation(publications.length);
-                        }
                     </script>
                     </li>
             </ul>
