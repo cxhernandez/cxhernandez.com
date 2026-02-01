@@ -38,7 +38,13 @@ jobs:
       - name: Fetch publications from Semantic Scholar
         id: fetch-publications
         shell: bash -el {0}
-        run: python ./_scripts/cli.py scrape-pubs -a 39400763 -o ./_includes/publications.md
+        run: |
+          # Generate JSON with figures (markdown output discarded)
+          python ./_scripts/cli.py scrape-pubs \
+            -a 39400763 \
+            -o /dev/null \
+            --also-json ./static/files/publications.json \
+            --cache-file ./static/files/figure_cache.json
 
       - name: Update CV with citations and GitHub stats
         shell: bash -el {0}

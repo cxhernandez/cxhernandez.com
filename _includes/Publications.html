@@ -7,20 +7,38 @@
             <div class="blog-big-list">
                 <ul class="latest-posts span12">
 		    <li class="row-fluid">
-                    {% markdown publications.md %}
-                    <script>
-                        $(document).ready(function(){
-                                $('.dataframe').DataTable({
-                                    pageLength: 5,
-                                    lengthChange: false,
-                                    dom: 'rtfip',
-                                    language: {
-                                        search: "",
-                                        searchPlaceholder: "Search"
-                                    }
-                                });
-                            });
-                    </script>
+                    <!-- Publications Carousel -->
+                    <div class="publications-carousel">
+                      <div class="publications-carousel-container">
+                        <!-- Previous button -->
+                        <button class="publications-carousel-btn carousel-prev" aria-label="Previous publication">
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M15 18l-6-6 6-6"/>
+                          </svg>
+                        </button>
+
+                        <!-- Carousel track wrapper (handles overflow) -->
+                        <div class="publications-carousel-track-wrapper">
+                          <div class="publications-carousel-track">
+                            <!-- Cards will be generated dynamically by JavaScript -->
+                          </div>
+                        </div>
+
+                        <!-- Next button -->
+                        <button class="publications-carousel-btn carousel-next" aria-label="Next publication">
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M9 18l6-6-6-6"/>
+                          </svg>
+                        </button>
+                      </div>
+
+                      <!-- Pagination dots -->
+                      <div class="publications-carousel-dots">
+                        <!-- Dots will be generated dynamically by JavaScript -->
+                      </div>
+                    </div>
+
+                    <script src="/static/js/dist/publications-carousel.bundle.js"></script>
                     </li>
             </ul>
         </div>
