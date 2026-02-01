@@ -368,17 +368,63 @@ def title_case(text):
     return ' '.join(result)
 
 
-def clean_journal_name(venue, external_ids=None, doi=None):
-    """Clean and format venue/journal names."""
-    # Check external IDs for better venue detection
-    if external_ids:
-        # Check for arXiv
-        if 'ArXiv' in external_ids:
-            return 'arXiv'
+def is_preprint_doi(doi):
+    """Check if a DOI points to a preprint server rather than a published journal."""
+    if not doi:
+        return False
+    doi_lower = doi.lower()
+    # Common preprint server DOI patterns
+    preprint_patterns = [
+        'arxiv',
+        'biorxiv',
+        'medrxiv',
+        'chemrxiv',
+        '10.1101/',  # bioRxiv/medRxiv DOI prefix
+        '10.26434/',  # ChemRxiv DOI prefix
+    ]
+    return any(pattern in doi_lower for pattern in preprint_patterns)
 
-        # Check for Zenodo (software releases)
-        if doi and 'zenodo' in doi.lower():
-            return 'Zenodo'
+
+def get_journal_from_pubmed(pubmed_id):
+    """Look up journal name from PubMed ID using NCBI E-utilities API."""
+    if not REQUESTS_AVAILABLE:
+        return None
+    
+    try:
+        url = f"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi"
+        params = {
+            "db": "pubmed",
+            "id": pubmed_id,
+            "retmode": "json"
+        }
+        response = requests.get(url, params=params, timeout=10)
+        response.raise_for_status()
+        data = response.json()
+        
+        # Extract journal name from the result
+        result = data.get("result", {}).get(str(pubmed_id), {})
+        journal = result.get("fulljournalname") or result.get("source")
+        if journal:
+            return title_case(journal)
+    except Exception as e:
+        logger.debug(f"Failed to fetch journal from PubMed {pubmed_id}: {e}")
+    
+    return None
+
+
+def clean_journal_name(venue, external_ids=None, doi=None):
+    """Clean and format venue/journal names.
+    
+    Priority order:
+    1. If there's a published DOI (not preprint), use the venue from API
+    2. If there's a PubMed ID and venue is a preprint server, look up actual journal
+    3. If Zenodo DOI, return 'Zenodo'
+    4. If only preprint IDs exist (ArXiv, bioRxiv, etc.), return the preprint server name
+    5. Fall back to cleaned venue name
+    """
+    # Check for Zenodo first (software releases)
+    if doi and 'zenodo' in doi.lower():
+        return 'Zenodo'
 
     # Check DOI patterns for conference abstracts
     if doi:
@@ -386,11 +432,46 @@ def clean_journal_name(venue, external_ids=None, doi=None):
         if 'j.bpj.' in doi.lower() and len(doi.split('.')) >= 5:
             return 'Biophysical Journal (Abstract)'
 
+    # Check if we have a published DOI (not from a preprint server)
+    has_published_doi = doi and not is_preprint_doi(doi)
+    
+    # If we have a published DOI and a venue, use the venue (it's the real journal)
+    if has_published_doi and venue:
+        venue_cleaned = venue.strip()
+        # Don't return preprint venue names if we have a published DOI
+        if venue_cleaned.lower() not in ['arxiv', 'biorxiv', 'medrxiv', 'chemrxiv']:
+            return title_case(venue_cleaned)
+    
+    # Check if we have a PubMed ID - indicates the paper was published
+    # Even if the DOI is a preprint DOI, having a PubMed ID means it was published
+    if external_ids and 'PubMed' in external_ids:
+        pubmed_id = external_ids['PubMed']
+        # If venue is a preprint server name, look up the real journal from PubMed
+        venue_lower = (venue or '').lower()
+        if venue_lower in ['arxiv', 'biorxiv', 'medrxiv', 'chemrxiv', '']:
+            journal = get_journal_from_pubmed(pubmed_id)
+            if journal:
+                return journal
+    
+    # If we have external IDs, check for preprint IDs
+    if external_ids:
+        has_pubmed = 'PubMed' in external_ids
+        has_arxiv = 'ArXiv' in external_ids
+        venue_is_empty = not venue or not venue.strip()
+        
+        # Return preprint server name if:
+        # - We have an ArXiv ID AND no PubMed ID AND (no venue OR venue is a preprint server)
+        # - This handles cases like institutional repository DOIs that aren't journals
+        if has_arxiv and not has_pubmed:
+            venue_lower = (venue or '').lower().strip()
+            if venue_is_empty or venue_lower in ['arxiv', 'biorxiv', 'medrxiv', 'chemrxiv']:
+                return 'arXiv'
+
     if not venue:
         return ""
 
-    # Special case for arXiv in venue name
-    if venue.lower().startswith('arxiv'):
+    # Special case for arXiv in venue name (only if no published DOI)
+    if venue.lower().startswith('arxiv') and not has_published_doi:
         return 'arXiv'
 
     # Apply title case
