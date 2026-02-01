@@ -1458,10 +1458,10 @@ section#Publications {
       align-items: center;
       gap: 4px;
       font-weight: 600;
-      color: var(--accent-primary);
+      color: var(--ink);
 
       &::before {
-        content: '• ⭐';
+        content: '📚';
         margin-right: 4px;
       }
     }
