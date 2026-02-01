@@ -29,6 +29,53 @@ const PUBLISHER_GRADIENTS: PublisherGradients = {
   'default': 'linear-gradient(135deg, #455a64, #607d8b)'
 };
 
+const JOURNAL_ABBREVIATIONS: { [key: string]: string } = {
+  'Journal of Open Source Software': 'JOSS',
+  'Accounts of Chemical Research': 'Acc. Chem. Res.',
+  'Journal of Chemical Theory and Computation': 'J. Chem. Theory Comput.',
+  'Journal of Physical Chemistry': 'J. Phys. Chem.',
+  'Journal of Chemical Physics': 'J. Chem. Phys.',
+  'Proceedings of the National Academy of Sciences': 'PNAS',
+  'Journal of the American Chemical Society': 'JACS',
+  'Nature Communications': 'Nat. Commun.',
+  'Nature Methods': 'Nat. Methods',
+  'Nature Chemistry': 'Nat. Chem.',
+  'Physical Review Letters': 'Phys. Rev. Lett.',
+};
+
+/**
+ * Abbreviate journal name if it has more than 3 words
+ */
+function abbreviateJournal(journalName: string): string {
+  // Check if we have a known abbreviation
+  if (JOURNAL_ABBREVIATIONS[journalName]) {
+    return JOURNAL_ABBREVIATIONS[journalName];
+  }
+
+  // Count words in journal name
+  const words = journalName.trim().split(/\s+/);
+
+  // If 3 or fewer words, keep as is
+  if (words.length <= 3) {
+    return journalName;
+  }
+
+  // For unknown journals with >3 words, create abbreviation from first letters
+  const abbreviation = words
+    .map(word => {
+      // Skip common words like "of", "the", "and"
+      const skipWords = ['of', 'the', 'and', 'in', 'on', 'for', 'with'];
+      if (skipWords.includes(word.toLowerCase())) {
+        return '';
+      }
+      return word[0].toUpperCase();
+    })
+    .filter(letter => letter)
+    .join('');
+
+  return abbreviation || journalName; // Fallback to full name if abbreviation fails
+}
+
 /**
  * Apply figure or fallback gradient to publication card
  */
@@ -66,9 +113,9 @@ function createPublicationCard(pub: Publication, index: number): string {
         <div class="publication-card-title">${title}</div>
         <div class="publication-card-authors">${pub.authors}</div>
         <div class="publication-card-meta">
-          <span class="publication-card-journal">${pub.journal}</span>
-          <span class="publication-card-year">${pub.year || ''}</span>
-          <span class="publication-card-citations">${(pub.citations || 0).toLocaleString()} citations</span>
+          <div class="publication-card-journal">${abbreviateJournal(pub.journal)}</div>
+          <div class="publication-card-year">${pub.year || ''}</div>
+          <div class="publication-card-citations">${(pub.citations || 0).toLocaleString()} citations</div>
         </div>
       </div>
     </a>
