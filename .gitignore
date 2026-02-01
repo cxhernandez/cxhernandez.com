@@ -19,3 +19,7 @@ yarn-error.log
 # Build artifacts
 static/js/dist/
 .grepai/
+
+# Generated data caches
+static/files/figure_cache.json
+static/files/publication-figures/

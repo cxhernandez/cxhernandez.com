@@ -490,7 +490,7 @@ def get_author_publications(author_id, max_retries=3, backoff_factor=2):
     params = {
         "fields": "authorId,name,papers.title,papers.paperId,papers.year,"
                  "papers.citationCount,papers.authors,papers.venue,"
-                 "papers.externalIds"
+                 "papers.externalIds,papers.openAccessPdf"
     }
 
     for attempt in range(max_retries):
@@ -975,29 +975,208 @@ def scrape_pubmed_figure(pubmed_id, timeout=10):
         return None
 
 
-def fetch_paper_figure(pmcid=None, pubmed_id=None, timeout=10):
-    """Fetch first figure URL for a paper from Europe PMC or PubMed.
+def fetch_figure_from_semantic_scholar(paper_id, timeout=10):
+    """Fetch figure/thumbnail URL from Semantic Scholar API.
 
-    Tries multiple strategies:
-    1. If PMC ID provided, fetch directly from Europe PMC
-    2. If only PubMed ID provided, lookup PMC ID via NCBI elink, then fetch from Europe PMC
-    3. If Europe PMC fails, scrape figure URL from PubMed page (uses NCBI CDN)
+    Semantic Scholar provides preview images for many papers on their website.
+    This function attempts to extract those image URLs from their API.
 
     Args:
+        paper_id: Semantic Scholar paper ID (e.g., 'e897a9ce6f194f0e420f58c1e7fdb565ee9b98b2')
+        timeout: Request timeout in seconds
+
+    Returns:
+        Figure URL string if found, None otherwise
+    """
+    if not paper_id:
+        return None
+
+    try:
+        # Query Semantic Scholar API for paper details
+        url = f"https://api.semanticscholar.org/graph/v1/paper/{paper_id}"
+        params = {
+            "fields": "openAccessPdf,tldr"
+        }
+
+        response = requests.get(url, params=params, timeout=timeout)
+
+        if response.status_code != 200:
+            logger.debug(f"Failed to fetch Semantic Scholar data for {paper_id}: HTTP {response.status_code}")
+            return None
+
+        data = response.json()
+
+        # Check for openAccessPdf which may contain a URL to the PDF
+        # We can potentially extract the first page as an image
+        open_access_pdf = data.get('openAccessPdf')
+        if open_access_pdf and open_access_pdf.get('url'):
+            pdf_url = open_access_pdf['url']
+            logger.debug(f"Found open access PDF for {paper_id}: {pdf_url}")
+            # Note: We could potentially convert first page of PDF to image here
+            # For now, we'll try to scrape the Semantic Scholar page for preview images
+
+        # Try to scrape the Semantic Scholar paper page for preview images
+        paper_url = f"https://www.semanticscholar.org/paper/{paper_id}"
+        page_response = requests.get(paper_url, timeout=timeout, headers={
+            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36'
+        })
+
+        if page_response.status_code == 200:
+            # Look for og:image meta tag (preview image)
+            import re
+            og_image_match = re.search(
+                r'<meta\s+property="og:image"\s+content="([^"]+)"',
+                page_response.text
+            )
+
+            if og_image_match:
+                image_url = og_image_match.group(1)
+                # Filter out generic Semantic Scholar logo/placeholder images
+                if 'semantic-scholar-og.png' not in image_url and image_url.startswith('http'):
+                    logger.info(f"Found figure from Semantic Scholar og:image for {paper_id}")
+                    return image_url
+
+            # Look for figure thumbnails with multiple patterns
+            # Pattern 1: Standard figure/thumb URLs
+            figure_patterns = [
+                r'https://[^"\']+\.semanticscholar\.org/[^"\']+/(?:figure|thumb)/[^"\']+\.(?:jpg|png|gif|webp)',
+                # Pattern 2: ai2-s2-public URLs (common for figures)
+                r'https://ai2-s2-public\.s3\.amazonaws\.com/figures/[^"\']+\.(?:jpg|png|gif|webp)',
+                # Pattern 3: d3i71xaburhd42 cloudfront URLs (Semantic Scholar CDN)
+                r'https://d3i71xaburhd42\.cloudfront\.net/[^"\']+\.(?:jpg|png|gif|webp)',
+            ]
+
+            for pattern in figure_patterns:
+                figure_matches = re.findall(pattern, page_response.text)
+                if figure_matches:
+                    logger.info(f"Found figure from Semantic Scholar (pattern match) for {paper_id}: {figure_matches[0][:100]}")
+                    return figure_matches[0]
+
+        logger.debug(f"No figure found on Semantic Scholar for {paper_id}")
+        return None
+
+    except requests.RequestException as e:
+        logger.debug(f"Failed to fetch figure from Semantic Scholar for {paper_id}: {e}")
+        return None
+    except Exception as e:
+        logger.debug(f"Error fetching figure from Semantic Scholar for {paper_id}: {e}")
+        return None
+
+
+def extract_figure_from_pdf(pdf_url, paper_id, output_dir="static/files/publication-figures", timeout=30):
+    """Extract first page from PDF as an image and save locally.
+
+    Args:
+        pdf_url: URL to PDF file
+        paper_id: Semantic Scholar paper ID (used for filename)
+        output_dir: Directory to save extracted figures
+        timeout: Download timeout in seconds
+
+    Returns:
+        Relative URL path to saved figure, or None if extraction fails
+    """
+    try:
+        from pdf2image import convert_from_bytes
+        from PIL import Image
+        from pathlib import Path
+        import tempfile
+
+        # Create output directory if it doesn't exist
+        output_path = Path(output_dir)
+        output_path.mkdir(parents=True, exist_ok=True)
+
+        # Download PDF
+        logger.info(f"Downloading PDF from {pdf_url[:60]}...")
+        response = requests.get(pdf_url, timeout=timeout, stream=True)
+        response.raise_for_status()
+
+        # Convert first page of PDF to image
+        logger.debug("Converting first page of PDF to image...")
+        images = convert_from_bytes(
+            response.content,
+            first_page=1,
+            last_page=1,
+            dpi=150,  # Good balance between quality and file size
+            fmt='jpeg'
+        )
+
+        if not images:
+            logger.debug("No pages found in PDF")
+            return None
+
+        # Get the first page image
+        img = images[0]
+
+        # Crop to focus on the content (remove excessive white space)
+        # This helps emphasize the paper title and first figure
+        width, height = img.size
+        # Crop bottom 20% to remove footer/page numbers
+        crop_height = int(height * 0.8)
+        img = img.crop((0, 0, width, crop_height))
+
+        # Resize if too large (max width 800px to keep file size reasonable)
+        max_width = 800
+        if img.width > max_width:
+            ratio = max_width / img.width
+            new_size = (max_width, int(img.height * ratio))
+            img = img.resize(new_size, Image.Resampling.LANCZOS)
+
+        # Save as JPEG
+        output_filename = f"{paper_id[:16]}.jpg"
+        output_file = output_path / output_filename
+
+        img.save(output_file, "JPEG", quality=85, optimize=True)
+        logger.info(f"Extracted first page from PDF: {output_file}")
+
+        # Return relative URL path
+        return f"/{output_dir}/{output_filename}"
+
+    except ImportError:
+        logger.warning("pdf2image not installed. Cannot extract figures from PDFs. Install with: conda install -c conda-forge pdf2image poppler")
+        return None
+    except requests.RequestException as e:
+        logger.info(f"Failed to download PDF from {pdf_url[:80]}: {e}")
+        return None
+    except Exception as e:
+        logger.info(f"Error extracting figure from PDF {pdf_url[:80]}: {e}")
+        return None
+
+
+def fetch_paper_figure(paper_id=None, pmcid=None, pubmed_id=None, open_access_pdf_url=None, timeout=10):
+    """Fetch first figure URL for a paper from multiple sources.
+
+    Tries PDF extraction first for consistent visual style, then falls back to other sources:
+    1. If open access PDF available, extract first page from PDF (preferred for consistency)
+    2. If no PDF, try Europe PMC via PMC ID
+    3. If no PMC ID, try to discover PMC ID from PubMed ID
+    4. If Europe PMC fails, scrape figure URL from PubMed page (uses NCBI CDN)
+
+    Args:
+        paper_id: Semantic Scholar paper ID (e.g., 'e897a9ce6f194f0e420f58c1e7fdb565ee9b98b2')
         pmcid: PubMed Central ID (e.g., 'PMC4567604' or '4567604')
         pubmed_id: PubMed ID (e.g., '26488642')
+        open_access_pdf_url: URL to open access PDF (from Semantic Scholar API)
         timeout: Request timeout in seconds
 
     Returns:
         Figure URL string if found and valid, None otherwise
     """
-    # Strategy 1: Try with PMC ID directly via Europe PMC
+    # Strategy 1: Extract figure from open access PDF (preferred for consistent visual style)
+    if open_access_pdf_url and paper_id:
+        logger.debug(f"Trying PDF extraction for {paper_id}...")
+        # Use longer timeout for PDF downloads (60s instead of 10s)
+        figure_url = extract_figure_from_pdf(open_access_pdf_url, paper_id, timeout=60)
+        if figure_url:
+            logger.info(f"Extracted figure from PDF for {paper_id}")
+            return figure_url
+
+    # Strategy 2: Try with PMC ID directly via Europe PMC
     if pmcid:
         figure_url = fetch_figure_from_pmc(pmcid, timeout)
         if figure_url:
             return figure_url
 
-    # Strategy 2: Try to find PMC ID from PubMed ID, then fetch from Europe PMC
+    # Strategy 3: Try to find PMC ID from PubMed ID, then fetch from Europe PMC
     discovered_pmcid = None
     if pubmed_id and not pmcid:
         discovered_pmcid = lookup_pmc_from_pubmed(pubmed_id, timeout)
@@ -1007,7 +1186,7 @@ def fetch_paper_figure(pmcid=None, pubmed_id=None, timeout=10):
             if figure_url:
                 return figure_url
 
-    # Strategy 3: Scrape PubMed page for CDN figure URL (works for non-open-access PMC articles)
+    # Strategy 4: Scrape PubMed page for CDN figure URL (works for non-open-access PMC articles)
     if pubmed_id:
         logger.debug(f"Trying PubMed page scrape for {pubmed_id}...")
         figure_url = scrape_pubmed_figure(pubmed_id, timeout)
@@ -1185,16 +1364,61 @@ def get_publication_list_extended(author_data, bold_author_name=None, with_figur
         pmcid = external_ids.get('PubMedCentral') if external_ids else None
         pubmed_id = external_ids.get('PubMed') if external_ids else None
 
+        # Extract open access PDF URL if available (but prefer constructing our own)
+        open_access_pdf = paper.get('openAccessPdf')
+        api_pdf_url = None
+        if open_access_pdf and isinstance(open_access_pdf, dict):
+            api_pdf_url = open_access_pdf.get('url')
+            # Filter out empty strings
+            if not api_pdf_url or api_pdf_url.strip() == '':
+                api_pdf_url = None
+
+        # Try to construct a PDF URL from external IDs (preferred for reliability)
+        open_access_pdf_url = None
+        if external_ids:
+            # Try ArXiv first
+            arxiv_id = external_ids.get('ArXiv')
+            if arxiv_id:
+                open_access_pdf_url = f"https://arxiv.org/pdf/{arxiv_id}.pdf"
+                logger.debug(f"Constructed ArXiv PDF URL: {open_access_pdf_url}")
+
+            # Try DOI for common open access publishers
+            elif external_ids.get('DOI'):
+                doi = external_ids['DOI']
+                # Biorxiv/medRxiv preprints (use DOI prefix 10.1101)
+                if doi.startswith('10.1101/'):
+                    open_access_pdf_url = f"https://www.biorxiv.org/content/{doi}v1.full.pdf"
+                    logger.debug(f"Constructed Biorxiv/medRxiv PDF URL: {open_access_pdf_url}")
+                # JOSS papers (case-insensitive DOI handling)
+                elif 'joss' in doi.lower():
+                    # JOSS DOIs use format 10.21105/JOSS.00188
+                    # PDF URLs use format: https://www.theoj.org/joss-papers/joss.00188/10.21105.joss.00188.pdf
+                    # Note: DOI has / but PDF URL uses . between 10.21105 and joss
+                    doi_lower = doi.lower().replace('/', '.')  # 10.21105/joss.00188 -> 10.21105.joss.00188
+                    paper_number = doi_lower.split('.')[-1]  # 00188
+                    open_access_pdf_url = f"https://www.theoj.org/joss-papers/joss.{paper_number}/{doi_lower}.pdf"
+                    logger.debug(f"Constructed JOSS PDF URL: {open_access_pdf_url}")
+
+        # Fall back to API-provided URL if we couldn't construct one
+        if not open_access_pdf_url and api_pdf_url:
+            open_access_pdf_url = api_pdf_url
+            logger.debug(f"Using API-provided PDF URL: {open_access_pdf_url}")
+
         if with_figures:
-            cache_key = pmcid or pubmed_id or paper_id
+            cache_key = paper_id or pmcid or pubmed_id
 
             if cache_key in figure_cache:
                 figure_url = figure_cache[cache_key]
                 logger.debug(f"Using cached figure for {cache_key}")
-            elif pmcid or pubmed_id:
-                id_str = pmcid or f"PubMed:{pubmed_id}"
-                logger.info(f"Fetching figure for {id_str}...")
-                figure_url = fetch_paper_figure(pmcid=pmcid, pubmed_id=pubmed_id)
+            else:
+                # Always try to fetch (Semantic Scholar will be tried first, then PMC/PubMed, then PDF)
+                logger.info(f"Fetching figure for paper {paper_id[:8]}...")
+                figure_url = fetch_paper_figure(
+                    paper_id=paper_id,
+                    pmcid=pmcid,
+                    pubmed_id=pubmed_id,
+                    open_access_pdf_url=open_access_pdf_url
+                )
                 figure_cache[cache_key] = figure_url
                 # Small delay to avoid rate limiting
                 time.sleep(0.5)
@@ -1264,7 +1488,7 @@ def cmd_scrape_pubs(args):
     output_path.parent.mkdir(parents=True, exist_ok=True)
 
     try:
-        # Fetch publications from Semantic Scholar
+        # Fetch publications from Semantic Scholar (fetch once, use for both outputs)
         author_data = get_author_publications(args.author)
 
         # Extract author name from the data
@@ -1274,7 +1498,13 @@ def cmd_scrape_pubs(args):
         # Check if we need extended JSON output
         with_figures = getattr(args, 'with_figures', False)
         cache_file = getattr(args, 'cache_file', None)
+        also_json = getattr(args, 'also_json', None)
 
+        # If --also-json is specified, it implies --with-figures
+        if also_json:
+            with_figures = True
+
+        # Generate primary output
         if args.format == 'json' and with_figures:
             # Use extended JSON with figure fetching
             publications = get_publication_list_extended(
@@ -1296,6 +1526,25 @@ def cmd_scrape_pubs(args):
                 file.write(output_formats[args.format](table))
 
         logger.info(f"Successfully wrote publications to {output_path}")
+
+        # Generate additional JSON with figures if --also-json is specified
+        if also_json:
+            json_path = Path(also_json)
+            json_path.parent.mkdir(parents=True, exist_ok=True)
+
+            # Generate extended JSON with figures
+            publications = get_publication_list_extended(
+                author_data,
+                bold_author_name=author_name,
+                with_figures=True,
+                cache_file=cache_file
+            )
+            logger.info(f"Writing {len(publications)} publications (with figures) to {json_path}")
+            with codecs.open(json_path, "w", "utf-8") as file:
+                file.write(get_json_extended(publications))
+
+            logger.info(f"Successfully wrote JSON with figures to {json_path}")
+
     except Exception as e:
         logger.error(f"Failed to generate publication list: {e}")
         raise
@@ -1915,6 +2164,12 @@ def main():
         '--cache-file',
         type=str,
         help='Cache file for figure URLs (JSON). Speeds up subsequent runs.'
+    )
+    scrape_parser.add_argument(
+        '--also-json',
+        type=str,
+        metavar='PATH',
+        help='Also generate JSON with figures at this path (implies --with-figures)'
     )
 
     # Update CV command

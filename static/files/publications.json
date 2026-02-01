@@ -8,7 +8,7 @@
     "year": 2025,
     "citations": 65,
     "semanticScholarUrl": "https://www.semanticscholar.org/paper/7c8adc3e9f660ea1675c03ab06403b8410abdc77",
-    "figureUrl": "https://europepmc.org/articles/PMC12443603/bin/41586_2025_9255_Fig1_HTML.jpg",
+    "figureUrl": "/static/files/publication-figures/7c8adc3e9f660ea1.jpg",
     "fallbackGradient": "linear-gradient(135deg, #0d47a1, #1976d2)",
     "externalIds": {
       "PubMedCentral": "12443603",
@@ -28,7 +28,7 @@
     "year": 2018,
     "citations": 36,
     "semanticScholarUrl": "https://www.semanticscholar.org/paper/e897a9ce6f194f0e420f58c1e7fdb565ee9b98b2",
-    "figureUrl": null,
+    "figureUrl": "/static/files/publication-figures/e897a9ce6f194f0e.jpg",
     "fallbackGradient": "linear-gradient(135deg, #b31b1b, #c62828)",
     "externalIds": {
       "ArXiv": "1802.10548",
@@ -48,7 +48,7 @@
     "year": 2018,
     "citations": 4,
     "semanticScholarUrl": "https://www.semanticscholar.org/paper/a8fee9b612f5da5ff94cb7126bbea8b89bb730e3",
-    "figureUrl": null,
+    "figureUrl": "/static/files/publication-figures/a8fee9b612f5da5f.jpg",
     "fallbackGradient": "linear-gradient(135deg, #ff6f00, #ff8f00)",
     "externalIds": {
       "MAG": "2883548523",
@@ -67,7 +67,7 @@
     "year": 2017,
     "citations": 149,
     "semanticScholarUrl": "https://www.semanticscholar.org/paper/88a277bbc18ad0eed29ea02bef0219b1c1a111ab",
-    "figureUrl": "https://cdn.ncbi.nlm.nih.gov/pmc/blobs/050e/7398762/8dd5fec5a7e2/nihms-1600101-f0001.jpg",
+    "figureUrl": "/static/files/publication-figures/88a277bbc18ad0ee.jpg",
     "fallbackGradient": "linear-gradient(135deg, #455a64, #607d8b)",
     "externalIds": {
       "MAG": "2768480811",
@@ -88,7 +88,7 @@
     "year": 2017,
     "citations": 16,
     "semanticScholarUrl": "https://www.semanticscholar.org/paper/2af2418514316bb1ac4a84cb206f54d84c754c9a",
-    "figureUrl": null,
+    "figureUrl": "/static/files/publication-figures/2af2418514316bb1.jpg",
     "fallbackGradient": "linear-gradient(135deg, #1565c0, #1976d2)",
     "externalIds": {
       "DBLP": "journals/jossw/HernandezP17",
@@ -108,7 +108,7 @@
     "year": 2017,
     "citations": 12,
     "semanticScholarUrl": "https://www.semanticscholar.org/paper/086e49dcb9116240d4b77e1f366dd6104dfa0402",
-    "figureUrl": null,
+    "figureUrl": "/static/files/publication-figures/086e49dcb9116240.jpg",
     "fallbackGradient": "linear-gradient(135deg, #1565c0, #1976d2)",
     "externalIds": {
       "MAG": "2604232410",
@@ -128,7 +128,7 @@
     "year": 2017,
     "citations": 10,
     "semanticScholarUrl": "https://www.semanticscholar.org/paper/6263c9498dc41e9f466478bda26996b3f3bbb70e",
-    "figureUrl": null,
+    "figureUrl": "/static/files/publication-figures/6263c9498dc41e9f.jpg",
     "fallbackGradient": "linear-gradient(135deg, #ff6f00, #ff8f00)",
     "externalIds": {
       "MAG": "2951348785",
@@ -147,7 +147,7 @@
     "year": 2016,
     "citations": 249,
     "semanticScholarUrl": "https://www.semanticscholar.org/paper/d5a2ae8f201dd9f48062ad001f14514000acf359",
-    "figureUrl": "https://cdn.ncbi.nlm.nih.gov/pmc/blobs/5348/5232355/6e3fbfca9517/gr1.jpg",
+    "figureUrl": "/static/files/publication-figures/d5a2ae8f201dd9f4.jpg",
     "fallbackGradient": "linear-gradient(135deg, #455a64, #607d8b)",
     "externalIds": {
       "MAG": "2570547882",
@@ -155,7 +155,7 @@
       "CorpusId": 33102087,
       "PubMed": "28076801"
     },
-    "isOpenAccess": null,
+    "isOpenAccess": false,
     "index": 8
   },
   {
@@ -167,7 +167,7 @@
     "year": 2016,
     "citations": 38,
     "semanticScholarUrl": "https://www.semanticscholar.org/paper/e514fcada90a6f580ea3d44bebe199fc66035eb4",
-    "figureUrl": null,
+    "figureUrl": "/static/files/publication-figures/e514fcada90a6f58.jpg",
     "fallbackGradient": "linear-gradient(135deg, #1565c0, #1976d2)",
     "externalIds": {
       "MAG": "2510365122",
@@ -187,7 +187,7 @@
     "year": 2015,
     "citations": 254,
     "semanticScholarUrl": "https://www.semanticscholar.org/paper/fa25e6dbbf460affab05c322decf7ef5fc1142f7",
-    "figureUrl": "https://europepmc.org/articles/PMC4333613/bin/ar-2014-002999_0001.gif",
+    "figureUrl": "https://europepmc.org/articles/PMC4333613/bin/ar-2014-002999_0001.jpg",
     "fallbackGradient": "linear-gradient(135deg, #2e7d32, #388e3c)",
     "externalIds": {
       "PubMedCentral": "4333613",
@@ -208,7 +208,7 @@
     "year": 2014,
     "citations": 2072,
     "semanticScholarUrl": "https://www.semanticscholar.org/paper/a56eae356b1acdc7884cd0a4d6c915d9a5351ff4",
-    "figureUrl": "https://cdn.ncbi.nlm.nih.gov/pmc/blobs/cebc/4623899/8bacc7067676/gr1.jpg",
+    "figureUrl": "/static/files/publication-figures/a56eae356b1acdc7.jpg",
     "fallbackGradient": "linear-gradient(135deg, #455a64, #607d8b)",
     "externalIds": {
       "MAG": "2147988069",
@@ -216,7 +216,7 @@
       "CorpusId": 41903876,
       "PubMed": "26488642"
     },
-    "isOpenAccess": null,
+    "isOpenAccess": false,
     "index": 11
   },
   {
@@ -228,7 +228,7 @@
     "year": 2011,
     "citations": 2,
     "semanticScholarUrl": "https://www.semanticscholar.org/paper/2097c9f269038d4f2662aa38e63bcce436b35b1b",
-    "figureUrl": null,
+    "figureUrl": "/static/files/publication-figures/2097c9f269038d4f.jpg",
     "fallbackGradient": "linear-gradient(135deg, #b31b1b, #c62828)",
     "externalIds": {
       "MAG": "1546678965",
