@@ -584,7 +584,7 @@ def get_table(author_data, bold_author_name=None):
             # Bold the specified author name if provided
             if bold_author_name:
                 formatted_names = [
-                    f'**{name}**' if any(part in bold_author_name.split() for part in name.split()) else name
+                    f'<strong>{name}</strong>' if any(part in bold_author_name.split() for part in name.split()) else name
                     for name in formatted_names
                 ]
 
@@ -1075,7 +1075,7 @@ def get_publication_list_extended(author_data, bold_author_name=None, with_figur
 
             if bold_author_name:
                 formatted_names = [
-                    f'**{name}**' if any(part in bold_author_name.split() for part in name.split()) else name
+                    f'<strong>{name}</strong>' if any(part in bold_author_name.split() for part in name.split()) else name
                     for name in formatted_names
                 ]
 
@@ -1148,8 +1148,8 @@ def get_publication_list_extended(author_data, bold_author_name=None, with_figur
             'isOpenAccess': is_open_access,
         })
 
-    # Sort by citation count (descending), then year (descending)
-    publications.sort(key=lambda x: (-x['citations'], -(x['year'] or 0)))
+    # Sort by year (descending), then citations (descending)
+    publications.sort(key=lambda x: (-(x['year'] or 0), -x['citations']))
 
     # Add index
     for i, pub in enumerate(publications, 1):

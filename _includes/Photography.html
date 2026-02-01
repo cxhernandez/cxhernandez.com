@@ -196,7 +196,8 @@
   function updateCarousel() {
     const track = document.getElementById('carouselTrack');
     track.style.transform = `translateX(-${currentSlide * 100}%)`;
-    document.querySelectorAll('.carousel-dot').forEach((dot, i) => {
+    // Scope to Photography carousel dots only (within #carouselDots)
+    document.querySelectorAll('#carouselDots .carousel-dot').forEach((dot, i) => {
       dot.className = 'carousel-dot' + (i === currentSlide ? ' active' : '');
     });
 

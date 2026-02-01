@@ -19,9 +19,11 @@
                           </svg>
                         </button>
 
-                        <!-- Carousel track -->
-                        <div class="publications-carousel-track">
-                          <!-- Cards will be generated dynamically by JavaScript -->
+                        <!-- Carousel track wrapper (handles overflow) -->
+                        <div class="publications-carousel-track-wrapper">
+                          <div class="publications-carousel-track">
+                            <!-- Cards will be generated dynamically by JavaScript -->
+                          </div>
                         </div>
 
                         <!-- Next button -->
@@ -38,21 +40,20 @@
                       </div>
                     </div>
 
-                                            <script>
-                            $(document).ready(function(){
-                                    $('.dataframe').DataTable({
-                                        pageLength: 5,
-                                        lengthChange: false,
-                                        dom: 'rtfip',
-                                        language: {
-                                            search: "",
-                                            searchPlaceholder: "Search"
-                                        }
-                                    });
+                    <script>
+                        $(document).ready(function(){
+                                $('.dataframe').DataTable({
+                                    pageLength: 5,
+                                    lengthChange: false,
+                                    dom: 'rtfip',
+                                    language: {
+                                        search: "",
+                                        searchPlaceholder: "Search"
+                                    }
                                 });
+                            });
 
                         // Publications Carousel Implementation
-                        // Publisher-specific gradients for fallback (kept for local testing without JSON)
                         const publisherGradients = {
                           'Nature': 'linear-gradient(135deg, #0d47a1, #1976d2)',
                           'Biorxiv': 'linear-gradient(135deg, #ff6f00, #ff8f00)',
@@ -68,31 +69,30 @@
                           $figure.removeClass('loading');
 
                           if (pub.figureUrl) {
-                            // Try to load the pre-fetched figure
                             const img = new Image();
                             img.onload = function() {
-                              $figure.css('background-image', `url(${pub.figureUrl})`);
+                              $figure.html(`<img src="${pub.figureUrl}" alt="${pub.title || 'Publication figure'}">`);
                             };
                             img.onerror = function() {
-                              // Fallback to gradient if image fails to load
                               const gradient = pub.fallbackGradient || publisherGradients[pub.journal] || publisherGradients.default;
                               $figure.addClass('fallback').css('background', gradient);
                             };
                             img.src = pub.figureUrl;
                           } else {
-                            // No figure available, use fallback gradient
                             const gradient = pub.fallbackGradient || publisherGradients[pub.journal] || publisherGradients.default;
                             $figure.addClass('fallback').css('background', gradient);
                           }
                         }
 
-                        // Create publication card HTML
+                        // Create publication card HTML (clickable anchor)
                         function createPublicationCard(pub, index) {
+                          const url = pub.semanticScholarUrl || '#';
+                          const title = pub.title || pub.titleHtml.replace(/<[^>]*>/g, '');
                           return `
-                            <div class="publication-card" data-card-index="${index}">
+                            <a href="${url}" class="publication-card" data-card-index="${index}" target="_blank" rel="noopener noreferrer">
                               <div class="publication-card-figure loading" data-figure-container="${index}"></div>
                               <div class="publication-card-content">
-                                <div class="publication-card-title">${pub.titleHtml}</div>
+                                <div class="publication-card-title">${title}</div>
                                 <div class="publication-card-authors">${pub.authors}</div>
                                 <div class="publication-card-meta">
                                   <span class="publication-card-journal">${pub.journal}</span>
@@ -100,40 +100,37 @@
                                   <span class="publication-card-citations">${(pub.citations || 0).toLocaleString()} citations</span>
                                 </div>
                               </div>
-                            </div>
+                            </a>
                           `;
+                        }
+
+                        // Get cards per view based on viewport (matches CSS breakpoints)
+                        function getCardsPerView() {
+                          const width = window.innerWidth;
+                          if (width <= 600) return 1;
+                          if (width <= 900) return 2;
+                          return 3;
                         }
 
                         // Initialize carousel navigation
                         function initCarouselNavigation(totalCards) {
-                          const isMobile = window.innerWidth <= 600;
-                          const cardsPerView = isMobile ? 1 : 3;
+                          const cardsPerView = getCardsPerView();
                           let currentIndex = 0;
                           const maxIndex = Math.ceil(totalCards / cardsPerView) - 1;
 
                           function updateCarousel() {
-                            let offset;
-                            if (isMobile) {
-                              offset = -currentIndex * 100;
-                            } else {
-                              const cardWidth = 33.333;
-                              const gapPercentage = (24 / $('.publications-carousel-container').width()) * 100;
-                              offset = -currentIndex * cardsPerView * (cardWidth + gapPercentage);
-                            }
+                            // Each card takes (cardWidth + gap) space in the track
+                            // Slide by cardsPerView * (cardWidth + gap) to align next page
+                            const cardWidth = 240;
+                            const gap = 16;
+                            const slideWidth = cardsPerView * (cardWidth + gap);
+                            const offset = -currentIndex * slideWidth;
 
-                            $('.publications-carousel-track').css('transform', `translateX(${offset}%)`);
+                            $('.publications-carousel-track').css('transform', `translateX(${offset}px)`);
 
-                            $('.carousel-dot').removeClass('active');
-                            if (isMobile) {
-                              $(`.carousel-dot[data-index="${currentIndex}"]`).addClass('active');
-                            } else {
-                              for (let i = 0; i < cardsPerView; i++) {
-                                const dotIndex = currentIndex * cardsPerView + i;
-                                if (dotIndex < totalCards) {
-                                  $(`.carousel-dot[data-index="${dotIndex}"]`).addClass('active');
-                                }
-                              }
-                            }
+                            // Scope to Publications carousel dots only
+                            $('.publications-carousel-dots .carousel-dot').removeClass('active');
+                            $(`.publications-carousel-dots .carousel-dot[data-index="${currentIndex}"]`).addClass('active');
                           }
 
                           function goToSlide(index) {
@@ -141,24 +138,19 @@
                             updateCarousel();
                           }
 
-                          // Arrow navigation
-                          $('.carousel-prev').on('click', function() {
+                          // Arrow navigation - scope to publications carousel buttons
+                          $('.publications-carousel-btn.carousel-prev').on('click', function() {
                             goToSlide(currentIndex - 1);
                           });
 
-                          $('.carousel-next').on('click', function() {
+                          $('.publications-carousel-btn.carousel-next').on('click', function() {
                             goToSlide(currentIndex + 1);
                           });
 
-                          // Dot navigation
+                          // Dot navigation - dots now represent pages, so data-index is the page index
                           $('.publications-carousel-dots').on('click', '.carousel-dot', function() {
-                            const dotIndex = parseInt($(this).data('index'));
-                            if (isMobile) {
-                              goToSlide(dotIndex);
-                            } else {
-                              const pageIndex = Math.floor(dotIndex / cardsPerView);
-                              goToSlide(pageIndex);
-                            }
+                            const pageIndex = parseInt($(this).data('index'));
+                            goToSlide(pageIndex);
                           });
 
                           // Touch/swipe support
@@ -196,13 +188,9 @@
                         }
 
                         $(document).ready(async function() {
-                          const isMobile = window.innerWidth <= 600;
-
                           console.log('Carousel initializing...');
-                          console.log('isMobile:', isMobile);
 
                           try {
-                            // Fetch pre-built publication data from static JSON
                             const response = await fetch('/static/files/publications.json');
 
                             if (!response.ok) {
@@ -212,27 +200,27 @@
                             const publications = await response.json();
                             console.log('Loaded publications from JSON:', publications.length);
 
-                            // Generate carousel cards from JSON data
+                            // Add cards
                             publications.forEach((pub, index) => {
                               const card = createPublicationCard(pub, index);
                               $('.publications-carousel-track').append(card);
-
-                              // Generate pagination dots
-                              const dot = `<div class="carousel-dot ${index === 0 ? 'active' : ''}" data-index="${index}"></div>`;
-                              $('.publications-carousel-dots').append(dot);
-
-                              // Apply pre-fetched figure URL or fallback gradient
                               applyFigureOrFallback(pub, index);
                             });
 
-                            // Initialize carousel navigation
+                            // Add dots - one per PAGE (not per card)
+                            const cardsPerView = getCardsPerView();
+                            const numPages = Math.ceil(publications.length / cardsPerView);
+                            for (let i = 0; i < numPages; i++) {
+                              const dot = `<div class="carousel-dot ${i === 0 ? 'active' : ''}" data-index="${i}"></div>`;
+                              $('.publications-carousel-dots').append(dot);
+                            }
+
                             initCarouselNavigation(publications.length);
 
                           } catch (error) {
                             console.error('Error loading publications JSON:', error);
                             console.log('Falling back to DataTable parsing...');
 
-                            // Fallback: parse DataTable if JSON fails (for local development)
                             setTimeout(function() {
                               fallbackParseDataTable();
                             }, 500);
@@ -241,7 +229,6 @@
 
                         // Fallback function for local development without pre-built JSON
                         function fallbackParseDataTable() {
-                          const isMobile = window.innerWidth <= 600;
                           const publications = [];
 
                           const table = $('.dataframe').DataTable();
@@ -258,7 +245,9 @@
 
                             publications.push({
                               paperId: paperId,
+                              title: $(titleHtml).text(),
                               titleHtml: titleHtml,
+                              semanticScholarUrl: semanticScholarUrl,
                               authors: cells.eq(2).text(),
                               journal: journal,
                               citations: parseInt(cells.eq(4).text()) || 0,
@@ -270,15 +259,20 @@
 
                           console.log('Fallback: Total publications found:', publications.length);
 
+                          // Add cards
                           publications.forEach((pub, index) => {
                             const card = createPublicationCard(pub, index);
                             $('.publications-carousel-track').append(card);
-
-                            const dot = `<div class="carousel-dot ${index === 0 ? 'active' : ''}" data-index="${index}"></div>`;
-                            $('.publications-carousel-dots').append(dot);
-
                             applyFigureOrFallback(pub, index);
                           });
+
+                          // Add dots - one per PAGE (not per card)
+                          const cardsPerView = getCardsPerView();
+                          const numPages = Math.ceil(publications.length / cardsPerView);
+                          for (let i = 0; i < numPages; i++) {
+                            const dot = `<div class="carousel-dot ${i === 0 ? 'active' : ''}" data-index="${i}"></div>`;
+                            $('.publications-carousel-dots').append(dot);
+                          }
 
                           initCarouselNavigation(publications.length);
                         }
