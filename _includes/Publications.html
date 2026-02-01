@@ -83,7 +83,6 @@
                                 <div class="publication-card-meta">
                                   <span class="publication-card-journal">${pub.journal}</span>
                                   <span class="publication-card-year">${pub.year || ''}</span>
-                                  <span class="publication-card-citations">${(pub.citations || 0).toLocaleString()} citations</span>
                                 </div>
                               </div>
                             </a>
@@ -100,11 +99,20 @@
 
                         // Initialize carousel navigation
                         function initCarouselNavigation(totalCards) {
-                          const cardsPerView = getCardsPerView();
                           let currentIndex = 0;
-                          const maxIndex = Math.ceil(totalCards / cardsPerView) - 1;
+                          let cardsPerView = getCardsPerView();
+                          let maxIndex = Math.ceil(totalCards / cardsPerView) - 1;
 
                           function updateCarousel() {
+                            // Recalculate in case viewport changed
+                            cardsPerView = getCardsPerView();
+                            maxIndex = Math.ceil(totalCards / cardsPerView) - 1;
+
+                            // Ensure currentIndex is within bounds after resize
+                            if (currentIndex > maxIndex) {
+                              currentIndex = maxIndex;
+                            }
+
                             // Each card takes (cardWidth + gap) space in the track
                             // Slide by cardsPerView * (cardWidth + gap) to align next page
                             const cardWidth = 240;
@@ -120,6 +128,10 @@
                           }
 
                           function goToSlide(index) {
+                            // Recalculate maxIndex
+                            cardsPerView = getCardsPerView();
+                            maxIndex = Math.ceil(totalCards / cardsPerView) - 1;
+
                             // Wrap around at edges
                             if (index < 0) {
                               currentIndex = maxIndex;
@@ -128,6 +140,28 @@
                             } else {
                               currentIndex = index;
                             }
+                            updateCarousel();
+                          }
+
+                          // Update dots based on current viewport
+                          function updateDots() {
+                            cardsPerView = getCardsPerView();
+                            const numPages = Math.ceil(totalCards / cardsPerView);
+
+                            // Clear existing dots
+                            $('.publications-carousel-dots').empty();
+
+                            // Generate new dots
+                            for (let i = 0; i < numPages; i++) {
+                              const dot = `<div class="carousel-dot ${i === currentIndex && i <= Math.ceil(totalCards / cardsPerView) - 1 ? 'active' : ''}" data-index="${i}"></div>`;
+                              $('.publications-carousel-dots').append(dot);
+                            }
+
+                            // Ensure currentIndex is valid
+                            if (currentIndex > numPages - 1) {
+                              currentIndex = numPages - 1;
+                            }
+
                             updateCarousel();
                           }
 
@@ -178,6 +212,18 @@
                               }
                             }
                           });
+
+                          // Window resize handler
+                          let resizeTimer;
+                          $(window).on('resize', function() {
+                            clearTimeout(resizeTimer);
+                            resizeTimer = setTimeout(function() {
+                              updateDots();
+                            }, 150); // Debounce resize events
+                          });
+
+                          // Initialize dots
+                          updateDots();
                         }
 
                         $(document).ready(async function() {
@@ -200,14 +246,7 @@
                               applyFigureOrFallback(pub, index);
                             });
 
-                            // Add dots - one per PAGE (not per card)
-                            const cardsPerView = getCardsPerView();
-                            const numPages = Math.ceil(publications.length / cardsPerView);
-                            for (let i = 0; i < numPages; i++) {
-                              const dot = `<div class="carousel-dot ${i === 0 ? 'active' : ''}" data-index="${i}"></div>`;
-                              $('.publications-carousel-dots').append(dot);
-                            }
-
+                            // Initialize carousel (dots will be created inside)
                             initCarouselNavigation(publications.length);
 
                           } catch (error) {
