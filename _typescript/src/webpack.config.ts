@@ -36,7 +36,8 @@ const config: Configuration = {
   mode: 'production',
   entry: {
     main: './_typescript/src/main.ts',
-    'password-verification': './_typescript/src/password-verification.ts'
+    'password-verification': './_typescript/src/password-verification.ts',
+    'publications-carousel': './_typescript/src/publications-carousel.ts'
   },
   plugins: [
     new webpack.DefinePlugin({
