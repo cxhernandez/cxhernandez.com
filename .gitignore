@@ -22,4 +22,11 @@ static/js/dist/
 
 # Generated data caches
 static/files/figure_cache.json
+static/files/publications.json
 static/files/publication-figures/
+
+# Python artifacts
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
