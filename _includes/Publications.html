@@ -134,7 +134,14 @@
                           }
 
                           function goToSlide(index) {
-                            currentIndex = Math.max(0, Math.min(index, maxIndex));
+                            // Wrap around at edges
+                            if (index < 0) {
+                              currentIndex = maxIndex;
+                            } else if (index > maxIndex) {
+                              currentIndex = 0;
+                            } else {
+                              currentIndex = index;
+                            }
                             updateCarousel();
                           }
 
