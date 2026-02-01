@@ -40,6 +40,16 @@ jobs:
         shell: bash -el {0}
         run: python ./_scripts/cli.py scrape-pubs -a 39400763 -o ./_includes/publications.md
 
+      - name: Generate publications JSON with figures
+        shell: bash -el {0}
+        run: |
+          python ./_scripts/cli.py scrape-pubs \
+            --author 39400763 \
+            --format json \
+            --with-figures \
+            --cache-file ./_scripts/.figure-cache.json \
+            -o ./static/files/publications.json
+
       - name: Update CV with citations and GitHub stats
         shell: bash -el {0}
         run: python ./_scripts/cli.py update-cv -a 39400763 -c ./_includes/cv.md

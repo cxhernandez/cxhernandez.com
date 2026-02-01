@@ -38,21 +38,21 @@
                       </div>
                     </div>
 
-                    <script>
-                        $(document).ready(function(){
-                                $('.dataframe').DataTable({
-                                    pageLength: 5,
-                                    lengthChange: false,
-                                    dom: 'rtfip',
-                                    language: {
-                                        search: "",
-                                        searchPlaceholder: "Search"
-                                    }
+                                            <script>
+                            $(document).ready(function(){
+                                    $('.dataframe').DataTable({
+                                        pageLength: 5,
+                                        lengthChange: false,
+                                        dom: 'rtfip',
+                                        language: {
+                                            search: "",
+                                            searchPlaceholder: "Search"
+                                        }
+                                    });
                                 });
-                            });
 
                         // Publications Carousel Implementation
-                        // Publisher-specific gradients for fallback
+                        // Publisher-specific gradients for fallback (kept for local testing without JSON)
                         const publisherGradients = {
                           'Nature': 'linear-gradient(135deg, #0d47a1, #1976d2)',
                           'Biorxiv': 'linear-gradient(135deg, #ff6f00, #ff8f00)',
@@ -62,152 +62,53 @@
                           'default': 'linear-gradient(135deg, #455a64, #607d8b)'
                         };
 
-                        // Extract paper ID from Semantic Scholar URL
-                        function extractPaperId(semanticScholarUrl) {
-                          const match = semanticScholarUrl.match(/\/paper\/([a-f0-9]+)/);
-                          return match ? match[1] : null;
-                        }
+                        // Apply figure or fallback gradient to card
+                        function applyFigureOrFallback(pub, index) {
+                          const $figure = $(`.publication-card-figure[data-figure-container="${index}"]`);
+                          $figure.removeClass('loading');
 
-                        // Fetch figure from Europe PMC (via Semantic Scholar paper ID)
-                        async function fetchPaperFigure(paperId) {
-                          try {
-                            // Get paper details from Semantic Scholar to find external IDs (DOI, PMID)
-                            const s2Response = await fetch(`https://api.semanticscholar.org/graph/v1/paper/${paperId}?fields=externalIds,openAccessPdf`);
-                            if (!s2Response.ok) return null;
-
-                            const s2Data = await s2Response.json();
-                            const pmid = s2Data.externalIds?.PubMed;
-                            const pmcid = s2Data.externalIds?.PubMedCentral;
-
-                            // Try Europe PMC if we have PMID or PMCID
-                            if (pmid || pmcid) {
-                              const id = pmcid || pmid;
-                              const source = pmcid ? 'PMC' : 'MED';
-                              const epmcResponse = await fetch(`https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=ext_id:${id}&format=json`);
-
-                              if (epmcResponse.ok) {
-                                const epmcData = await epmcResponse.json();
-                                const result = epmcData.resultList?.result?.[0];
-
-                                // Check if full text is available
-                                if (result?.hasTextMinedTerms === 'Y' && result?.inEPMC === 'Y') {
-                                  // Try to get figure from full text
-                                  const pmcId = result.pmcid;
-                                  if (pmcId) {
-                                    // Europe PMC figure URL pattern (first figure)
-                                    return `https://europepmc.org/articles/${pmcId}/bin/${pmcId}-g001.jpg`;
-                                  }
-                                }
-                              }
-                            }
-
-                            return null;
-                          } catch (error) {
-                            console.warn('Error fetching figure:', error);
-                            return null;
+                          if (pub.figureUrl) {
+                            // Try to load the pre-fetched figure
+                            const img = new Image();
+                            img.onload = function() {
+                              $figure.css('background-image', `url(${pub.figureUrl})`);
+                            };
+                            img.onerror = function() {
+                              // Fallback to gradient if image fails to load
+                              const gradient = pub.fallbackGradient || publisherGradients[pub.journal] || publisherGradients.default;
+                              $figure.addClass('fallback').css('background', gradient);
+                            };
+                            img.src = pub.figureUrl;
+                          } else {
+                            // No figure available, use fallback gradient
+                            const gradient = pub.fallbackGradient || publisherGradients[pub.journal] || publisherGradients.default;
+                            $figure.addClass('fallback').css('background', gradient);
                           }
                         }
 
-                        // Create fallback image with publisher logo + gradient
-                        function createFallbackBackground(journal, year) {
-                          const gradient = publisherGradients[journal] || publisherGradients.default;
-                          return gradient;
-                        }
-
-                        $(document).ready(function() {
-                          // Wait for DataTable to initialize, then parse ALL rows
-                          setTimeout(function() {
-                            const isMobile = window.innerWidth <= 600;
-                            const cardsPerView = isMobile ? 1 : 3;
-                            const publications = [];
-
-                            console.log('Carousel initializing...');
-                            console.log('isMobile:', isMobile);
-
-                            // Get ALL rows from DataTable, not just visible ones
-                            const table = $('.dataframe').DataTable();
-                            const allRows = table.rows().nodes().toArray();
-
-                            console.log('Total rows found:', allRows.length);
-
-                            allRows.forEach(function(row) {
-                            const cells = $(row).find('td');
-                            const titleHtml = cells.eq(1).html();
-                            const semanticScholarUrl = $(titleHtml).attr('href');
-
-                            console.log('Processing row:', cells.length, 'cells');
-
-                            publications.push({
-                              paperId: extractPaperId(semanticScholarUrl),
-                              titleHtml: titleHtml,
-                              authors: cells.eq(2).text(),
-                              journal: cells.eq(3).text(),
-                              citations: parseInt(cells.eq(4).text()),
-                              year: parseInt(cells.eq(5).text())
-                            });
-                          });
-
-                          console.log('Total publications found:', publications.length);
-
-                          // Generate carousel cards
-                          publications.forEach((pub, index) => {
-                            const card = `
-                              <div class="publication-card" data-card-index="${index}">
-                                <div class="publication-card-figure loading" data-figure-container="${index}"></div>
-                                <div class="publication-card-content">
-                                  <div class="publication-card-title">${pub.titleHtml}</div>
-                                  <div class="publication-card-authors">${pub.authors}</div>
-                                  <div class="publication-card-meta">
-                                    <span class="publication-card-journal">${pub.journal}</span>
-                                    <span class="publication-card-year">${pub.year}</span>
-                                    <span class="publication-card-citations">${pub.citations.toLocaleString()} citations</span>
-                                  </div>
+                        // Create publication card HTML
+                        function createPublicationCard(pub, index) {
+                          return `
+                            <div class="publication-card" data-card-index="${index}">
+                              <div class="publication-card-figure loading" data-figure-container="${index}"></div>
+                              <div class="publication-card-content">
+                                <div class="publication-card-title">${pub.titleHtml}</div>
+                                <div class="publication-card-authors">${pub.authors}</div>
+                                <div class="publication-card-meta">
+                                  <span class="publication-card-journal">${pub.journal}</span>
+                                  <span class="publication-card-year">${pub.year || ''}</span>
+                                  <span class="publication-card-citations">${(pub.citations || 0).toLocaleString()} citations</span>
                                 </div>
                               </div>
-                            `;
+                            </div>
+                          `;
+                        }
 
-                            $('.publications-carousel-track').append(card);
-
-                            // Generate pagination dots
-                            const dot = `<div class="carousel-dot ${index === 0 ? 'active' : ''}" data-index="${index}"></div>`;
-                            $('.publications-carousel-dots').append(dot);
-
-                            // Fetch figure asynchronously
-                            if (pub.paperId) {
-                              fetchPaperFigure(pub.paperId).then(figureUrl => {
-                                const $figure = $(`.publication-card-figure[data-figure-container="${index}"]`);
-                                $figure.removeClass('loading');
-
-                                if (figureUrl) {
-                                  // Try to load the figure
-                                  const img = new Image();
-                                  img.onload = function() {
-                                    $figure.css('background-image', `url(${figureUrl})`);
-                                  };
-                                  img.onerror = function() {
-                                    // Fallback to gradient if image fails to load
-                                    const gradient = createFallbackBackground(pub.journal, pub.year);
-                                    $figure.addClass('fallback').css('background', gradient);
-                                  };
-                                  img.src = figureUrl;
-                                } else {
-                                  // No figure available, use fallback
-                                  const gradient = createFallbackBackground(pub.journal, pub.year);
-                                  $figure.addClass('fallback').css('background', gradient);
-                                }
-                              });
-                            } else {
-                              // No paper ID, use fallback immediately
-                              const $figure = $(`.publication-card-figure[data-figure-container="${index}"]`);
-                              $figure.removeClass('loading');
-                              const gradient = createFallbackBackground(pub.journal, pub.year);
-                              $figure.addClass('fallback').css('background', gradient);
-                            }
-                          });
-
-                          // Carousel navigation
+                        // Initialize carousel navigation
+                        function initCarouselNavigation(totalCards) {
+                          const isMobile = window.innerWidth <= 600;
+                          const cardsPerView = isMobile ? 1 : 3;
                           let currentIndex = 0;
-                          const totalCards = publications.length;
                           const maxIndex = Math.ceil(totalCards / cardsPerView) - 1;
 
                           function updateCarousel() {
@@ -215,20 +116,17 @@
                             if (isMobile) {
                               offset = -currentIndex * 100;
                             } else {
-                              // Desktop: calculate offset based on card width + gap
-                              const cardWidth = 33.333; // percentage
+                              const cardWidth = 33.333;
                               const gapPercentage = (24 / $('.publications-carousel-container').width()) * 100;
                               offset = -currentIndex * cardsPerView * (cardWidth + gapPercentage);
                             }
 
                             $('.publications-carousel-track').css('transform', `translateX(${offset}%)`);
 
-                            // Update dots
                             $('.carousel-dot').removeClass('active');
                             if (isMobile) {
                               $(`.carousel-dot[data-index="${currentIndex}"]`).addClass('active');
                             } else {
-                              // Highlight all visible cards' dots on desktop
                               for (let i = 0; i < cardsPerView; i++) {
                                 const dotIndex = currentIndex * cardsPerView + i;
                                 if (dotIndex < totalCards) {
@@ -258,7 +156,6 @@
                             if (isMobile) {
                               goToSlide(dotIndex);
                             } else {
-                              // Desktop: calculate which page contains this card
                               const pageIndex = Math.floor(dotIndex / cardsPerView);
                               goToSlide(pageIndex);
                             }
@@ -274,23 +171,17 @@
 
                           $('.publications-carousel-track').on('touchend', function(e) {
                             touchEndX = e.changedTouches[0].screenX;
-                            handleSwipe();
-                          });
-
-                          function handleSwipe() {
                             const swipeThreshold = 50;
                             const diff = touchStartX - touchEndX;
 
                             if (Math.abs(diff) > swipeThreshold) {
                               if (diff > 0) {
-                                // Swipe left - next
                                 goToSlide(currentIndex + 1);
                               } else {
-                                // Swipe right - previous
                                 goToSlide(currentIndex - 1);
                               }
                             }
-                          }
+                          });
 
                           // Keyboard navigation
                           $(document).on('keydown', function(e) {
@@ -302,8 +193,95 @@
                               }
                             }
                           });
-                        }, 500); // Wait 500ms for DataTable to initialize
-                      });
+                        }
+
+                        $(document).ready(async function() {
+                          const isMobile = window.innerWidth <= 600;
+
+                          console.log('Carousel initializing...');
+                          console.log('isMobile:', isMobile);
+
+                          try {
+                            // Fetch pre-built publication data from static JSON
+                            const response = await fetch('/static/files/publications.json');
+
+                            if (!response.ok) {
+                              throw new Error(`HTTP error! status: ${response.status}`);
+                            }
+
+                            const publications = await response.json();
+                            console.log('Loaded publications from JSON:', publications.length);
+
+                            // Generate carousel cards from JSON data
+                            publications.forEach((pub, index) => {
+                              const card = createPublicationCard(pub, index);
+                              $('.publications-carousel-track').append(card);
+
+                              // Generate pagination dots
+                              const dot = `<div class="carousel-dot ${index === 0 ? 'active' : ''}" data-index="${index}"></div>`;
+                              $('.publications-carousel-dots').append(dot);
+
+                              // Apply pre-fetched figure URL or fallback gradient
+                              applyFigureOrFallback(pub, index);
+                            });
+
+                            // Initialize carousel navigation
+                            initCarouselNavigation(publications.length);
+
+                          } catch (error) {
+                            console.error('Error loading publications JSON:', error);
+                            console.log('Falling back to DataTable parsing...');
+
+                            // Fallback: parse DataTable if JSON fails (for local development)
+                            setTimeout(function() {
+                              fallbackParseDataTable();
+                            }, 500);
+                          }
+                        });
+
+                        // Fallback function for local development without pre-built JSON
+                        function fallbackParseDataTable() {
+                          const isMobile = window.innerWidth <= 600;
+                          const publications = [];
+
+                          const table = $('.dataframe').DataTable();
+                          const allRows = table.rows().nodes().toArray();
+
+                          console.log('Fallback: Total rows found:', allRows.length);
+
+                          allRows.forEach(function(row) {
+                            const cells = $(row).find('td');
+                            const titleHtml = cells.eq(1).html();
+                            const semanticScholarUrl = $(titleHtml).attr('href');
+                            const paperId = semanticScholarUrl ? semanticScholarUrl.match(/\/paper\/([a-f0-9]+)/)?.[1] : null;
+                            const journal = cells.eq(3).text();
+
+                            publications.push({
+                              paperId: paperId,
+                              titleHtml: titleHtml,
+                              authors: cells.eq(2).text(),
+                              journal: journal,
+                              citations: parseInt(cells.eq(4).text()) || 0,
+                              year: parseInt(cells.eq(5).text()) || null,
+                              figureUrl: null,
+                              fallbackGradient: publisherGradients[journal] || publisherGradients.default
+                            });
+                          });
+
+                          console.log('Fallback: Total publications found:', publications.length);
+
+                          publications.forEach((pub, index) => {
+                            const card = createPublicationCard(pub, index);
+                            $('.publications-carousel-track').append(card);
+
+                            const dot = `<div class="carousel-dot ${index === 0 ? 'active' : ''}" data-index="${index}"></div>`;
+                            $('.publications-carousel-dots').append(dot);
+
+                            applyFigureOrFallback(pub, index);
+                          });
+
+                          initCarouselNavigation(publications.length);
+                        }
                     </script>
                     </li>
             </ul>

@@ -662,10 +662,509 @@ def get_tab(table):
     return table.drop("Link", axis=1).to_string(na_rep="0")
 
 
+# Publisher-specific gradients for fallback (matching frontend)
+PUBLISHER_GRADIENTS = {
+    'Nature': 'linear-gradient(135deg, #0d47a1, #1976d2)',
+    'Biorxiv': 'linear-gradient(135deg, #ff6f00, #ff8f00)',
+    'arXiv': 'linear-gradient(135deg, #b31b1b, #c62828)',
+    'Journal of Open Source Software': 'linear-gradient(135deg, #1565c0, #1976d2)',
+    'Accounts of Chemical Research': 'linear-gradient(135deg, #2e7d32, #388e3c)',
+    'default': 'linear-gradient(135deg, #455a64, #607d8b)'
+}
+
+
+def get_fallback_gradient(journal):
+    """Get fallback gradient based on journal/publisher name."""
+    return PUBLISHER_GRADIENTS.get(journal, PUBLISHER_GRADIENTS['default'])
+
+
+def fetch_figure_from_pmc(pmcid, timeout=10):
+    """Fetch first figure URL from Europe PMC for a given PMC ID.
+
+    Args:
+        pmcid: PubMed Central ID (e.g., 'PMC4567604' or '4567604')
+        timeout: Request timeout in seconds
+
+    Returns:
+        Figure URL string if found and valid, None otherwise
+    """
+    if not pmcid:
+        return None
+
+    # Ensure PMC prefix is present
+    if not str(pmcid).upper().startswith('PMC'):
+        pmcid = f"PMC{pmcid}"
+
+    try:
+        # Fetch fullTextXML to find actual figure filenames
+        xml_url = f"https://www.ebi.ac.uk/europepmc/webservices/rest/{pmcid}/fullTextXML"
+        response = requests.get(xml_url, timeout=timeout)
+
+        if response.status_code != 200:
+            logger.debug(f"Failed to fetch fullTextXML for {pmcid}: HTTP {response.status_code}")
+            return None
+
+        # Parse XML to find first graphic element with position="float" (main figures)
+        import re
+        float_graphics = re.findall(
+            r'<graphic[^>]*xlink:href="([^"]+)"[^>]*position="float"',
+            response.text
+        )
+
+        if not float_graphics:
+            # Fallback: try any graphic element
+            all_graphics = re.findall(r'<graphic[^>]*xlink:href="([^"]+)"', response.text)
+            if not all_graphics:
+                logger.debug(f"No graphics found in fullTextXML for {pmcid}")
+                return None
+            figure_name = all_graphics[0]
+        else:
+            figure_name = float_graphics[0]
+
+        # Skip if it's an external URL
+        if figure_name.startswith('http'):
+            logger.debug(f"Skipping external graphic URL for {pmcid}")
+            return None
+
+        # Construct the figure URL and verify accessibility
+        for ext in ['.jpg', '.png', '.gif', '']:
+            figure_url = f"https://europepmc.org/articles/{pmcid}/bin/{figure_name}{ext}"
+            try:
+                head_response = requests.head(figure_url, timeout=5, allow_redirects=True)
+                if head_response.status_code == 200:
+                    return figure_url
+            except requests.RequestException:
+                continue
+
+        logger.debug(f"Figure URL not accessible for {pmcid}")
+        return None
+
+    except requests.RequestException as e:
+        logger.debug(f"Failed to fetch figure for {pmcid}: {e}")
+        return None
+    except Exception as e:
+        logger.debug(f"Error processing figure for {pmcid}: {e}")
+        return None
+
+
+def lookup_pmc_from_pubmed(pubmed_id, timeout=10):
+    """Look up PMC ID from PubMed ID using NCBI elink API.
+
+    Args:
+        pubmed_id: PubMed ID (e.g., '26488642')
+        timeout: Request timeout in seconds
+
+    Returns:
+        PMC ID string (e.g., 'PMC1234567') if found, None otherwise
+    """
+    if not pubmed_id:
+        return None
+
+    try:
+        # Use NCBI elink to find PMC ID from PubMed ID
+        elink_url = f"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/elink.fcgi?dbfrom=pubmed&db=pmc&id={pubmed_id}&retmode=json"
+        response = requests.get(elink_url, timeout=timeout)
+
+        if response.status_code != 200:
+            logger.debug(f"Failed to lookup PMC ID for PubMed {pubmed_id}: HTTP {response.status_code}")
+            return None
+
+        data = response.json()
+
+        # Navigate the response structure to find PMC ID
+        linksets = data.get('linksets', [])
+        for linkset in linksets:
+            linksetdbs = linkset.get('linksetdbs', [])
+            for linksetdb in linksetdbs:
+                if linksetdb.get('linkname') == 'pubmed_pmc':
+                    links = linksetdb.get('links', [])
+                    if links:
+                        # Return first PMC ID with prefix
+                        return f"PMC{links[0]}"
+
+        logger.debug(f"No PMC ID found for PubMed {pubmed_id}")
+        return None
+
+    except requests.RequestException as e:
+        logger.debug(f"Failed to lookup PMC ID for PubMed {pubmed_id}: {e}")
+        return None
+    except Exception as e:
+        logger.debug(f"Error looking up PMC ID for PubMed {pubmed_id}: {e}")
+        return None
+
+
+
+
+def check_open_access(pmcid, timeout=10):
+    """Check if a PMC article has open access full text available.
+
+    Args:
+        pmcid: PubMed Central ID (e.g., 'PMC4567604' or '4567604')
+        timeout: Request timeout in seconds
+
+    Returns:
+        Boolean indicating if open access full text is available
+    """
+    if not pmcid:
+        return None
+
+    # Ensure PMC prefix is present
+    if not str(pmcid).upper().startswith('PMC'):
+        pmcid = f"PMC{pmcid}"
+
+    try:
+        # Use Europe PMC search API to check open access status
+        search_url = f"https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=PMCID:{pmcid}&resultType=core&format=json"
+        response = requests.get(search_url, timeout=timeout)
+
+        if response.status_code != 200:
+            logger.debug(f"Failed to check open access for {pmcid}: HTTP {response.status_code}")
+            return None
+
+        data = response.json()
+        results = data.get('resultList', {}).get('result', [])
+
+        if results:
+            # isOpenAccess field indicates if full text is available
+            is_open_access = results[0].get('isOpenAccess') == 'Y'
+            return is_open_access
+
+        return None
+
+    except requests.RequestException as e:
+        logger.debug(f"Failed to check open access for {pmcid}: {e}")
+        return None
+    except Exception as e:
+        logger.debug(f"Error checking open access for {pmcid}: {e}")
+        return None
+
+
+
+def scrape_pubmed_figure(pubmed_id, timeout=10):
+    """Scrape first figure URL from PubMed page.
+    
+    PubMed pages embed figures using NCBI CDN blob URLs that are publicly accessible.
+
+    Args:
+        pubmed_id: PubMed ID (e.g., '30011547')
+        timeout: Request timeout in seconds
+
+    Returns:
+        Figure URL string if found, None otherwise
+    """
+    if not pubmed_id:
+        return None
+
+    try:
+        # Fetch PubMed page
+        pubmed_url = f"https://pubmed.ncbi.nlm.nih.gov/{pubmed_id}/"
+        response = requests.get(pubmed_url, timeout=timeout)
+
+        if response.status_code != 200:
+            logger.debug(f"Failed to fetch PubMed page for {pubmed_id}: HTTP {response.status_code}")
+            return None
+
+        # Extract CDN blob URLs for figures (prefer jpg over gif)
+        import re
+        jpg_figures = re.findall(
+            r'https://cdn\.ncbi\.nlm\.nih\.gov/pmc/blobs/[^"]+\.jpg',
+            response.text
+        )
+        
+        if jpg_figures:
+            return jpg_figures[0]
+        
+        # Fallback to gif if no jpg found
+        gif_figures = re.findall(
+            r'https://cdn\.ncbi\.nlm\.nih\.gov/pmc/blobs/[^"]+\.gif',
+            response.text
+        )
+        
+        if gif_figures:
+            return gif_figures[0]
+
+        logger.debug(f"No figure URLs found on PubMed page for {pubmed_id}")
+        return None
+
+    except requests.RequestException as e:
+        logger.debug(f"Failed to scrape PubMed page for {pubmed_id}: {e}")
+        return None
+    except Exception as e:
+        logger.debug(f"Error scraping PubMed page for {pubmed_id}: {e}")
+        return None
+
+
+def fetch_paper_figure(pmcid=None, pubmed_id=None, timeout=10):
+    """Fetch first figure URL for a paper from Europe PMC or PubMed.
+
+    Tries multiple strategies:
+    1. If PMC ID provided, fetch directly from Europe PMC
+    2. If only PubMed ID provided, lookup PMC ID via NCBI elink, then fetch from Europe PMC
+    3. If Europe PMC fails, scrape figure URL from PubMed page (uses NCBI CDN)
+
+    Args:
+        pmcid: PubMed Central ID (e.g., 'PMC4567604' or '4567604')
+        pubmed_id: PubMed ID (e.g., '26488642')
+        timeout: Request timeout in seconds
+
+    Returns:
+        Figure URL string if found and valid, None otherwise
+    """
+    # Strategy 1: Try with PMC ID directly via Europe PMC
+    if pmcid:
+        figure_url = fetch_figure_from_pmc(pmcid, timeout)
+        if figure_url:
+            return figure_url
+
+    # Strategy 2: Try to find PMC ID from PubMed ID, then fetch from Europe PMC
+    discovered_pmcid = None
+    if pubmed_id and not pmcid:
+        discovered_pmcid = lookup_pmc_from_pubmed(pubmed_id, timeout)
+        if discovered_pmcid:
+            logger.info(f"Discovered {discovered_pmcid} from PubMed {pubmed_id}")
+            figure_url = fetch_figure_from_pmc(discovered_pmcid, timeout)
+            if figure_url:
+                return figure_url
+
+    # Strategy 3: Scrape PubMed page for CDN figure URL (works for non-open-access PMC articles)
+    if pubmed_id:
+        logger.debug(f"Trying PubMed page scrape for {pubmed_id}...")
+        figure_url = scrape_pubmed_figure(pubmed_id, timeout)
+        if figure_url:
+            logger.info(f"Found figure via PubMed scrape for {pubmed_id}")
+            return figure_url
+
+    return None
+
+
+
 def get_json(table):
     """Convert table to JSON format."""
     return table.drop("Link", axis=1).to_json()
 
+
+
+
+def load_figure_cache(cache_file):
+    """Load figure URL cache from file."""
+    if cache_file and Path(cache_file).exists():
+        try:
+            return json.loads(Path(cache_file).read_text())
+        except (json.JSONDecodeError, IOError):
+            return {}
+    return {}
+
+
+def save_figure_cache(cache_file, cache):
+    """Save figure URL cache to file."""
+    if cache_file:
+        Path(cache_file).write_text(json.dumps(cache, indent=2))
+
+
+def get_publication_list_extended(author_data, bold_author_name=None, with_figures=False, cache_file=None):
+    """Generate extended publication list with figure URLs and gradients.
+
+    Args:
+        author_data: Author data from Semantic Scholar API
+        bold_author_name: Optional author name to bold in the output
+        with_figures: Whether to fetch figure URLs from Europe PMC
+        cache_file: Optional path to cache file for figure URLs
+
+    Returns:
+        List of publication dictionaries with extended metadata
+    """
+    if not PANDAS_AVAILABLE:
+        logger.error("pandas library is required for this command. Install with: pip install pandas")
+        sys.exit(1)
+
+    papers = author_data.get('papers', [])
+
+    if not papers:
+        logger.warning("No papers found for this author")
+        return []
+
+    # Load figure cache
+    figure_cache = load_figure_cache(cache_file) if with_figures else {}
+
+    # Group papers by normalized title to detect duplicates (preprint + published)
+    papers_by_title = {}
+
+    for paper in papers:
+        # Skip papers without basic info
+        if not paper.get('title') or not paper.get('paperId'):
+            continue
+
+        # Filter out conference abstracts and Zenodo releases
+        external_ids = paper.get('externalIds', {})
+        doi = external_ids.get('DOI') if external_ids else None
+
+        # Skip Zenodo software releases
+        if doi and 'zenodo' in doi.lower():
+            continue
+
+        # Skip Biophysical Journal conference abstracts
+        if doi and 'j.bpj.' in doi.lower() and len(doi.split('.')) >= 5:
+            continue
+
+        normalized_title = normalize_title(paper['title'])
+
+        if normalized_title not in papers_by_title:
+            papers_by_title[normalized_title] = []
+
+        papers_by_title[normalized_title].append(paper)
+
+    # Process grouped papers: consolidate preprints with published versions
+    consolidated_papers = []
+
+    for normalized_title, paper_group in papers_by_title.items():
+        if len(paper_group) == 1:
+            consolidated_papers.append(paper_group[0])
+        else:
+            preprints = []
+            published = []
+
+            for paper in paper_group:
+                external_ids = paper.get('externalIds', {})
+                venue = paper.get('venue', '')
+
+                if is_preprint(external_ids, venue):
+                    preprints.append(paper)
+                else:
+                    published.append(paper)
+
+            if published:
+                base_paper = published[0]
+            else:
+                base_paper = paper_group[0]
+
+            # Sum citations and collect all external IDs
+            total_citations = sum(p.get('citationCount', 0) for p in paper_group)
+            all_external_ids = {}
+            for p in paper_group:
+                if p.get('externalIds'):
+                    all_external_ids.update(p['externalIds'])
+
+            consolidated = dict(base_paper)
+            consolidated['citationCount'] = total_citations
+            consolidated['externalIds'] = all_external_ids
+            consolidated_papers.append(consolidated)
+
+    # Build publication list
+    publications = []
+
+    for paper in consolidated_papers:
+        paper_id = paper.get('paperId', '')
+        semantic_scholar_url = f"https://www.semanticscholar.org/paper/{paper_id}"
+        external_ids = paper.get('externalIds', {})
+
+        # Format authors
+        paper_authors = paper.get('authors', [])
+        if paper_authors:
+            author_names = [a.get('name', '') for a in paper_authors if a.get('name')]
+
+            formatted_names = []
+            for name in author_names:
+                parts = name.split()
+                if len(parts) > 1:
+                    initials = ''.join([p[0].upper() for p in parts[:-1]])
+                    last_name = parts[-1]
+                    formatted = f"{initials} {last_name}"
+                else:
+                    formatted = name
+                formatted_names.append(formatted)
+
+            if bold_author_name:
+                formatted_names = [
+                    f'**{name}**' if any(part in bold_author_name.split() for part in name.split()) else name
+                    for name in formatted_names
+                ]
+
+            if len(formatted_names) > 3:
+                authors_str = ', '.join(formatted_names[:3]) + ', ...'
+            else:
+                authors_str = ', '.join(formatted_names)
+        else:
+            authors_str = ""
+
+        # Clean journal name
+        venue = paper.get('venue', '')
+        doi = external_ids.get('DOI') if external_ids else None
+        journal = clean_journal_name(venue, external_ids, doi)
+
+        # Get year and citations
+        year = paper.get('year', None)
+        cite_count = paper.get('citationCount', 0)
+
+        # Create title HTML with link
+        title = paper.get('title', '')
+        title_html = f'<a href="{semantic_scholar_url}">{title}</a>'
+
+        # Get figure URL (with caching)
+        figure_url = None
+        pmcid = external_ids.get('PubMedCentral') if external_ids else None
+        pubmed_id = external_ids.get('PubMed') if external_ids else None
+
+        if with_figures:
+            cache_key = pmcid or pubmed_id or paper_id
+
+            if cache_key in figure_cache:
+                figure_url = figure_cache[cache_key]
+                logger.debug(f"Using cached figure for {cache_key}")
+            elif pmcid or pubmed_id:
+                id_str = pmcid or f"PubMed:{pubmed_id}"
+                logger.info(f"Fetching figure for {id_str}...")
+                figure_url = fetch_paper_figure(pmcid=pmcid, pubmed_id=pubmed_id)
+                figure_cache[cache_key] = figure_url
+                # Small delay to avoid rate limiting
+                time.sleep(0.5)
+
+        # Get fallback gradient
+        fallback_gradient = get_fallback_gradient(journal)
+
+        # Check open access status for PMC articles
+        # If no direct PMC ID, try to discover one from PubMed ID
+        is_open_access = None
+        effective_pmcid = pmcid
+        
+        if not effective_pmcid and pubmed_id:
+            # Try to discover PMC ID from PubMed ID
+            effective_pmcid = lookup_pmc_from_pubmed(pubmed_id)
+        
+        if effective_pmcid:
+            is_open_access = check_open_access(effective_pmcid)
+
+        publications.append({
+            'paperId': paper_id,
+            'title': title,
+            'titleHtml': title_html,
+            'authors': authors_str,
+            'journal': journal,
+            'year': year,
+            'citations': cite_count,
+            'semanticScholarUrl': semantic_scholar_url,
+            'figureUrl': figure_url,
+            'fallbackGradient': fallback_gradient,
+            'externalIds': external_ids,
+            'isOpenAccess': is_open_access,
+        })
+
+    # Sort by citation count (descending), then year (descending)
+    publications.sort(key=lambda x: (-x['citations'], -(x['year'] or 0)))
+
+    # Add index
+    for i, pub in enumerate(publications, 1):
+        pub['index'] = i
+
+    # Save figure cache
+    if with_figures and cache_file:
+        save_figure_cache(cache_file, figure_cache)
+
+    return publications
+
+
+def get_json_extended(publications):
+    """Convert extended publication list to JSON string."""
+    return json.dumps(publications, indent=2)
 
 def get_latex(table):
     """Convert table to LaTeX format."""
@@ -691,14 +1190,29 @@ def cmd_scrape_pubs(args):
         author_name = author_data.get('name')
         logger.info(f"Fetched publications for author: {author_name}")
 
-        # Generate table with author name bolded
-        table = get_table(author_data, bold_author_name=author_name)
+        # Check if we need extended JSON output
+        with_figures = getattr(args, 'with_figures', False)
+        cache_file = getattr(args, 'cache_file', None)
 
-        output_formats = {"html": get_html, "json": get_json, "latex": get_latex, "tab": get_tab}
+        if args.format == 'json' and with_figures:
+            # Use extended JSON with figure fetching
+            publications = get_publication_list_extended(
+                author_data,
+                bold_author_name=author_name,
+                with_figures=True,
+                cache_file=cache_file
+            )
+            logger.info(f"Writing {len(publications)} publications (with figures) to {output_path}")
+            with codecs.open(output_path, "w", "utf-8") as file:
+                file.write(get_json_extended(publications))
+        else:
+            # Use standard table-based output
+            table = get_table(author_data, bold_author_name=author_name)
+            output_formats = {"html": get_html, "json": get_json, "latex": get_latex, "tab": get_tab}
 
-        logger.info(f"Writing {len(table)} publications to {output_path}")
-        with codecs.open(output_path, "w", "utf-8") as file:
-            file.write(output_formats[args.format](table))
+            logger.info(f"Writing {len(table)} publications to {output_path}")
+            with codecs.open(output_path, "w", "utf-8") as file:
+                file.write(output_formats[args.format](table))
 
         logger.info(f"Successfully wrote publications to {output_path}")
     except Exception as e:
@@ -1310,6 +1824,16 @@ def main():
         choices=['html', 'json', 'latex', 'tab'],
         default='html',
         help='Output format (default: html)'
+    )
+    scrape_parser.add_argument(
+        '--with-figures',
+        action='store_true',
+        help='Fetch figure URLs from Europe PMC (slower, requires additional API calls). Only works with JSON format.'
+    )
+    scrape_parser.add_argument(
+        '--cache-file',
+        type=str,
+        help='Cache file for figure URLs (JSON). Speeds up subsequent runs.'
     )
 
     # Update CV command

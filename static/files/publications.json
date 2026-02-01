@@ -1,0 +1,242 @@
+[
+  {
+    "paperId": "a56eae356b1acdc7884cd0a4d6c915d9a5351ff4",
+    "title": "MDTraj: a modern, open library for the analysis of molecular dynamics trajectories",
+    "titleHtml": "<a href=\"https://www.semanticscholar.org/paper/a56eae356b1acdc7884cd0a4d6c915d9a5351ff4\">MDTraj: a modern, open library for the analysis of molecular dynamics trajectories</a>",
+    "authors": "R McGibbon, KA Beauchamp, C Schwantes, ...",
+    "journal": "Biorxiv",
+    "year": 2014,
+    "citations": 2072,
+    "semanticScholarUrl": "https://www.semanticscholar.org/paper/a56eae356b1acdc7884cd0a4d6c915d9a5351ff4",
+    "figureUrl": "https://cdn.ncbi.nlm.nih.gov/pmc/blobs/cebc/4623899/8bacc7067676/gr1.jpg",
+    "fallbackGradient": "linear-gradient(135deg, #ff6f00, #ff8f00)",
+    "externalIds": {
+      "MAG": "2147988069",
+      "DOI": "10.1101/008896",
+      "CorpusId": 41903876,
+      "PubMed": "26488642"
+    },
+    "isOpenAccess": false,
+    "index": 1
+  },
+  {
+    "paperId": "fa25e6dbbf460affab05c322decf7ef5fc1142f7",
+    "title": "Markov State Models Provide Insights into Dynamic Modulation of Protein Function",
+    "titleHtml": "<a href=\"https://www.semanticscholar.org/paper/fa25e6dbbf460affab05c322decf7ef5fc1142f7\">Markov State Models Provide Insights into Dynamic Modulation of Protein Function</a>",
+    "authors": "D Shukla, **CX Hern\u00e1ndez**, J Weber, ...",
+    "journal": "Accounts of Chemical Research",
+    "year": 2015,
+    "citations": 254,
+    "semanticScholarUrl": "https://www.semanticscholar.org/paper/fa25e6dbbf460affab05c322decf7ef5fc1142f7",
+    "figureUrl": "https://europepmc.org/articles/PMC4333613/bin/ar-2014-002999_0001.jpg",
+    "fallbackGradient": "linear-gradient(135deg, #2e7d32, #388e3c)",
+    "externalIds": {
+      "PubMedCentral": "4333613",
+      "MAG": "2083128709",
+      "DOI": "10.1021/ar5002999",
+      "CorpusId": 17353991,
+      "PubMed": "25625937"
+    },
+    "isOpenAccess": true,
+    "index": 2
+  },
+  {
+    "paperId": "d5a2ae8f201dd9f48062ad001f14514000acf359",
+    "title": "MSMBuilder: Statistical Models for Biomolecular Dynamics",
+    "titleHtml": "<a href=\"https://www.semanticscholar.org/paper/d5a2ae8f201dd9f48062ad001f14514000acf359\">MSMBuilder: Statistical Models for Biomolecular Dynamics</a>",
+    "authors": "M Harrigan, MM Sultan, **CX Hern\u00e1ndez**, ...",
+    "journal": "Biorxiv",
+    "year": 2016,
+    "citations": 249,
+    "semanticScholarUrl": "https://www.semanticscholar.org/paper/d5a2ae8f201dd9f48062ad001f14514000acf359",
+    "figureUrl": "https://cdn.ncbi.nlm.nih.gov/pmc/blobs/5348/5232355/6e3fbfca9517/gr1.jpg",
+    "fallbackGradient": "linear-gradient(135deg, #ff6f00, #ff8f00)",
+    "externalIds": {
+      "MAG": "2570547882",
+      "DOI": "10.1101/084020",
+      "CorpusId": 33102087,
+      "PubMed": "28076801"
+    },
+    "isOpenAccess": null,
+    "index": 3
+  },
+  {
+    "paperId": "88a277bbc18ad0eed29ea02bef0219b1c1a111ab",
+    "title": "Variational encoding of complex dynamics.",
+    "titleHtml": "<a href=\"https://www.semanticscholar.org/paper/88a277bbc18ad0eed29ea02bef0219b1c1a111ab\">Variational encoding of complex dynamics.</a>",
+    "authors": "**CX Hern\u00e1ndez**, H Wayment-Steele, MM Sultan, ...",
+    "journal": "arXiv",
+    "year": 2017,
+    "citations": 149,
+    "semanticScholarUrl": "https://www.semanticscholar.org/paper/88a277bbc18ad0eed29ea02bef0219b1c1a111ab",
+    "figureUrl": "https://cdn.ncbi.nlm.nih.gov/pmc/blobs/050e/7398762/8dd5fec5a7e2/nihms-1600101-f0001.jpg",
+    "fallbackGradient": "linear-gradient(135deg, #b31b1b, #c62828)",
+    "externalIds": {
+      "MAG": "2768480811",
+      "ArXiv": "1711.08576",
+      "DOI": "10.1103/PhysRevE.97.062412",
+      "CorpusId": 25613174,
+      "PubMed": "30011547"
+    },
+    "isOpenAccess": null,
+    "index": 4
+  },
+  {
+    "paperId": "7c8adc3e9f660ea1675c03ab06403b8410abdc77",
+    "title": "A generic non-invasive neuromotor interface for human-computer interaction",
+    "titleHtml": "<a href=\"https://www.semanticscholar.org/paper/7c8adc3e9f660ea1675c03ab06403b8410abdc77\">A generic non-invasive neuromotor interface for human-computer interaction</a>",
+    "authors": "P Kaifosh, TR Reardon, BD Allen, ...",
+    "journal": "Nature",
+    "year": 2025,
+    "citations": 65,
+    "semanticScholarUrl": "https://www.semanticscholar.org/paper/7c8adc3e9f660ea1675c03ab06403b8410abdc77",
+    "figureUrl": "https://europepmc.org/articles/PMC12443603/bin/41586_2025_9255_Fig1_HTML.jpg",
+    "fallbackGradient": "linear-gradient(135deg, #0d47a1, #1976d2)",
+    "externalIds": {
+      "PubMedCentral": "12443603",
+      "DOI": "10.1101/2024.02.23.581779",
+      "CorpusId": 268064389,
+      "PubMed": "40702190"
+    },
+    "isOpenAccess": true,
+    "index": 5
+  },
+  {
+    "paperId": "e514fcada90a6f580ea3d44bebe199fc66035eb4",
+    "title": "Osprey: Hyperparameter Optimization for Machine Learning",
+    "titleHtml": "<a href=\"https://www.semanticscholar.org/paper/e514fcada90a6f580ea3d44bebe199fc66035eb4\">Osprey: Hyperparameter Optimization for Machine Learning</a>",
+    "authors": "R McGibbon, **CX Hern\u00e1ndez**, M Harrigan, ...",
+    "journal": "Journal of Open Source Software",
+    "year": 2016,
+    "citations": 38,
+    "semanticScholarUrl": "https://www.semanticscholar.org/paper/e514fcada90a6f580ea3d44bebe199fc66035eb4",
+    "figureUrl": null,
+    "fallbackGradient": "linear-gradient(135deg, #1565c0, #1976d2)",
+    "externalIds": {
+      "MAG": "2510365122",
+      "DBLP": "journals/jossw/McGibbonHHKSJHP16",
+      "DOI": "10.21105/JOSS.00034",
+      "CorpusId": 53223690
+    },
+    "isOpenAccess": null,
+    "index": 6
+  },
+  {
+    "paperId": "e897a9ce6f194f0e420f58c1e7fdb565ee9b98b2",
+    "title": "Using Deep Learning for Segmentation and Counting within Microscopy Data",
+    "titleHtml": "<a href=\"https://www.semanticscholar.org/paper/e897a9ce6f194f0e420f58c1e7fdb565ee9b98b2\">Using Deep Learning for Segmentation and Counting within Microscopy Data</a>",
+    "authors": "**CX Hern\u00e1ndez**, MM Sultan, V Pande",
+    "journal": "arXiv",
+    "year": 2018,
+    "citations": 36,
+    "semanticScholarUrl": "https://www.semanticscholar.org/paper/e897a9ce6f194f0e420f58c1e7fdb565ee9b98b2",
+    "figureUrl": null,
+    "fallbackGradient": "linear-gradient(135deg, #b31b1b, #c62828)",
+    "externalIds": {
+      "ArXiv": "1802.10548",
+      "DBLP": "journals/corr/abs-1802-10548",
+      "MAG": "2788075919",
+      "CorpusId": 3656770
+    },
+    "isOpenAccess": null,
+    "index": 7
+  },
+  {
+    "paperId": "2af2418514316bb1ac4a84cb206f54d84c754c9a",
+    "title": "MDEntropy: Information-Theoretic Analyses for Molecular Dynamics",
+    "titleHtml": "<a href=\"https://www.semanticscholar.org/paper/2af2418514316bb1ac4a84cb206f54d84c754c9a\">MDEntropy: Information-Theoretic Analyses for Molecular Dynamics</a>",
+    "authors": "**CX Hern\u00e1ndez**, V Pande",
+    "journal": "Journal of Open Source Software",
+    "year": 2017,
+    "citations": 16,
+    "semanticScholarUrl": "https://www.semanticscholar.org/paper/2af2418514316bb1ac4a84cb206f54d84c754c9a",
+    "figureUrl": null,
+    "fallbackGradient": "linear-gradient(135deg, #1565c0, #1976d2)",
+    "externalIds": {
+      "DBLP": "journals/jossw/HernandezP17",
+      "MAG": "2769989333",
+      "DOI": "10.21105/JOSS.00427",
+      "CorpusId": 53228688
+    },
+    "isOpenAccess": null,
+    "index": 8
+  },
+  {
+    "paperId": "086e49dcb9116240d4b77e1f366dd6104dfa0402",
+    "title": "MSMExplorer: Data Visualizations for Biomolecular Dynamics",
+    "titleHtml": "<a href=\"https://www.semanticscholar.org/paper/086e49dcb9116240d4b77e1f366dd6104dfa0402\">MSMExplorer: Data Visualizations for Biomolecular Dynamics</a>",
+    "authors": "**CX Hern\u00e1ndez**, M Harrigan, MM Sultan, ...",
+    "journal": "Journal of Open Source Software",
+    "year": 2017,
+    "citations": 12,
+    "semanticScholarUrl": "https://www.semanticscholar.org/paper/086e49dcb9116240d4b77e1f366dd6104dfa0402",
+    "figureUrl": null,
+    "fallbackGradient": "linear-gradient(135deg, #1565c0, #1976d2)",
+    "externalIds": {
+      "MAG": "2604232410",
+      "DBLP": "journals/jossw/HernandezHSP17",
+      "DOI": "10.21105/JOSS.00188",
+      "CorpusId": 53227712
+    },
+    "isOpenAccess": null,
+    "index": 9
+  },
+  {
+    "paperId": "6263c9498dc41e9f466478bda26996b3f3bbb70e",
+    "title": "Kinetic Machine Learning Unravels Ligand-Directed Conformational Change of \u03bc Opioid Receptor",
+    "titleHtml": "<a href=\"https://www.semanticscholar.org/paper/6263c9498dc41e9f466478bda26996b3f3bbb70e\">Kinetic Machine Learning Unravels Ligand-Directed Conformational Change of \u03bc Opioid Receptor</a>",
+    "authors": "EN Feinberg, A Farimani, **CX Hern\u00e1ndez**, ...",
+    "journal": "Biorxiv",
+    "year": 2017,
+    "citations": 10,
+    "semanticScholarUrl": "https://www.semanticscholar.org/paper/6263c9498dc41e9f466478bda26996b3f3bbb70e",
+    "figureUrl": null,
+    "fallbackGradient": "linear-gradient(135deg, #ff6f00, #ff8f00)",
+    "externalIds": {
+      "MAG": "2951348785",
+      "DOI": "10.1101/170886",
+      "CorpusId": 196638248
+    },
+    "isOpenAccess": null,
+    "index": 10
+  },
+  {
+    "paperId": "a8fee9b612f5da5ff94cb7126bbea8b89bb730e3",
+    "title": "Modelling Intrinsically Disordered Protein Dynamics as Networks of Transient Secondary Structure",
+    "titleHtml": "<a href=\"https://www.semanticscholar.org/paper/a8fee9b612f5da5ff94cb7126bbea8b89bb730e3\">Modelling Intrinsically Disordered Protein Dynamics as Networks of Transient Secondary Structure</a>",
+    "authors": "H Wayment-Steele, **CX Hern\u00e1ndez**, V Pande",
+    "journal": "Biorxiv",
+    "year": 2018,
+    "citations": 4,
+    "semanticScholarUrl": "https://www.semanticscholar.org/paper/a8fee9b612f5da5ff94cb7126bbea8b89bb730e3",
+    "figureUrl": null,
+    "fallbackGradient": "linear-gradient(135deg, #ff6f00, #ff8f00)",
+    "externalIds": {
+      "MAG": "2883548523",
+      "DOI": "10.1101/377564",
+      "CorpusId": 92593258
+    },
+    "isOpenAccess": null,
+    "index": 11
+  },
+  {
+    "paperId": "2097c9f269038d4f2662aa38e63bcce436b35b1b",
+    "title": "Understanding the Origins of a Pandemic Virus",
+    "titleHtml": "<a href=\"https://www.semanticscholar.org/paper/2097c9f269038d4f2662aa38e63bcce436b35b1b\">Understanding the Origins of a Pandemic Virus</a>",
+    "authors": "**CX Hern\u00e1ndez**, J Chan, H Khiabanian, ...",
+    "journal": "arXiv",
+    "year": 2011,
+    "citations": 2,
+    "semanticScholarUrl": "https://www.semanticscholar.org/paper/2097c9f269038d4f2662aa38e63bcce436b35b1b",
+    "figureUrl": null,
+    "fallbackGradient": "linear-gradient(135deg, #b31b1b, #c62828)",
+    "externalIds": {
+      "MAG": "1546678965",
+      "ArXiv": "1104.4568",
+      "DOI": "10.7916/D8X35385",
+      "CorpusId": 14642106
+    },
+    "isOpenAccess": null,
+    "index": 12
+  }
+]
