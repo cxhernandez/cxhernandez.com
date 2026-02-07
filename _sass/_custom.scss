@@ -516,12 +516,13 @@ section#Publications.parallax {
 section#About {
   .about-layout {
     display: flex;
-    align-items: flex-start;
+    align-items: stretch;
     gap: 40px;
 
     .profile-container {
       flex-shrink: 0;
       margin: 0;
+      display: flex;
     }
 
     .about-text {
@@ -543,7 +544,7 @@ div.profile-image {
   background: url(../images/profile.jpg);
   background-position: 50% 0;
   background-size: cover;
-  padding-bottom: 375px;
+  height: 100%;
   width: 300px;
   background-repeat: no-repeat;
 }
@@ -1853,7 +1854,6 @@ section#Publications {
 
   div.profile-image {
     width: 250px;
-    padding-bottom: 312px;
   }
 
   div.profile-container {
