@@ -44,6 +44,12 @@ except ImportError:
     REQUESTS_AVAILABLE = False
 
 try:
+    from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_exception_type, before_sleep_log
+    TENACITY_AVAILABLE = True
+except ImportError:
+    TENACITY_AVAILABLE = False
+
+try:
     import markdown
     from weasyprint import CSS, HTML
     WEASYPRINT_AVAILABLE = True
@@ -478,14 +484,27 @@ def clean_journal_name(venue, external_ids=None, doi=None):
     return title_case(venue.strip())
 
 
-def get_author_publications(author_id, max_retries=3, backoff_factor=2):
+def _get_semantic_scholar_headers():
+    """Get headers for Semantic Scholar API, including API key if available."""
+    headers = {}
+    api_key = os.environ.get('SEMANTIC_SCHOLAR_API_KEY')
+    if api_key:
+        headers['x-api-key'] = api_key
+    return headers
+
+
+def get_author_publications(author_id, max_retries=5, backoff_factor=4):
     """Fetch author publications from Semantic Scholar API."""
     if not REQUESTS_AVAILABLE:
-        logger.error("requests library is required for this command. Install with: pip install requests")
+        logger.error("requests library is required for this command. Install with: conda install requests")
+        sys.exit(1)
+    if not TENACITY_AVAILABLE:
+        logger.error("tenacity library is required for this command. Install with: conda install tenacity")
         sys.exit(1)
 
     base_url = "https://api.semanticscholar.org/graph/v1/author"
     url = f"{base_url}/{author_id}"
+    headers = _get_semantic_scholar_headers()
 
     params = {
         "fields": "authorId,name,papers.title,papers.paperId,papers.year,"
@@ -493,24 +512,28 @@ def get_author_publications(author_id, max_retries=3, backoff_factor=2):
                  "papers.externalIds,papers.openAccessPdf"
     }
 
-    for attempt in range(max_retries):
-        try:
-            logger.info(f"Fetching publications for author {author_id} (attempt {attempt + 1}/{max_retries})")
-
-            response = requests.get(url, params=params, timeout=10)
-            response.raise_for_status()
-
-            logger.info("Successfully fetched publication data from Semantic Scholar")
-            return response.json()
-
-        except Exception as e:
-            wait_time = backoff_factor ** attempt
-            if attempt < max_retries - 1:
-                logger.warning(f"Attempt {attempt + 1} failed: {e}. Retrying in {wait_time}s...")
+    @retry(
+        stop=stop_after_attempt(max_retries),
+        wait=wait_exponential(multiplier=1, min=backoff_factor, max=60),
+        retry=retry_if_exception_type(requests.exceptions.RequestException),
+        before_sleep=before_sleep_log(logger, logging.WARNING),
+        reraise=True,
+    )
+    def _fetch():
+        response = requests.get(url, params=params, headers=headers, timeout=10)
+        if response.status_code == 429:
+            retry_after = response.headers.get('Retry-After')
+            if retry_after:
+                wait_time = int(retry_after)
+                logger.warning(f"Rate limited, Retry-After: {wait_time}s")
                 time.sleep(wait_time)
-            else:
-                logger.error(f"Failed to fetch publications after {max_retries} attempts: {e}")
-                raise
+        response.raise_for_status()
+        return response.json()
+
+    logger.info(f"Fetching publications for author {author_id}")
+    result = _fetch()
+    logger.info("Successfully fetched publication data from Semantic Scholar")
+    return result
 
 
 def normalize_title(title):
@@ -543,40 +566,28 @@ def is_preprint(external_ids, venue):
     return False
 
 
-def get_table(author_data, bold_author_name=None):
-    """Parse author data and create publication table.
+def consolidate_papers(papers, merge_external_ids=False):
+    """Group papers by normalized title and consolidate preprint + published versions.
 
     Args:
-        author_data: Author data from Semantic Scholar API
-        bold_author_name: Optional author name to bold in the output (for HTML/markdown)
+        papers: List of paper dicts from Semantic Scholar API.
+        merge_external_ids: If True, merge externalIds from all versions into the
+            consolidated paper (useful for lookups by DOI/ArXiv).
+
+    Returns:
+        List of consolidated paper dicts with summed citation counts.
     """
-    if not PANDAS_AVAILABLE:
-        logger.error("pandas library is required for this command. Install with: pip install pandas")
-        sys.exit(1)
-
-    papers = author_data.get('papers', [])
-
-    if not papers:
-        logger.warning("No papers found for this author")
-        return pd.DataFrame()
-
-    # Group papers by normalized title to detect duplicates (preprint + published)
     papers_by_title = {}
 
     for paper in papers:
-        # Skip papers without basic info
         if not paper.get('title') or not paper.get('paperId'):
             continue
 
-        # Filter out conference abstracts and Zenodo releases
         external_ids = paper.get('externalIds', {})
         doi = external_ids.get('DOI') if external_ids else None
 
-        # Skip Zenodo software releases
         if doi and 'zenodo' in doi.lower():
             continue
-
-        # Skip Biophysical Journal conference abstracts
         if doi and 'j.bpj.' in doi.lower() and len(doi.split('.')) >= 5:
             continue
 
@@ -587,15 +598,12 @@ def get_table(author_data, bold_author_name=None):
 
         papers_by_title[normalized_title].append(paper)
 
-    # Process grouped papers: consolidate preprints with published versions
     consolidated_papers = []
 
     for normalized_title, paper_group in papers_by_title.items():
         if len(paper_group) == 1:
-            # Single paper, use as-is
             consolidated_papers.append(paper_group[0])
         else:
-            # Multiple papers with same title - likely preprint + published
             preprints = []
             published = []
 
@@ -608,27 +616,47 @@ def get_table(author_data, bold_author_name=None):
                 else:
                     published.append(paper)
 
-            # Prefer published version for metadata, sum citations
-            if published:
-                # Use the first published version as base
-                base_paper = published[0]
-            else:
-                # All are preprints, use the first one
-                base_paper = paper_group[0]
+            base_paper = published[0] if published else paper_group[0]
 
-            # Sum citations from all versions
             total_citations = sum(p.get('citationCount', 0) for p in paper_group)
 
-            # Create consolidated paper with summed citations
             consolidated = dict(base_paper)
             consolidated['citationCount'] = total_citations
 
+            if merge_external_ids:
+                all_external_ids = {}
+                for p in paper_group:
+                    if p.get('externalIds'):
+                        all_external_ids.update(p['externalIds'])
+                consolidated['externalIds'] = all_external_ids
+
             consolidated_papers.append(consolidated)
 
-            # Log consolidation
             if len(paper_group) > 1:
                 logger.info(f"Consolidated {len(paper_group)} versions of '{base_paper.get('title', '')[:50]}...' "
                            f"(total citations: {total_citations})")
+
+    return consolidated_papers
+
+
+def get_table(author_data, bold_author_name=None):
+    """Parse author data and create publication table.
+
+    Args:
+        author_data: Author data from Semantic Scholar API
+        bold_author_name: Optional author name to bold in the output (for HTML/markdown)
+    """
+    if not PANDAS_AVAILABLE:
+        logger.error("pandas library is required for this command. Install with: conda install pandas")
+        sys.exit(1)
+
+    papers = author_data.get('papers', [])
+
+    if not papers:
+        logger.warning("No papers found for this author")
+        return pd.DataFrame()
+
+    consolidated_papers = consolidate_papers(papers)
 
     # Build lists for DataFrame
     titles = []
@@ -1234,7 +1262,7 @@ def get_publication_list_extended(author_data, bold_author_name=None, with_figur
         List of publication dictionaries with extended metadata
     """
     if not PANDAS_AVAILABLE:
-        logger.error("pandas library is required for this command. Install with: pip install pandas")
+        logger.error("pandas library is required for this command. Install with: conda install pandas")
         sys.exit(1)
 
     papers = author_data.get('papers', [])
@@ -1246,68 +1274,7 @@ def get_publication_list_extended(author_data, bold_author_name=None, with_figur
     # Load figure cache
     figure_cache = load_figure_cache(cache_file) if with_figures else {}
 
-    # Group papers by normalized title to detect duplicates (preprint + published)
-    papers_by_title = {}
-
-    for paper in papers:
-        # Skip papers without basic info
-        if not paper.get('title') or not paper.get('paperId'):
-            continue
-
-        # Filter out conference abstracts and Zenodo releases
-        external_ids = paper.get('externalIds', {})
-        doi = external_ids.get('DOI') if external_ids else None
-
-        # Skip Zenodo software releases
-        if doi and 'zenodo' in doi.lower():
-            continue
-
-        # Skip Biophysical Journal conference abstracts
-        if doi and 'j.bpj.' in doi.lower() and len(doi.split('.')) >= 5:
-            continue
-
-        normalized_title = normalize_title(paper['title'])
-
-        if normalized_title not in papers_by_title:
-            papers_by_title[normalized_title] = []
-
-        papers_by_title[normalized_title].append(paper)
-
-    # Process grouped papers: consolidate preprints with published versions
-    consolidated_papers = []
-
-    for normalized_title, paper_group in papers_by_title.items():
-        if len(paper_group) == 1:
-            consolidated_papers.append(paper_group[0])
-        else:
-            preprints = []
-            published = []
-
-            for paper in paper_group:
-                external_ids = paper.get('externalIds', {})
-                venue = paper.get('venue', '')
-
-                if is_preprint(external_ids, venue):
-                    preprints.append(paper)
-                else:
-                    published.append(paper)
-
-            if published:
-                base_paper = published[0]
-            else:
-                base_paper = paper_group[0]
-
-            # Sum citations and collect all external IDs
-            total_citations = sum(p.get('citationCount', 0) for p in paper_group)
-            all_external_ids = {}
-            for p in paper_group:
-                if p.get('externalIds'):
-                    all_external_ids.update(p['externalIds'])
-
-            consolidated = dict(base_paper)
-            consolidated['citationCount'] = total_citations
-            consolidated['externalIds'] = all_external_ids
-            consolidated_papers.append(consolidated)
+    consolidated_papers = consolidate_papers(papers, merge_external_ids=True)
 
     # Build publication list
     publications = []
@@ -1559,13 +1526,17 @@ class SemanticScholarAPI:
 
     BASE_URL = "https://api.semanticscholar.org/graph/v1/paper"
 
-    def __init__(self, max_retries=3, backoff_factor=2, author_id=None):
+    def __init__(self, max_retries=5, backoff_factor=4, author_id=None):
         if not REQUESTS_AVAILABLE:
-            logger.error("requests library is required for this command. Install with: pip install requests")
+            logger.error("requests library is required for this command. Install with: conda install requests")
+            sys.exit(1)
+        if not TENACITY_AVAILABLE:
+            logger.error("tenacity library is required for this command. Install with: conda install tenacity")
             sys.exit(1)
         self.max_retries = max_retries
         self.backoff_factor = backoff_factor
         self.author_id = author_id
+        self.headers = _get_semantic_scholar_headers()
         self._citation_cache = {}  # Cache for consolidated citation counts
 
     def _build_citation_cache(self):
@@ -1657,35 +1628,38 @@ class SemanticScholarAPI:
         url = f"{self.BASE_URL}/{paper_id}"
         params = {"fields": "citationCount"}
 
-        for attempt in range(self.max_retries):
-            try:
-                response = requests.get(url, params=params, timeout=10)
-                response.raise_for_status()
-
-                data = response.json()
-                citation_count = data.get('citationCount', 0)
-                logger.info(f"Found {citation_count} citations for {paper_id}")
-                return citation_count
-
-            except requests.exceptions.HTTPError as e:
-                if e.response.status_code == 404:
-                    logger.warning(f"Paper not found: {paper_id}")
-                    return None
-                wait_time = self.backoff_factor ** attempt
-                if attempt < self.max_retries - 1:
-                    logger.warning(f"Attempt {attempt + 1} failed: {e}. Retrying in {wait_time}s...")
+        @retry(
+            stop=stop_after_attempt(self.max_retries),
+            wait=wait_exponential(multiplier=1, min=self.backoff_factor, max=60),
+            before_sleep=before_sleep_log(logger, logging.WARNING),
+            retry=retry_if_exception_type(requests.exceptions.RequestException),
+            reraise=True,
+        )
+        def _fetch():
+            response = requests.get(url, params=params, headers=self.headers, timeout=10)
+            if response.status_code == 429:
+                retry_after = response.headers.get('Retry-After')
+                if retry_after:
+                    wait_time = int(retry_after)
+                    logger.warning(f"Rate limited, Retry-After: {wait_time}s")
                     time.sleep(wait_time)
-                else:
-                    logger.error(f"Failed to fetch citation count after {self.max_retries} attempts: {e}")
-                    return None
-            except Exception as e:
-                wait_time = self.backoff_factor ** attempt
-                if attempt < self.max_retries - 1:
-                    logger.warning(f"Attempt {attempt + 1} failed: {e}. Retrying in {wait_time}s...")
-                    time.sleep(wait_time)
-                else:
-                    logger.error(f"Failed to fetch citation count after {self.max_retries} attempts: {e}")
-                    return None
+            response.raise_for_status()
+            return response.json()
+
+        try:
+            data = _fetch()
+            citation_count = data.get('citationCount', 0)
+            logger.info(f"Found {citation_count} citations for {paper_id}")
+            return citation_count
+        except requests.exceptions.HTTPError as e:
+            if e.response.status_code == 404:
+                logger.warning(f"Paper not found: {paper_id}")
+            else:
+                logger.error(f"Failed to fetch citation count: {e}")
+            return None
+        except Exception as e:
+            logger.error(f"Failed to fetch citation count: {e}")
+            return None
 
 
 class GitHubAPI:
@@ -1693,9 +1667,12 @@ class GitHubAPI:
 
     BASE_URL = "https://api.github.com/repos"
 
-    def __init__(self, max_retries=3, backoff_factor=2):
+    def __init__(self, max_retries=5, backoff_factor=4):
         if not REQUESTS_AVAILABLE:
-            logger.error("requests library is required for this command. Install with: pip install requests")
+            logger.error("requests library is required for this command. Install with: conda install requests")
+            sys.exit(1)
+        if not TENACITY_AVAILABLE:
+            logger.error("tenacity library is required for this command. Install with: conda install tenacity")
             sys.exit(1)
         self.max_retries = max_retries
         self.backoff_factor = backoff_factor
@@ -1704,37 +1681,40 @@ class GitHubAPI:
         """Get repository statistics (stars, forks)."""
         url = f"{self.BASE_URL}/{owner}/{repo}"
 
-        for attempt in range(self.max_retries):
-            try:
-                logger.info(f"Fetching stats for {owner}/{repo} (attempt {attempt + 1}/{self.max_retries})")
-                response = requests.get(url, timeout=10)
-                response.raise_for_status()
-
-                data = response.json()
-                stars = data.get('stargazers_count', 0)
-                forks = data.get('forks_count', 0)
-                logger.info(f"Found {stars} stars and {forks} forks for {owner}/{repo}")
-                return {"stars": stars, "forks": forks}
-
-            except requests.exceptions.HTTPError as e:
-                if e.response.status_code == 404:
-                    logger.warning(f"Repository not found: {owner}/{repo}")
-                    return None
-                wait_time = self.backoff_factor ** attempt
-                if attempt < self.max_retries - 1:
-                    logger.warning(f"Attempt {attempt + 1} failed: {e}. Retrying in {wait_time}s...")
+        @retry(
+            stop=stop_after_attempt(self.max_retries),
+            wait=wait_exponential(multiplier=1, min=self.backoff_factor, max=60),
+            before_sleep=before_sleep_log(logger, logging.WARNING),
+            retry=retry_if_exception_type(requests.exceptions.RequestException),
+            reraise=True,
+        )
+        def _fetch():
+            response = requests.get(url, timeout=10)
+            if response.status_code == 429:
+                retry_after = response.headers.get('Retry-After')
+                if retry_after:
+                    wait_time = int(retry_after)
+                    logger.warning(f"Rate limited, Retry-After: {wait_time}s")
                     time.sleep(wait_time)
-                else:
-                    logger.error(f"Failed to fetch repo stats after {self.max_retries} attempts: {e}")
-                    return None
-            except Exception as e:
-                wait_time = self.backoff_factor ** attempt
-                if attempt < self.max_retries - 1:
-                    logger.warning(f"Attempt {attempt + 1} failed: {e}. Retrying in {wait_time}s...")
-                    time.sleep(wait_time)
-                else:
-                    logger.error(f"Failed to fetch repo stats after {self.max_retries} attempts: {e}")
-                    return None
+            response.raise_for_status()
+            return response.json()
+
+        logger.info(f"Fetching stats for {owner}/{repo}")
+        try:
+            data = _fetch()
+            stars = data.get('stargazers_count', 0)
+            forks = data.get('forks_count', 0)
+            logger.info(f"Found {stars} stars and {forks} forks for {owner}/{repo}")
+            return {"stars": stars, "forks": forks}
+        except requests.exceptions.HTTPError as e:
+            if e.response.status_code == 404:
+                logger.warning(f"Repository not found: {owner}/{repo}")
+            else:
+                logger.error(f"Failed to fetch repo stats: {e}")
+            return None
+        except Exception as e:
+            logger.error(f"Failed to fetch repo stats: {e}")
+            return None
 
 
 class CVUpdater:
@@ -2058,7 +2038,7 @@ def cmd_generate_pdf(args):
     """Generate PDF version of CV from markdown using WeasyPrint."""
     if not WEASYPRINT_AVAILABLE:
         logger.error("weasyprint and markdown libraries are required for this command.")
-        logger.error("Install with: pip install weasyprint markdown")
+        logger.error("Install with: conda install weasyprint markdown")
         sys.exit(1)
 
     try:

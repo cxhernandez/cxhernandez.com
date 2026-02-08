@@ -37,7 +37,9 @@ const config: Configuration = {
   entry: {
     main: './_typescript/src/main.ts',
     'password-verification': './_typescript/src/password-verification.ts',
-    'publications-carousel': './_typescript/src/publications-carousel.ts'
+    'publications-carousel': './_typescript/src/publications-carousel.ts',
+    'store': './_typescript/src/store.ts',
+    'photography-carousel': './_typescript/src/photography-carousel.ts'
   },
   plugins: [
     new webpack.DefinePlugin({
