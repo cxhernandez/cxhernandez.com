@@ -102,7 +102,7 @@ async function checkPassword(e: Event): Promise<boolean> {
     sessionStorage.setItem('store_access', 'granted');
     unlockStore();
   } else {
-    error.style.display = 'block';
+    error.classList.remove('is-hidden');
     input.value = '';
     input.focus();
   }
@@ -117,8 +117,8 @@ function setupPasswordInputListener(): void {
   if (input && error) {
     input.addEventListener('input', async function () {
       // Clear any previous error
-      if (error.style.display !== 'none') {
-        error.style.display = 'none';
+      if (!error.classList.contains('is-hidden')) {
+        error.classList.add('is-hidden');
       }
       // Check if password matches
       if (input.value) {
@@ -128,6 +128,14 @@ function setupPasswordInputListener(): void {
           unlockStore();
         }
       }
+    });
+  }
+
+  // Form submit handler
+  const form = document.getElementById('password-form');
+  if (form) {
+    form.addEventListener('submit', function (e: Event) {
+      checkPassword(e);
     });
   }
 }
@@ -143,7 +151,7 @@ function checkAccess(): void {
     console.warn('Store is running in OPEN ACCESS mode (no password protection)');
     injectStoreContent();
     gate.style.display = 'none';
-    store.style.display = 'block';
+    store.classList.remove('is-hidden');
     return;
   }
 
@@ -151,20 +159,21 @@ function checkAccess(): void {
   if (sessionStorage.getItem('store_access') === 'granted') {
     injectStoreContent();
     gate.style.display = 'none';
-    store.style.display = 'block';
+    store.classList.remove('is-hidden');
   }
 }
 
-// Initialize password input listener when DOM is ready
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', setupPasswordInputListener);
-} else {
+// Initialize on DOM ready
+function init(): void {
   setupPasswordInputListener();
+  checkAccess();
 }
 
-// Export functions that may be called from HTML
-(window as any).checkPassword = checkPassword;
-(window as any).checkAccess = checkAccess;
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', init);
+} else {
+  init();
+}
 
 // Export to make this a module
 export {};

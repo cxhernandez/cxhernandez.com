@@ -8,292 +8,33 @@ hide_nav: true
     <div class="password-gate-wrapper">
         <div class="password-gate-content">
             <h2>Coming Soon...</h2>
-            <form id="password-form" onsubmit="return checkPassword(event)">
+            <form id="password-form">
                 <input type="password" id="password-input" placeholder="Enter password" autocomplete="off">
             </form>
-            <p id="password-error" class="password-error" role="alert" aria-live="polite" style="display: none;">Incorrect password</p>
+            <p id="password-error" class="password-error is-hidden" role="alert" aria-live="polite">Incorrect password</p>
         </div>
         <p class="password-gate-back"><a href="/#Photography" class="back-link">&larr; Back</a></p>
     </div>
 </div>
 
 <!-- Checkout Modal -->
-<style>
-    @keyframes checkout-spin {
-        to { transform: rotate(360deg); }
-    }
-</style>
-<div id="checkout-modal" class="checkout-modal" style="display: none;" role="dialog" aria-modal="true" aria-label="Square Checkout">
+<div id="checkout-modal" class="checkout-modal is-hidden" role="dialog" aria-modal="true" aria-label="Square Checkout">
     <div class="checkout-modal-backdrop"></div>
     <div class="checkout-modal-content">
         <button class="checkout-modal-close" aria-label="Close checkout">&times;</button>
-        <div id="checkout-loading" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #fff;">
-            <div style="width: 48px; height: 48px; border: 4px solid #e0e0e0; border-top-color: #000; border-radius: 50%; animation: checkout-spin 0.8s linear infinite;"></div>
-            <p style="margin-top: 16px; color: #666;">Loading checkout...</p>
+        <div id="checkout-loading">
+            <div class="checkout-spinner"></div>
+            <p class="checkout-spinner-text">Loading checkout...</p>
         </div>
-        <iframe id="checkout-iframe" title="Square Checkout" src="" frameborder="0" sandbox="allow-scripts allow-forms allow-same-origin allow-popups allow-popups-to-escape-sandbox" style="display: none;"></iframe>
+        <iframe id="checkout-iframe" class="is-hidden" title="Square Checkout" src="" frameborder="0" sandbox="allow-scripts allow-forms allow-same-origin allow-popups allow-popups-to-escape-sandbox"></iframe>
     </div>
 </div>
 
 <!-- Store content is injected dynamically after password verification -->
 <!-- This prevents viewing store content in page source -->
-<div id="store-main" style="display: none;">
+<div id="store-main" class="is-hidden">
     <!-- Content loaded via password-verification.bundle.js -->
 </div>
 
 <script src="/static/js/dist/password-verification.bundle.js"></script>
-
-<script>
-
-    // HTML escaping to prevent XSS
-    function escapeHtml(str) {
-        if (!str) return '';
-        const div = document.createElement('div');
-        div.textContent = str;
-        return div.innerHTML;
-    }
-
-    // Allowed domains for checkout iframe
-    const ALLOWED_CHECKOUT_DOMAINS = ['square.link'];
-
-    // Validate checkout URL before loading in iframe
-    function isValidCheckoutUrl(url) {
-        try {
-            const parsed = new URL(url);
-            return ALLOWED_CHECKOUT_DOMAINS.some(domain => parsed.hostname === domain || parsed.hostname.endsWith('.' + domain));
-        } catch {
-            return false;
-        }
-    }
-
-    // Modal functions
-    function openCheckoutModal(url) {
-        // Security: only allow whitelisted domains in iframe
-        if (!isValidCheckoutUrl(url)) {
-            console.error('Blocked checkout URL from untrusted domain:', url);
-            return;
-        }
-
-        const modal = document.getElementById('checkout-modal');
-        const iframe = document.getElementById('checkout-iframe');
-        const loading = document.getElementById('checkout-loading');
-
-        // Show loading state
-        loading.style.display = 'flex';
-        iframe.style.display = 'none';
-
-        // Load the checkout URL
-        iframe.src = url;
-        modal.style.display = 'flex';
-        document.body.style.overflow = 'hidden';
-
-        // Hide loading when iframe loads
-        iframe.onload = function() {
-            loading.style.display = 'none';
-            iframe.style.display = 'block';
-        };
-    }
-
-    function closeCheckoutModal() {
-        const modal = document.getElementById('checkout-modal');
-        const iframe = document.getElementById('checkout-iframe');
-        const loading = document.getElementById('checkout-loading');
-
-        modal.style.display = 'none';
-        iframe.src = '';
-        iframe.style.display = 'none';
-        loading.style.display = 'flex';
-        document.body.style.overflow = '';
-    }
-
-    // Check for success parameter in URL
-    function checkForSuccess() {
-        const params = new URLSearchParams(window.location.search);
-        if (params.get('success') === 'true') {
-            document.getElementById('success-message').style.display = 'block';
-            // Clean up URL
-            window.history.replaceState({}, '', window.location.pathname);
-        }
-    }
-
-    // Format price for display
-    function formatPrice(entry) {
-        // Use structured price data if available
-        const priceMin = entry.price_min;
-        const priceMax = entry.price_max;
-
-        if (priceMin != null && priceMax != null) {
-            if (priceMin === priceMax) {
-                return `$${priceMin.toFixed(2)}`;
-            } else {
-                return `$${priceMin.toFixed(2)} – $${priceMax.toFixed(2)}`;
-            }
-        }
-
-        // Fallback to price_display string
-        return entry.price_display || '';
-    }
-
-    // Handle image load errors with placeholder
-    function handleImageError(img) {
-        const placeholder = document.createElement('div');
-        placeholder.className = 'product-card-image-placeholder';
-        placeholder.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>';
-        img.parentNode.replaceChild(placeholder, img);
-    }
-
-    // Render image area (emoji preferred, then image, then placeholder)
-    function renderImageArea(entry, altText) {
-        if (entry.emoji) {
-            return `<div class="product-card-emoji" aria-hidden="true">${entry.emoji}</div>`;
-        }
-        if (entry.image) {
-            return `<img src="${escapeHtml(entry.image)}" alt="${escapeHtml(altText)}" onerror="handleImageError(this)" class="product-card-image" loading="lazy">`;
-        }
-        return '<div class="product-card-image-placeholder"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg></div>';
-    }
-
-    // Render a product card
-    function renderProductCard(entry, index, type) {
-        const url = escapeHtml(entry.url) || '#';
-        const name = escapeHtml(entry.name) || `${type} ${index + 1}`;
-        const price = escapeHtml(formatPrice(entry));
-        const description = escapeHtml(entry.description) || '';
-        const icon = escapeHtml(entry.icon) || '';
-
-        // Build descriptive alt text
-        const altText = type === 'Print'
-            ? `${name} - photography print`
-            : `${name} - photography service`;
-
-        // Add size hint for prints with price ranges
-        const priceMin = entry.price_min;
-        const priceMax = entry.price_max;
-        const hasSizeOptions = type === 'Print' && priceMin != null && priceMax != null && priceMin !== priceMax;
-        const sizeHint = hasSizeOptions ? '<span class="product-card-size-hint">Multiple sizes available</span>' : '';
-
-        return `
-            <a href="${url}" class="product-card" onclick="openCheckoutModal('${url}'); return false;">
-                ${renderImageArea(entry, altText)}
-                <div class="product-card-body">
-                    ${icon ? `<div class="product-card-icon" aria-hidden="true">${icon}</div>` : ''}
-                    <p class="product-card-name">${name}</p>
-                    ${price ? `<p class="product-card-price">${sizeHint}${price}</p>` : ''}
-                    ${description ? `<p class="product-card-description">${description}</p>` : ''}
-                </div>
-            </a>
-        `;
-    }
-
-    // Show error state for the entire store
-    function showStoreError(message) {
-        const storeSections = document.querySelector('.store-sections');
-        if (storeSections) {
-            storeSections.innerHTML = `
-                <div class="store-error">
-                    <p>${escapeHtml(message)}</p>
-                    <button onclick="loadInventory()" class="retry-button">Try Again</button>
-                    <p class="store-error-fallback">Or <a href="/#Photography">&larr; return to Photography</a></p>
-                </div>
-            `;
-        }
-    }
-
-    // Generate skeleton loading cards
-    function renderSkeletonCards(count) {
-        const skeletonCard = `
-            <div class="skeleton-card" aria-hidden="true">
-                <div class="skeleton-image"></div>
-                <div class="skeleton-body">
-                    <div class="skeleton-text skeleton-title"></div>
-                    <div class="skeleton-text skeleton-price"></div>
-                    <div class="skeleton-text skeleton-button"></div>
-                </div>
-            </div>
-        `;
-        return `<div class="skeleton-grid">${skeletonCard.repeat(count)}</div>`;
-    }
-
-    // Inventory version for cache control (update when inventory changes)
-    const INVENTORY_VERSION = '1';
-
-    // Load inventory from local JSON and render
-    async function loadInventory() {
-        const printsGrid = document.getElementById('prints-grid');
-        const servicesGrid = document.getElementById('services-grid');
-
-        // Show skeleton loaders
-        if (printsGrid) printsGrid.innerHTML = renderSkeletonCards(3);
-        if (servicesGrid) servicesGrid.innerHTML = renderSkeletonCards(2);
-
-        try {
-            // Use version-based cache control
-            const response = await fetch('/static/files/store/inventory.json?v=' + INVENTORY_VERSION);
-            if (!response.ok) {
-                showStoreError('Unable to load store inventory. Please try again.');
-                return;
-            }
-
-            const data = await response.json();
-
-            // Check if we have any products at all
-            const hasPrints = data.prints && data.prints.length > 0;
-            const hasServices = data.services && data.services.length > 0;
-
-            if (!hasPrints && !hasServices) {
-                showStoreError('No products are currently available.');
-                return;
-            }
-
-            // Render prints
-            if (hasPrints) {
-                printsGrid.innerHTML = data.prints.map((p, i) => {
-                    const entry = (typeof p === 'string') ? { url: p } : p || {};
-                    return renderProductCard(entry, i, 'Print');
-                }).join('');
-            } else {
-                printsGrid.innerHTML = '<p class="no-prints">No prints available at this time.</p>';
-            }
-
-            // Render services
-            if (hasServices) {
-                servicesGrid.innerHTML = data.services.map((s, i) => {
-                    const entry = (typeof s === 'string') ? { url: s } : s || {};
-                    return renderProductCard(entry, i, 'Service');
-                }).join('');
-            } else {
-                servicesGrid.innerHTML = '<p class="no-services">No services available at this time.</p>';
-            }
-        } catch (error) {
-            console.error('Failed to load inventory:', error);
-            showStoreError('Failed to load store. Please check your connection and try again.');
-        }
-    }
-
-    // Initialize store functionality after content is loaded
-    function initializeStore() {
-        checkForSuccess();
-        loadInventory();
-
-        // Modal close handlers
-        const closeBtn = document.querySelector('.checkout-modal-close');
-        const backdrop = document.querySelector('.checkout-modal-backdrop');
-
-        if (closeBtn) closeBtn.addEventListener('click', closeCheckoutModal);
-        if (backdrop) backdrop.addEventListener('click', closeCheckoutModal);
-
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') {
-                closeCheckoutModal();
-            }
-        });
-    }
-
-    // Listen for store content to be injected
-    document.addEventListener('storeContentLoaded', initializeStore);
-
-    // Check access on page load (will inject content if authorized)
-    document.addEventListener('DOMContentLoaded', function() {
-        checkAccess();
-    });
-</script>
+<script src="/static/js/dist/store.bundle.js"></script>
