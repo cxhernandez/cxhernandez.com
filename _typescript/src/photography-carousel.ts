@@ -183,10 +183,12 @@ async function initCarousel(): Promise<void> {
   }
 }
 
-// Attach button listeners
+// Attach button listeners (scoped to .photo-carousel to avoid conflicts with other carousels)
 function initButtons(): void {
-  document.querySelector('.carousel-prev')?.addEventListener('click', () => moveCarousel(-1));
-  document.querySelector('.carousel-next')?.addEventListener('click', () => moveCarousel(1));
+  const carousel = document.querySelector('.photo-carousel');
+  if (!carousel) return;
+  carousel.querySelector('.carousel-prev')?.addEventListener('click', () => moveCarousel(-1));
+  carousel.querySelector('.carousel-next')?.addEventListener('click', () => moveCarousel(1));
 }
 
 // Initialize
