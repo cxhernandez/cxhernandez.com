@@ -79,8 +79,8 @@ function unlockStore(): void {
       gate.style.display = 'none';
 
       // Prepare store for fade in
+      store.classList.remove('is-hidden');
       store.style.opacity = '0';
-      store.style.display = 'block';
       store.style.transition = 'opacity 0.4s ease';
 
       // Trigger reflow, then fade in
