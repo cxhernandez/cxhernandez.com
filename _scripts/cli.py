@@ -484,7 +484,16 @@ def clean_journal_name(venue, external_ids=None, doi=None):
     return title_case(venue.strip())
 
 
-def get_author_publications(author_id, max_retries=3, backoff_factor=2):
+def _get_semantic_scholar_headers():
+    """Get headers for Semantic Scholar API, including API key if available."""
+    headers = {}
+    api_key = os.environ.get('SEMANTIC_SCHOLAR_API_KEY')
+    if api_key:
+        headers['x-api-key'] = api_key
+    return headers
+
+
+def get_author_publications(author_id, max_retries=5, backoff_factor=4):
     """Fetch author publications from Semantic Scholar API."""
     if not REQUESTS_AVAILABLE:
         logger.error("requests library is required for this command. Install with: conda install requests")
@@ -495,6 +504,7 @@ def get_author_publications(author_id, max_retries=3, backoff_factor=2):
 
     base_url = "https://api.semanticscholar.org/graph/v1/author"
     url = f"{base_url}/{author_id}"
+    headers = _get_semantic_scholar_headers()
 
     params = {
         "fields": "authorId,name,papers.title,papers.paperId,papers.year,"
@@ -504,12 +514,19 @@ def get_author_publications(author_id, max_retries=3, backoff_factor=2):
 
     @retry(
         stop=stop_after_attempt(max_retries),
-        wait=wait_exponential(multiplier=1, min=backoff_factor, max=backoff_factor ** max_retries),
+        wait=wait_exponential(multiplier=1, min=backoff_factor, max=60),
+        retry=retry_if_exception_type(requests.exceptions.RequestException),
         before_sleep=before_sleep_log(logger, logging.WARNING),
         reraise=True,
     )
     def _fetch():
-        response = requests.get(url, params=params, timeout=10)
+        response = requests.get(url, params=params, headers=headers, timeout=10)
+        if response.status_code == 429:
+            retry_after = response.headers.get('Retry-After')
+            if retry_after:
+                wait_time = int(retry_after)
+                logger.warning(f"Rate limited, Retry-After: {wait_time}s")
+                time.sleep(wait_time)
         response.raise_for_status()
         return response.json()
 
@@ -1509,7 +1526,7 @@ class SemanticScholarAPI:
 
     BASE_URL = "https://api.semanticscholar.org/graph/v1/paper"
 
-    def __init__(self, max_retries=3, backoff_factor=2, author_id=None):
+    def __init__(self, max_retries=5, backoff_factor=4, author_id=None):
         if not REQUESTS_AVAILABLE:
             logger.error("requests library is required for this command. Install with: conda install requests")
             sys.exit(1)
@@ -1519,6 +1536,7 @@ class SemanticScholarAPI:
         self.max_retries = max_retries
         self.backoff_factor = backoff_factor
         self.author_id = author_id
+        self.headers = _get_semantic_scholar_headers()
         self._citation_cache = {}  # Cache for consolidated citation counts
 
     def _build_citation_cache(self):
@@ -1612,13 +1630,19 @@ class SemanticScholarAPI:
 
         @retry(
             stop=stop_after_attempt(self.max_retries),
-            wait=wait_exponential(multiplier=1, min=self.backoff_factor, max=self.backoff_factor ** self.max_retries),
+            wait=wait_exponential(multiplier=1, min=self.backoff_factor, max=60),
             before_sleep=before_sleep_log(logger, logging.WARNING),
             retry=retry_if_exception_type(requests.exceptions.RequestException),
             reraise=True,
         )
         def _fetch():
-            response = requests.get(url, params=params, timeout=10)
+            response = requests.get(url, params=params, headers=self.headers, timeout=10)
+            if response.status_code == 429:
+                retry_after = response.headers.get('Retry-After')
+                if retry_after:
+                    wait_time = int(retry_after)
+                    logger.warning(f"Rate limited, Retry-After: {wait_time}s")
+                    time.sleep(wait_time)
             response.raise_for_status()
             return response.json()
 
@@ -1643,7 +1667,7 @@ class GitHubAPI:
 
     BASE_URL = "https://api.github.com/repos"
 
-    def __init__(self, max_retries=3, backoff_factor=2):
+    def __init__(self, max_retries=5, backoff_factor=4):
         if not REQUESTS_AVAILABLE:
             logger.error("requests library is required for this command. Install with: conda install requests")
             sys.exit(1)
@@ -1659,13 +1683,19 @@ class GitHubAPI:
 
         @retry(
             stop=stop_after_attempt(self.max_retries),
-            wait=wait_exponential(multiplier=1, min=self.backoff_factor, max=self.backoff_factor ** self.max_retries),
+            wait=wait_exponential(multiplier=1, min=self.backoff_factor, max=60),
             before_sleep=before_sleep_log(logger, logging.WARNING),
             retry=retry_if_exception_type(requests.exceptions.RequestException),
             reraise=True,
         )
         def _fetch():
             response = requests.get(url, timeout=10)
+            if response.status_code == 429:
+                retry_after = response.headers.get('Retry-After')
+                if retry_after:
+                    wait_time = int(retry_after)
+                    logger.warning(f"Rate limited, Retry-After: {wait_time}s")
+                    time.sleep(wait_time)
             response.raise_for_status()
             return response.json()
 
