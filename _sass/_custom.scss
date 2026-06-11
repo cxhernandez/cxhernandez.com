@@ -729,10 +729,11 @@ section#Photography {
 .carousel-dots {
   display: flex;
   justify-content: center;
-  gap: 8px;
+  gap: 12px;
   margin-top: 24px;
 
   .carousel-dot {
+    position: relative;
     width: 8px;
     height: 8px;
     border-radius: 50%;
@@ -740,6 +741,17 @@ section#Photography {
     cursor: pointer;
     transition: all var(--duration-base) var(--ease-out-expo);
     box-sizing: border-box;
+
+    // Expand the tap area beyond the 8px visual dot (20px fits the 12px gap without overlap)
+    &::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 20px;
+      height: 20px;
+      transform: translate(-50%, -50%);
+    }
 
     &.active {
       background: var(--accent-primary);
@@ -1371,6 +1383,18 @@ section#Publications {
       height: 32px;
     }
 
+    // Keep a 44px tap target even when the visual button shrinks on small screens
+    &::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 44px;
+      height: 44px;
+      transform: translate(-50%, -50%);
+      border-radius: 50%;
+    }
+
     svg {
       width: 20px;
       height: 20px;
@@ -1416,15 +1440,15 @@ section#Publications {
   .publications-carousel-dots {
     display: flex;
     justify-content: center;
-    gap: 8px;
+    gap: 12px;
     margin-top: 24px;
 
     @media screen and (max-width: 400px) {
-      gap: 6px;
       margin-top: 20px;
     }
 
     .carousel-dot {
+      position: relative;
       width: 8px;
       height: 8px;
       border-radius: 50%;
@@ -1433,9 +1457,15 @@ section#Publications {
       transition: all var(--duration-base) var(--ease-out-expo);
       box-sizing: border-box;
 
-      @media screen and (max-width: 400px) {
-        width: 6px;
-        height: 6px;
+      // Expand the tap area beyond the 8px visual dot (20px fits the 12px gap without overlap)
+      &::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 20px;
+        height: 20px;
+        transform: translate(-50%, -50%);
       }
 
       &.active {
