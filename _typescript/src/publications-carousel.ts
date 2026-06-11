@@ -81,21 +81,24 @@ function abbreviateJournal(journalName: string): string {
  */
 function applyFigureOrFallback(pub: Publication, index: number): void {
   const $figure = $(`.publication-card-figure[data-figure-container="${index}"]`);
-  $figure.removeClass('loading');
+
+  const applyFallback = () => {
+    const gradient = pub.fallbackGradient || PUBLISHER_GRADIENTS[pub.journal] || PUBLISHER_GRADIENTS.default;
+    $figure.removeClass('loading').addClass('fallback').css('background', gradient);
+  };
 
   if (pub.figureUrl) {
+    // Native lazy loading defers offscreen card figures; `loading` must be set before `src`
     const img = new Image();
-    img.onload = function() {
-      $figure.html(`<img src="${pub.figureUrl}" alt="${pub.title || 'Publication figure'}">`);
-    };
-    img.onerror = function() {
-      const gradient = pub.fallbackGradient || PUBLISHER_GRADIENTS[pub.journal] || PUBLISHER_GRADIENTS.default;
-      $figure.addClass('fallback').css('background', gradient);
-    };
+    img.loading = 'lazy';
+    img.decoding = 'async';
+    img.alt = pub.title || 'Publication figure';
+    img.onload = () => $figure.removeClass('loading');
+    img.onerror = applyFallback;
     img.src = pub.figureUrl;
+    $figure.empty().append(img);
   } else {
-    const gradient = pub.fallbackGradient || PUBLISHER_GRADIENTS[pub.journal] || PUBLISHER_GRADIENTS.default;
-    $figure.addClass('fallback').css('background', gradient);
+    applyFallback();
   }
 }
 

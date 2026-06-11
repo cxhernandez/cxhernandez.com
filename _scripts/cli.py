@@ -23,6 +23,7 @@ import json
 import logging
 import os
 import re
+import string
 import sys
 import time
 import urllib.parse
@@ -102,7 +103,7 @@ def fetch_payment_links(token, limit=100):
         url = f"{base}/online-checkout/payment-links?" + urllib.parse.urlencode(qs)
         req = urllib.request.Request(url, headers=headers, method='GET')
         try:
-            with urllib.request.urlopen(req) as resp:
+            with urllib.request.urlopen(req, timeout=10) as resp:
                 data = json.load(resp)
         except urllib.error.HTTPError as e:
             print('HTTP error while listing payment links:', e.read().decode(), file=sys.stderr)
@@ -122,13 +123,10 @@ def fetch_payment_links(token, limit=100):
 def match_payment_link(links, target_url):
     """Match a target URL against payment links."""
     t = target_url.strip()
-    resolved_t = None
 
-    # Try to resolve short/redirecting URLs (e.g., square.link) to their final destination
-    try:
-        resolved_t = resolve_url(t)
-    except Exception:
-        pass
+    # Resolve short/redirecting URLs (e.g., square.link) to their final destination;
+    # resolve_url returns None on failure
+    resolved_t = resolve_url(t)
 
     for pl in links:
         url = pl.get('url')
@@ -154,8 +152,8 @@ def match_payment_link(links, target_url):
                     long_path = urllib.parse.urlparse(long_url).path
                     if resolved_path and long_path and resolved_path == long_path:
                         return pl
-            except Exception:
-                pass
+            except ValueError as e:
+                logger.debug(f"Could not parse URL while matching {url}: {e}")
 
         # Fallback: partial path matching
         try:
@@ -163,8 +161,8 @@ def match_payment_link(links, target_url):
             tp = urllib.parse.urlparse(t)
             if up.path and tp.path and up.path.endswith(tp.path):
                 return pl
-        except Exception:
-            pass
+        except ValueError as e:
+            logger.debug(f"Could not parse URL while matching {url}: {e}")
     return None
 
 
@@ -321,8 +319,19 @@ def cmd_enrich_inventory(args):
     with open(args.inventory, 'r') as f:
         data = json.load(f)
 
+    if not isinstance(data, dict):
+        logger.error(f"Expected a JSON object in {args.inventory}, got {type(data).__name__}")
+        sys.exit(1)
+
     prints = data.get('prints', [])
     services = data.get('services', [])
+
+    if not prints and not services:
+        logger.error(
+            f"No 'prints' or 'services' entries found in {args.inventory}; "
+            "refusing to write an empty inventory"
+        )
+        sys.exit(1)
 
     # Try to fetch payment links from API if token provided
     links = []
@@ -538,7 +547,6 @@ def get_author_publications(author_id, max_retries=5, backoff_factor=4):
 
 def normalize_title(title):
     """Normalize title for comparison (lowercase, no punctuation)."""
-    import string
     # Remove punctuation and convert to lowercase
     normalized = title.lower()
     normalized = normalized.translate(str.maketrans('', '', string.punctuation))
@@ -814,7 +822,6 @@ def fetch_figure_from_pmc(pmcid, timeout=10):
             return None
 
         # Parse XML to find first graphic element with position="float" (main figures)
-        import re
         float_graphics = re.findall(
             r'<graphic[^>]*xlink:href="([^"]+)"[^>]*position="float"',
             response.text
@@ -974,7 +981,6 @@ def scrape_pubmed_figure(pubmed_id, timeout=10):
             return None
 
         # Extract CDN blob URLs for figures (prefer jpg over gif)
-        import re
         jpg_figures = re.findall(
             r'https://cdn\.ncbi\.nlm\.nih\.gov/pmc/blobs/[^"]+\.jpg',
             response.text
@@ -1051,7 +1057,6 @@ def fetch_figure_from_semantic_scholar(paper_id, timeout=10):
 
         if page_response.status_code == 200:
             # Look for og:image meta tag (preview image)
-            import re
             og_image_match = re.search(
                 r'<meta\s+property="og:image"\s+content="([^"]+)"',
                 page_response.text
@@ -1106,8 +1111,6 @@ def extract_figure_from_pdf(pdf_url, paper_id, output_dir="static/files/publicat
     try:
         from pdf2image import convert_from_bytes
         from PIL import Image
-        from pathlib import Path
-        import tempfile
 
         # Create output directory if it doesn't exist
         output_path = Path(output_dir)
