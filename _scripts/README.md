@@ -50,7 +50,7 @@ python cli.py scrape-pubs -a <author-id> -o publications.txt -f html
 
 **Example:**
 ```bash
-python cli.py scrape-pubs -a 2722763 -o ../static/publications.html -f html
+python cli.py scrape-pubs -a 39400763 -o ../static/publications.html -f html
 ```
 
 ### 3. Update CV
