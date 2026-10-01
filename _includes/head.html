@@ -1,7 +1,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <title>{% if page.title %}{{ page.title }}{% else %}{{ site.title }}{% endif %}</title>
   <meta name="description" content="{% if page.excerpt %}{{ page.excerpt | strip_html | strip_newlines | truncate: 160 }}{% else %}{{ site.description }}{% endif %}">
@@ -23,8 +23,8 @@
   <meta property="og:url" content="{{ page.url | absolute_url }}">
   <meta property="og:type" content="website">
   <meta property="og:image" content="{{ "/static/images/profile.jpg" | absolute_url }}">
-  <meta property="og:image:width" content="400">
-  <meta property="og:image:height" content="400">
+  <meta property="og:image:width" content="600">
+  <meta property="og:image:height" content="750">
   <meta property="og:locale" content="en_US">
 
   <!-- Threads/Social Card (uses Twitter Card format for compatibility) -->
