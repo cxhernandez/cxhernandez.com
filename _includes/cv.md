@@ -1,15 +1,15 @@
 # Carlos Xavier Hernández
 
-**Senior Research Scientist**
+**Senior Research Scientist** · London, UK
 <br>
 🐙 [github](https://github.com/cxhernandez) |
 💼 [linkedin](https://linkedin.com/in/cxhernandez) |
 🌐 [website](https://www.cxhernandez.com) |
-✉️ [email](mailto:cxh@meta.com)
+✉️ [email](mailto:cxhrndz@gmail.com)
 
 
 
-I am a Senior Research Scientist at [Meta Reality Labs](https://about.meta.com/realitylabs/), working on machine learning to enable [neuromotor interfaces](https://www.meta.com/emerging-tech/emg-wearable-technology/). Prior to that, I worked with [Vijay Pande](https://www.pandelab.org/) at Stanford on statistical modeling of biomolecular dynamics.
+I am a Senior Research Scientist at [Meta Reality Labs](https://about.meta.com/realitylabs/), now based in London, with 8+ years of experience building machine learning for consumer wearables. My work on wearable [neuromotor interfaces](https://www.meta.com/emerging-tech/emg-wearable-technology/) spans the full pipeline, from biosignal processing and multimodal sensor fusion (sEMG and IMU) to training, evaluating, and deploying deep learning models in production. Prior to that, I worked with [Vijay Pande](https://www.pandelab.org/) at Stanford on probabilistic models of biomolecular dynamics.
 
 
 
@@ -19,21 +19,22 @@ I am a Senior Research Scientist at [Meta Reality Labs](https://about.meta.com/r
 ### Meta Platforms, Inc.
 **Senior Research Scientist** · New York, NY, USA · 2019 – Present
 
-+ Served as technical lead for development of gesture recognition models for the [Meta Neural Band](https://www.meta.com/ai-glasses/meta-ray-ban-display-glasses-and-neural-band/)
-+ Led accessibility research [demonstrating the viability of EMG-based control for hand tremor](https://www.meta.com/blog/surface-emg-wristband-electromyography-human-computer-interaction-hci/?srsltid=AfmBOoqxRF6NyhyxrZRsw0qRAxVLpfTpV7HlpXJtn-bvuDfHDkLMwRK4)
-+ Contributed to Nature paper demonstrating a generic, non-invasive neuromotor interface for human-computer interaction
++ Shipped gesture recognition to consumers as the technical lead of a team of 8+ research scientists and engineers developing for the [Meta Neural Band](https://www.meta.com/ai-glasses/meta-ray-ban-display-glasses-and-neural-band/) (launched Sep 2025), by designing and training deep learning models that decode real-time multimodal signals into discrete input controls on-device for [Meta Ray-Ban Display](https://www.meta.com/ai-glasses/meta-ray-ban-display-glasses-and-neural-band/).
++ Achieved >90% gesture classification accuracy on held-out users without the need for individual calibration, by architecting a generic LSTM-based neural decoding model trained on large-scale sEMG datasets collected from ~5,000 participants. Co-authored [peer-reviewed publication in Nature](https://doi.org/10.1038/s41586-025-09255-w) demonstrating the first high-bandwidth non-invasive neuromotor interface with cross-user generalization (0.88 gestures/sec in closed-loop tests with first-time users), contributing core ML model development and evaluation methodology.
++ Demonstrated viability of [EMG-based controls for users with hand tremor](https://www.meta.com/blog/surface-emg-wristband-electromyography-human-computer-interaction-hci/) (featured at Meta Connect 2024), by leading cross-functional accessibility data collection and analysis to show that EMG-based models can accurately decode motor intent despite involuntary movement artifacts, achieving >80% gesture classification accuracy on the population with hand tremor.
 
-### CTRL-labs
+### CTRL-labs (acquired by Meta, 2019)
 **Research Scientist** · New York, NY, USA · 2018 – 2019
 
-+ Conducted early R&D on EMG signal decoding for wrist-based neural interfaces
-+ Built ML training and inference pipelines for real-time gesture recognition and personalization
++ Built production-grade ML training and inference pipelines for personalization of real-time gesture recognition models, by developing end-to-end data processing, training, and fine-tuning infrastructure for wrist-based sEMG decoding.
++ Established foundational R&D for EMG-based neural interfaces prior to acquisition, by conducting early research on time-series signal processing and deep learning approaches for decoding motor signals into user intent.
 
 ### Stanford University
 **NSF Graduate Research Fellow** · Stanford, CA, USA · 2013 – 2018
 
-+ Developed statistical models for representation learning of biomolecular dynamics
-+ Developed and maintained open-source tools for molecular dynamics analysis (MDTraj, MSMBuilder, MDEntropy) and machine learning (Osprey)
++ Authored [peer-reviewed publication in Phys. Rev. E](https://doi.org/10.1103/PhysRevE.97.062412) describing the Variational Dynamical Encoder (VDE), a time-lagged variational autoencoder that compresses high-dimensional time-series into a single interpretable, low-dimensional latent representation. The VDE retained over twice the mutual information with input features compared to linear methods, and on protein folding simulations resolved a slowest dynamical process 2× longer than the leading linear baseline (tICA).
++ Co-developed open-source scientific computing tools widely adopted across the computational biology community, by building Python libraries for molecular dynamics trajectory analysis, Markov state modeling of biomolecular kinetics, and automated hyperparameter optimization.
++ Achieved an R² of 0.987 and MSE of <0.1 in automated cell counting and segmentation, by training a convolutional neural network pipeline (FPN + VGG-11) with uncertainty estimation on ~10,000 microscopy images, replacing a time-intensive manual process with computer vision.
 
 
 
@@ -53,25 +54,25 @@ I am a Senior Research Scientist at [Meta Reality Labs](https://about.meta.com/r
 
 **Languages & Frameworks:** Python, PyTorch, NumPy, SciPy, Pandas
 <br>
-**Domains:** Time-series modeling, signal processing (DSP), causal inference
+**Domains:** Time-series modeling, biosignals, signal processing (DSP), causal inference
 <br>
-**Methods:** Deep learning (RNNs, Transformers), Markov state models, information theory
+**Methods:** Deep learning (RNNs, Transformers), large-scale distributed training, fine-tuning, Markov state models, information theory
 
 
 
 ## Selected Publications
 
 #### A Generic Non-Invasive Neuromotor Interface for Human-Computer Interaction
-P Kaifosh, TR Reardon, and **CTRL-Labs** · *[Nature](https://doi.org/10.1038/s41586-025-09255-w)* · 2025<br>
-📚 63
+P Kaifosh, TR Reardon, and **CTRL-labs** · *[Nature](https://doi.org/10.1038/s41586-025-09255-w)* · 2025<br>
+📚 136
 
 #### Variational Encoding of Complex Dynamics
 **CX Hernández**\*, HK Wayment-Steele\*, MM Sultan\*, BE Husic, and VS Pande · *[Phys. Rev. E](https://doi.org/10.1103/PhysRevE.97.062412)* · 2018<br>
- 📚 149
+📚 152
 
 #### Using Deep Learning for Segmentation and Counting within Microscopy Data
 **CX Hernández**, MM Sultan, and VS Pande · *[arXiv](https://arxiv.org/abs/1802.10548)* · 2018<br>
- 📚 36
+📚 37
 
 
 
@@ -79,23 +80,23 @@ P Kaifosh, TR Reardon, and **CTRL-Labs** · *[Nature](https://doi.org/10.1038/s4
 
 #### MDTraj: A Modern, Open Library for the Analysis of Molecular Dynamics Trajectories
 RT McGibbon, KA Beauchamp, MP Harrigan, C Klein, JM Swails, **CX Hernández**, CR Schwantes, LP Wang, TJ Lane, and VS Pande · [mdtraj/mdtraj](https://github.com/mdtraj/mdtraj) <br>
-`Python`  · ⭐ 689  · 🍴 290
+`Python` · ⭐ 736  · 🍴 298
 
 #### VDE: Variational Dynamical Encoder for Complex Dynamics
 **CX Hernández**, HK Wayment-Steele, MM Sultan, BE Husic, and VS Pande · [msmbuilder/vde](https://github.com/msmbuilder/vde)<br>
 `Python` · ⭐ 189  · 🍴 42
 
 #### MSMBuilder: Statistical Models for Biomolecular Dynamics
-MP Harrigan, MM Sultan, **CX Hernández**, BE Husic, P Eastman, CR Schwantes, KA Beauchamp, RT McGibbon, and VS Pande · [msmbuilder/vde](https://github.com/msmbuilder/msmbuilder)<br>
-`Python` · ⭐ 161  · 🍴 94
+MP Harrigan, MM Sultan, **CX Hernández**, BE Husic, P Eastman, CR Schwantes, KA Beauchamp, RT McGibbon, and VS Pande · [msmbuilder/msmbuilder](https://github.com/msmbuilder/msmbuilder)<br>
+`Python` · ⭐ 168  · 🍴 94
 
 #### MolEncoder: Molecular Autoencoder in PyTorch
 **CX Hernández** · [cxhernandez/molencoder](https://github.com/cxhernandez/molencoder)<br>
-`Python` · ⭐ 92  · 🍴 18
+`Python` · ⭐ 94  · 🍴 18
 
 #### Osprey: Hyperparameter Optimization for Machine Learning
 RT McGibbon, **CX Hernández**, MP Harrigan, S Kearnes, MM Sultan, S Jastrzebski, BE Husic, and VS Pande · [msmbuilder/osprey](https://github.com/msmbuilder/osprey)<br>
-`Python` · ⭐ 73  · 🍴 26
+`Python` · ⭐ 72  · 🍴 23
 
 
 ## Posters & Presentations
