@@ -4,13 +4,13 @@ channels:
   - defaults
 dependencies:
   - python=3.10
-  # PDF generation (generate_cv_pdf.py)
-  - weasyprint
-  - markdown
-  # Publication scraper (semantic_scholar_scraper.py)
-  - pandas
-  - requests  # Required for Semantic Scholar API
-  - tenacity  # Retry logic with exponential backoff
-  - pdf2image  # PDF to image conversion
+  # PDF generation (cli.py generate-pdf)
+  - weasyprint >=60,<70
+  - markdown >=3.4,<4
+  # Publication scraper (cli.py scrape-pubs)
+  - pandas >=2,<3
+  - requests >=2.28,<3  # Required for Semantic Scholar API
+  - tenacity >=8,<10  # Retry logic with exponential backoff
+  - pdf2image >=1.16,<2  # PDF to image conversion
   - poppler  # PDF rendering (required by pdf2image)
-  - pillow  # Image processing
+  - pillow >=10,<12  # Image processing
