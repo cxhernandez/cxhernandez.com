@@ -64,15 +64,15 @@ I am a Senior Research Scientist at [Meta Reality Labs](https://about.meta.com/r
 
 #### A Generic Non-Invasive Neuromotor Interface for Human-Computer Interaction
 P Kaifosh, TR Reardon, and **CTRL-labs** · *[Nature](https://doi.org/10.1038/s41586-025-09255-w)* · 2025<br>
-📚 63
+📚 136
 
 #### Variational Encoding of Complex Dynamics
 **CX Hernández**\*, HK Wayment-Steele\*, MM Sultan\*, BE Husic, and VS Pande · *[Phys. Rev. E](https://doi.org/10.1103/PhysRevE.97.062412)* · 2018<br>
-📚 149
+📚 152
 
 #### Using Deep Learning for Segmentation and Counting within Microscopy Data
 **CX Hernández**, MM Sultan, and VS Pande · *[arXiv](https://arxiv.org/abs/1802.10548)* · 2018<br>
-📚 36
+📚 37
 
 
 
@@ -80,7 +80,7 @@ P Kaifosh, TR Reardon, and **CTRL-labs** · *[Nature](https://doi.org/10.1038/s4
 
 #### MDTraj: A Modern, Open Library for the Analysis of Molecular Dynamics Trajectories
 RT McGibbon, KA Beauchamp, MP Harrigan, C Klein, JM Swails, **CX Hernández**, CR Schwantes, LP Wang, TJ Lane, and VS Pande · [mdtraj/mdtraj](https://github.com/mdtraj/mdtraj) <br>
-`Python` · ⭐ 689  · 🍴 290
+`Python` · ⭐ 736  · 🍴 298
 
 #### VDE: Variational Dynamical Encoder for Complex Dynamics
 **CX Hernández**, HK Wayment-Steele, MM Sultan, BE Husic, and VS Pande · [msmbuilder/vde](https://github.com/msmbuilder/vde)<br>
@@ -88,15 +88,15 @@ RT McGibbon, KA Beauchamp, MP Harrigan, C Klein, JM Swails, **CX Hernández**, C
 
 #### MSMBuilder: Statistical Models for Biomolecular Dynamics
 MP Harrigan, MM Sultan, **CX Hernández**, BE Husic, P Eastman, CR Schwantes, KA Beauchamp, RT McGibbon, and VS Pande · [msmbuilder/msmbuilder](https://github.com/msmbuilder/msmbuilder)<br>
-`Python` · ⭐ 161  · 🍴 94
+`Python` · ⭐ 168  · 🍴 94
 
 #### MolEncoder: Molecular Autoencoder in PyTorch
 **CX Hernández** · [cxhernandez/molencoder](https://github.com/cxhernandez/molencoder)<br>
-`Python` · ⭐ 92  · 🍴 18
+`Python` · ⭐ 94  · 🍴 18
 
 #### Osprey: Hyperparameter Optimization for Machine Learning
 RT McGibbon, **CX Hernández**, MP Harrigan, S Kearnes, MM Sultan, S Jastrzebski, BE Husic, and VS Pande · [msmbuilder/osprey](https://github.com/msmbuilder/osprey)<br>
-`Python` · ⭐ 73  · 🍴 26
+`Python` · ⭐ 72  · 🍴 23
 
 
 ## Posters & Presentations
