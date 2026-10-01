@@ -1,6 +1,6 @@
 # Carlos Xavier Hernández
 
-**Senior Research Scientist**
+**Senior Research Scientist** · London, UK
 <br>
 🐙 [github](https://github.com/cxhernandez) |
 💼 [linkedin](https://linkedin.com/in/cxhernandez) |
@@ -9,7 +9,7 @@
 
 
 
-I am a Senior Research Scientist at [Meta Reality Labs](https://about.meta.com/realitylabs/), working on machine learning to enable [neuromotor interfaces](https://www.meta.com/emerging-tech/emg-wearable-technology/). Prior to that, I worked with [Vijay Pande](https://www.pandelab.org/) at Stanford on statistical modeling of biomolecular dynamics.
+I am a Senior Research Scientist at [Meta Reality Labs](https://about.meta.com/realitylabs/), now based in London, with 8+ years of experience building machine learning for consumer wearables. My work on wearable [neuromotor interfaces](https://www.meta.com/emerging-tech/emg-wearable-technology/) spans the full pipeline, from biosignal processing and multimodal sensor fusion (sEMG and IMU) to training, evaluating, and deploying deep learning models in production. Prior to that, I worked with [Vijay Pande](https://www.pandelab.org/) at Stanford on probabilistic models of biomolecular dynamics.
 
 
 
@@ -19,7 +19,7 @@ I am a Senior Research Scientist at [Meta Reality Labs](https://about.meta.com/r
 ### Meta Platforms, Inc.
 **Senior Research Scientist** · New York, NY, USA · 2019 – Present
 
-+ Shipped gesture recognition to consumers as the technical lead of a team of 8+ research scientists and engineers developing for the [Meta Neural Band](https://www.meta.com/ai-glasses/meta-ray-ban-display-glasses-and-neural-band/) (launched Sep 2025), by designing and training deep learning models that decode real-time sEMG and IMU signals into discrete input controls for [Meta Ray-Ban Display](https://www.meta.com/ai-glasses/meta-ray-ban-display-glasses-and-neural-band/) working under tight hardware constraints.
++ Shipped gesture recognition to consumers as the technical lead of a team of 8+ research scientists and engineers developing for the [Meta Neural Band](https://www.meta.com/ai-glasses/meta-ray-ban-display-glasses-and-neural-band/) (launched Sep 2025), by designing and training deep learning models that decode real-time multimodal signals into discrete input controls for [Meta Ray-Ban Display](https://www.meta.com/ai-glasses/meta-ray-ban-display-glasses-and-neural-band/) deployed on-device.
 + Achieved >90% gesture classification accuracy on held-out users without the need for individual calibration, by architecting a generic LSTM-based neural decoding model trained on large-scale sEMG datasets collected from ~5,000 participants. Co-authored [peer-reviewed publication in Nature](https://doi.org/10.1038/s41586-025-09255-w) demonstrating the first high-bandwidth non-invasive neuromotor interface with cross-user generalization (0.88 gestures/sec in closed-loop tests with first-time users), contributing core ML model development and evaluation methodology.
 + Demonstrated viability of [EMG-based controls for users with hand tremor](https://www.meta.com/blog/surface-emg-wristband-electromyography-human-computer-interaction-hci/) (featured at Meta Connect 2024), by leading cross-functional accessibility data collection and analysis to show that EMG-based models can accurately decode motor intent despite involuntary movement artifacts, achieving >80% gesture classification accuracy on the population with hand tremor.
 
@@ -54,7 +54,7 @@ I am a Senior Research Scientist at [Meta Reality Labs](https://about.meta.com/r
 
 **Languages & Frameworks:** Python, PyTorch, NumPy, SciPy, Pandas
 <br>
-**Domains:** Time-series modeling, signal processing (DSP), causal inference
+**Domains:** Time-series modeling, biosignals, signal processing (DSP), causal inference
 <br>
 **Methods:** Deep learning (RNNs, Transformers), large-scale distributed training, fine-tuning, Markov state models, information theory
 
